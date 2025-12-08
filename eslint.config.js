@@ -24,6 +24,14 @@ module.exports = [
                 JSX: 'readonly',
                 // React Native globals
                 __DEV__: 'readonly',
+                fetch: 'readonly',
+                btoa: 'readonly',
+                atob: 'readonly',
+                URLSearchParams: 'readonly',
+                FormData: 'readonly',
+                Headers: 'readonly',
+                Request: 'readonly',
+                Response: 'readonly',
                 // ES6 globals
                 Promise: 'readonly',
                 Set: 'readonly',
