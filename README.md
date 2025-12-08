@@ -33,47 +33,54 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 
 ## Screenshots
 
-| Home Screen | Movie Card |
-|-------------|------------|
-| *Screenshot pending* | *Screenshot pending* |
+| Home Screen          | Movie Card           |
+| -------------------- | -------------------- |
+| _Screenshot pending_ | _Screenshot pending_ |
 
-| Cinemas | Upcoming |
-|---------|----------|
-| *Screenshot pending* | *Screenshot pending* |
+| Cinemas              | Upcoming             |
+| -------------------- | -------------------- |
+| _Screenshot pending_ | _Screenshot pending_ |
 
 ## Technologies Used
 
 ### Core Framework
+
 - **Expo SDK 54** - Development platform
 - **React Native 0.81.5** - Mobile framework
 - **React 19.1.0** - UI library
 - **TypeScript 5.9.2** - Type safety (strict mode)
 
 ### Navigation & Routing
+
 - **Expo Router v6** - File-based routing with typed routes
 - **React Navigation 7** - Navigation primitives
 
 ### State Management & Data Fetching
+
 - **TanStack React Query v5** - Server state management, caching, and synchronization
 
 ### UI Components
+
 - **Expo Linear Gradient** - Gradient overlays
 - **Legend App List** - High-performance list rendering
 - **Expo Vector Icons** - Icon library
 - **React Native Reanimated** - Animations
 
 ### Developer Tools
+
 - **ESLint 9** - Code linting
 - **Prettier 3** - Code formatting
 
 ## Platform Support
 
 ### Primary Development Platform
+
 - **Platform**: iOS
 - **Test Device**: iPhone 16 Pro (Simulator)
 - **OS Version**: iOS 18.4
 
 ### Secondary Platform Testing
+
 - **Platform**: Android
 - **Test Device**: Pixel 9 Pro (Emulator)
 - **OS Version**: Android 15
@@ -124,6 +131,7 @@ src/
 ## Setup Instructions
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or yarn
 - Expo CLI (`npm install -g expo-cli`)
@@ -134,31 +142,35 @@ src/
 ### Environment Setup
 
 1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd MAPP-3
-   ```
+
+    ```bash
+    git clone <repository-url>
+    cd MAPP-3
+    ```
 
 2. Install dependencies:
-   ```bash
-   npm install
-   ```
+
+    ```bash
+    npm install
+    ```
 
 3. Create environment file:
-   ```bash
-   cp .env.example .env
-   ```
+
+    ```bash
+    cp .env.example .env
+    ```
 
 4. Fill in the environment variables in `.env`:
-   ```
-   EXPO_PUBLIC_KVIKMYNDIR_API_BASE_URL=https://api.kvikmyndir.is
-   EXPO_PUBLIC_KVIKMYNDIR_API_AUTH_USERNAME=<your-username>
-   EXPO_PUBLIC_KVIKMYNDIR_API_AUTH_PASSWORD=<your-password>
-   EXPO_PUBLIC_TMDB_API_KEY=<your-tmdb-api-key>
-   ```
 
-   - Register at [api.kvikmyndir.is](https://api.kvikmyndir.is) for API credentials
-   - Get TMDB API key from [themoviedb.org](https://www.themoviedb.org/settings/api)
+    ```
+    EXPO_PUBLIC_KVIKMYNDIR_API_BASE_URL=https://api.kvikmyndir.is
+    EXPO_PUBLIC_KVIKMYNDIR_API_AUTH_USERNAME=<your-username>
+    EXPO_PUBLIC_KVIKMYNDIR_API_AUTH_PASSWORD=<your-password>
+    EXPO_PUBLIC_TMDB_API_KEY=<your-tmdb-api-key>
+    ```
+
+    - Register at [api.kvikmyndir.is](https://api.kvikmyndir.is) for API credentials
+    - Get TMDB API key from [themoviedb.org](https://www.themoviedb.org/settings/api)
 
 ## Running the App
 
@@ -195,17 +207,19 @@ npm run format:check  # Check formatting
 ## API Information
 
 ### kvikmyndir.is API
+
 - **Base URL**: `https://api.kvikmyndir.is`
 - **Authentication**: Basic HTTP Auth -> JWT token (24-hour validity)
 - **Endpoints Used**:
-  - `POST /authenticate` - Get access token
-  - `GET /movies` - Currently showing movies
-  - `GET /theaters` - Cinema listings
-  - `GET /upcoming` - Upcoming releases
-  - `GET /genres` - Genre list
-  - `GET /search` - Full-text search
+    - `POST /authenticate` - Get access token
+    - `GET /movies` - Currently showing movies
+    - `GET /theaters` - Cinema listings
+    - `GET /upcoming` - Upcoming releases
+    - `GET /genres` - Genre list
+    - `GET /search` - Full-text search
 
 ### TMDB API
+
 - **Base URL**: `https://api.themoviedb.org/3`
 - **Purpose**: High-quality movie backdrops and posters
 - **Authentication**: Bearer token
@@ -230,7 +244,9 @@ npm run format:check  # Check formatting
 
 ## Author
 
-Milos
+- Milos Petrovic
+- Nikulás Anthony Swain
+- Sunna Einarsdóttir
 
 ## License
 
