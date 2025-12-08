@@ -30,6 +30,16 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - Automatic authentication with the kvikmyndir.is API
 - Haptic feedback on button interactions
 - Optimized list rendering with Legend List
+- **Search**: Animated search bar with real-time title filtering
+- **Advanced Filtering**: Filter movies by:
+    - Cinema (multi-select)
+    - IMDB Rating (preset thresholds)
+    - Showtime (morning, afternoon, evening, night)
+    - Actors (multi-select)
+    - Directors (multi-select)
+    - Age Certificate (PG rating)
+- Skeleton loading states for smooth UX
+- Bottom sheet modals for filter selection
 
 ## Screenshots
 
@@ -58,6 +68,8 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 ### State Management & Data Fetching
 
 - **TanStack React Query v5** - Server state management, caching, and synchronization
+- **Redux Toolkit** - Client state management (filters, search)
+- **React Redux** - React bindings for Redux
 
 ### UI Components
 
@@ -65,6 +77,8 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - **Legend App List** - High-performance list rendering
 - **Expo Vector Icons** - Icon library
 - **React Native Reanimated** - Animations
+- **@gorhom/bottom-sheet** - Modal bottom sheets for filters
+- **Moti** - Skeleton loading animations
 
 ### Developer Tools
 
@@ -106,6 +120,11 @@ src/
 │   ├── client.ts           # HTTP client & authentication
 │   ├── queryKeys.ts        # TanStack Query key factory
 │   └── queryClient.ts      # Query client configuration
+├── store/                   # Redux store
+│   ├── store.ts            # Store configuration
+│   ├── hooks.ts            # Typed useSelector/useDispatch
+│   └── slices/             # Redux slices
+│       └── filtersSlice.ts # Filter state management
 ├── hooks/                   # Custom React hooks
 │   ├── api/                # Data fetching hooks
 │   │   ├── useAuth.ts     # Authentication
@@ -115,12 +134,15 @@ src/
 │   │   ├── useImages.ts   # TMDB images
 │   │   ├── useGenres.ts   # Genre lookup
 │   │   └── useSearch.ts   # Search functionality
-│   └── useTheme.tsx       # Theme hook
+│   ├── useTheme.tsx       # Theme hook
+│   └── useFilteredMovies.ts # Movie filtering logic
 ├── screens/                 # Screen components
 ├── components/              # Reusable UI components
-│   ├── ui/                 # Base UI (Button, Text)
+│   ├── ui/                 # Base UI (Button, Text, Skeleton, FilterChip)
 │   ├── layout/             # Layout components
 │   ├── movie/              # Movie-related components
+│   ├── filters/            # Filter modal components
+│   ├── bottom-sheet/       # Bottom sheet wrapper
 │   └── icons/              # Custom icons
 ├── constants/               # Theme, colors, design tokens
 ├── config/                  # Environment configuration
@@ -236,11 +258,13 @@ npm run format:check  # Check formatting
 - [ ] Implement movie detail screen with full information
 - [ ] Add trailer playback functionality
 - [ ] Implement favorites with AsyncStorage persistence
-- [ ] Add filtering by genre, rating, and showtime
-- [ ] Implement search functionality
+- [x] ~~Add filtering by genre, rating, and showtime~~ (Implemented: cinema, rating, showtime, actors, directors, certificate)
+- [x] ~~Implement search functionality~~ (Implemented: animated search bar with title filtering)
 - [ ] Add pull-to-refresh on all lists
 - [ ] Implement offline caching
 - [ ] Add localization (Icelandic/English)
+- [ ] Persist filter state with AsyncStorage
+- [ ] Add unit tests for filter logic
 
 ## Author
 
