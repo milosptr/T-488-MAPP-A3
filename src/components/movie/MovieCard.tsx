@@ -2,9 +2,10 @@ import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { ImdbIcon } from '../icons';
-import { Text } from '../ui';
+import { Skeleton, Text } from '../ui';
 
 type Props = {
     movie: Movie;
@@ -12,41 +13,44 @@ type Props = {
 
 export const MovieCard = ({ movie }: Props) => {
     const { colors } = useTheme();
-    const backdropImage = useMovieBackdrop(movie.ids.tmdb);
+    const { image: backdropImage, isLoading } = useMovieBackdrop(movie.ids.tmdb);
+
     return (
-        <View style={[styles.posterContainer, { backgroundColor: colors.surface }]}>
-            <Image
-                source={{ uri: backdropImage ?? movie.poster }}
-                resizeMode="contain"
-                style={styles.poster}
-            />
-            <LinearGradient
-                colors={['transparent', colors.surface]}
-                style={styles.gradient}
-                start={{ x: 0, y: 0.3 }}
-                end={{ x: 0, y: 1 }}
-            />
-            <View style={styles.infoContainer}>
-                <View>
-                    <Text style={styles.title} numberOfLines={2}>
-                        {movie.title}
-                    </Text>
-                </View>
-                <View style={styles.infoDetails}>
-                    <View style={styles.infoItem}>
-                        <Text>{movie.year}</Text>
-                        <Text>•</Text>
-                        <Text>{movie.durationMinutes} min</Text>
+        <Skeleton show={isLoading}>
+            <View style={[styles.posterContainer, { backgroundColor: colors.surface }]}>
+                <Image
+                    source={{ uri: backdropImage ?? movie.poster }}
+                    resizeMode="contain"
+                    style={styles.poster}
+                />
+                <LinearGradient
+                    colors={['transparent', colors.surface]}
+                    style={styles.gradient}
+                    start={{ x: 0, y: 0.3 }}
+                    end={{ x: 0, y: 1 }}
+                />
+                <View style={styles.infoContainer}>
+                    <View>
+                        <Text style={styles.title} numberOfLines={2}>
+                            {movie.title}
+                        </Text>
                     </View>
-                    {!!movie.ratings.imdb && (
+                    <View style={styles.infoDetails}>
                         <View style={styles.infoItem}>
-                            <ImdbIcon height={16} width={28} />
-                            <Text>{movie.ratings.imdb} / 10</Text>
+                            <Text>{movie.year}</Text>
+                            <Text>•</Text>
+                            <Text>{movie.durationMinutes} min</Text>
                         </View>
-                    )}
+                        {!!movie.ratings.imdb && (
+                            <View style={styles.infoItem}>
+                                <ImdbIcon height={16} width={28} />
+                                <Text>{movie.ratings.imdb} / 10</Text>
+                            </View>
+                        )}
+                    </View>
                 </View>
             </View>
-        </View>
+        </Skeleton>
     );
 };
 

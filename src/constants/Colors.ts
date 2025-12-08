@@ -82,7 +82,7 @@ export const Colors = {
         action: palette.action,
         onAction: '#ffffff',
 
-        scrim: 'rgba(30, 32, 34, 0.5)',
+        scrim: 'rgba(98, 176, 186, 0.5)',
         inverseSurface: palette.black,
         inverseOnSurface: palette.white,
         inversePrimary: palette.primaryLight,
@@ -127,7 +127,7 @@ export const Colors = {
         action: palette.actionLight,
         onAction: palette.black,
 
-        scrim: 'rgba(0, 0, 0, 0.7)',
+        scrim: 'rgba(98, 176, 186, 0.2)',
         inverseSurface: palette.white,
         inverseOnSurface: palette.black,
         inversePrimary: palette.primary,

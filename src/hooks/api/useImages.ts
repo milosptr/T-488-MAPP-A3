@@ -14,20 +14,25 @@ export const useImages = (tmdbId: number | undefined) => {
 const ASPECT_RATIO_16_9 = 16 / 9;
 const ASPECT_RATIO_TOLERANCE = 0.05;
 
-export const useMovieBackdrop = (tmdbId: number | undefined | null): string | null => {
-    const { data: images } = useImages(tmdbId ?? undefined);
+export const useMovieBackdrop = (
+    tmdbId: number | undefined | null
+): { image: string | null; isLoading: boolean } => {
+    const { data: images, isLoading } = useImages(tmdbId ?? undefined);
 
-    if (!images?.backdrops.length) return null;
+    if (!images?.backdrops.length) return { image: null, isLoading };
 
     const backdrops16x9 = images.backdrops.filter(
         (img: ImageInfo) => Math.abs(img.aspect_ratio - ASPECT_RATIO_16_9) < ASPECT_RATIO_TOLERANCE
     );
 
-    if (!backdrops16x9.length) return null;
+    if (!backdrops16x9.length) return { image: null, isLoading };
 
     const best = backdrops16x9.reduce((a: ImageInfo, b: ImageInfo) =>
         b.vote_average > a.vote_average ? b : a
     );
 
-    return `https://image.tmdb.org/t/p/w1280${best.file_path}`;
+    return {
+        image: `https://image.tmdb.org/t/p/w1280${best.file_path}`,
+        isLoading,
+    };
 };

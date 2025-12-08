@@ -1,13 +1,14 @@
 import { useInitializeAuth, useTheme } from '@/src/hooks';
-import { QueryProvider } from '@/src/providers';
+import { QueryProvider, StoreProvider } from '@/src/providers';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
-
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
@@ -31,9 +32,11 @@ export default function RootLayout() {
     }
 
     return (
-        <QueryProvider>
-            <RootLayoutNav />
-        </QueryProvider>
+        <StoreProvider>
+            <QueryProvider>
+                <RootLayoutNav />
+            </QueryProvider>
+        </StoreProvider>
     );
 }
 
@@ -52,15 +55,19 @@ function RootLayoutNav() {
     }
 
     return (
-        <ThemeProvider value={theme}>
-            <Stack>
-                <Stack.Protected guard={isAuthenticated}>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                </Stack.Protected>
-                <Stack.Protected guard={!isAuthenticated}>
-                    <Stack.Screen name="not-authenticated" />
-                </Stack.Protected>
-            </Stack>
-        </ThemeProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <BottomSheetModalProvider>
+                <ThemeProvider value={theme}>
+                    <Stack>
+                        <Stack.Protected guard={isAuthenticated}>
+                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        </Stack.Protected>
+                        <Stack.Protected guard={!isAuthenticated}>
+                            <Stack.Screen name="not-authenticated" />
+                        </Stack.Protected>
+                    </Stack>
+                </ThemeProvider>
+            </BottomSheetModalProvider>
+        </GestureHandlerRootView>
     );
 }
