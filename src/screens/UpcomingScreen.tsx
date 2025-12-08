@@ -2,10 +2,10 @@ import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { Text } from '@/src/components/ui';
 import { StyleSheet } from 'react-native';
 
-export const HomeScreen = () => {
+export const UpcomingScreen = () => {
     return (
         <SafeAreaScreen style={styles.container}>
-            <Text style={styles.title}>Home</Text>
+            <Text style={styles.title}>Upcoming</Text>
         </SafeAreaScreen>
     );
 };
