@@ -40,6 +40,9 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
     - Age Certificate (PG rating)
 - Skeleton loading states for smooth UX
 - Bottom sheet modals for filter selection
+- **Upcoming Movies**: Browse upcoming releases sorted by release date
+    - Watch trailers directly in the app (for movies that have trailers)
+    - View release dates and movie posters
 - **Favourites**: Save movies to your favorites list with AsyncStorage persistence
     - Add/remove movies from any screen via heart button
     - Drag-to-reorder favorites list
@@ -270,12 +273,12 @@ npm run format:check  # Check formatting
 
 - [ ] Complete cinema detail screen with movie listings
 - [x] ~~Implement movie detail screen with full information~~ (Implemented)
-- [ ] Add trailer playback functionality
+- [x] ~~Add trailer playback functionality~~ (Implemented: watch trailers for upcoming movies)
 - [x] ~~Implement favorites with AsyncStorage persistence~~ (Implemented: add/remove, reorder, persist)
 - [x] ~~Add filtering by genre, rating, and showtime~~ (Implemented: cinema, rating, showtime, actors, directors, certificate)
 - [x] ~~Implement search functionality~~ (Implemented: animated search bar with title filtering)
 - [x] ~~Add movie reviews and ratings~~ (Implemented: 1-5 star ratings, text reviews, AsyncStorage)
-- [ ] Add pull-to-refresh on all lists
+- [x] ~~Add pull-to-refresh on all lists~~ (Implemented: Home and Upcoming screens)
 - [ ] Implement offline caching
 - [ ] Add localization (Icelandic/English)
 - [ ] Persist filter state with AsyncStorage
