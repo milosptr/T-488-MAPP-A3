@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { apiClient, queryKeys, STALE_TIMES } from '@/src/api';
 import type { Trailer, UpcomingMovie, UpcomingQueryParams } from '@/src/types';
+import { useQuery } from '@tanstack/react-query';
 
 /**
  * Fetch upcoming movies, sorted by release date (ascending)
@@ -16,8 +16,16 @@ export const useUpcoming = (params?: UpcomingQueryParams) => {
             const movies = await apiClient<UpcomingMovie[]>('/upcoming', {
                 params: params as Record<string, string | number | undefined>,
             });
+            // Remove duplicates by id
+            const seen = new Set<string>();
+            const uniqueMovies = movies.filter(movie => {
+                const id = movie.id.toString();
+                if (seen.has(id)) return false;
+                seen.add(id);
+                return true;
+            });
             // Sort by release date (ascending)
-            return movies.sort((a, b) => {
+            return uniqueMovies.sort((a, b) => {
                 const dateA = new Date(a['release-dateIS']).getTime();
                 const dateB = new Date(b['release-dateIS']).getTime();
                 return dateA - dateB;
