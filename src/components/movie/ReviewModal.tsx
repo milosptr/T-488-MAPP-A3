@@ -1,17 +1,19 @@
 import { BottomSheetModal } from '@/src/components/bottom-sheet';
-import { Text } from '@/src/components/ui';
-import { spacing } from '@/src/constants/DesignTokens';
+import { Button, StarRating, Text } from '@/src/components/ui';
+import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
-import { addReview } from '@/src/store/slices';
 import { useAppDispatch } from '@/src/store';
-import { Ionicons } from '@expo/vector-icons';
-import React, { forwardRef, useState, useRef, useImperativeHandle } from 'react';
-import { Alert, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { addReview } from '@/src/store/slices';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { Alert, StyleSheet, TextInput, View } from 'react-native';
 
 type Props = {
     movieId: string;
     movieTitle: string;
 };
+
+const INPUT_HEIGHT = 50;
+const TEXT_INPUT_MIN_HEIGHT = 120;
 
 export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movieTitle }, ref) => {
     const { colors } = useTheme();
@@ -22,6 +24,12 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
     const bottomSheetRef = useRef<BottomSheetModal>(null);
 
     useImperativeHandle(ref, () => bottomSheetRef.current as BottomSheetModal);
+
+    const resetForm = () => {
+        setRating(0);
+        setReviewText('');
+        setUserName('');
+    };
 
     const handleSubmit = () => {
         if (rating === 0) {
@@ -38,31 +46,9 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
             })
         );
 
-        // Reset form
-        setRating(0);
-        setReviewText('');
-        setUserName('');
-
+        resetForm();
         Alert.alert('Success', 'Your review has been added!');
-
-        // Close modal
         bottomSheetRef.current?.dismiss();
-    };
-
-    const renderStars = () => {
-        return (
-            <View style={styles.starsContainer}>
-                {[1, 2, 3, 4, 5].map(star => (
-                    <Pressable key={star} onPress={() => setRating(star)} style={styles.starButton}>
-                        <Ionicons
-                            name={star <= rating ? 'star' : 'star-outline'}
-                            size={40}
-                            color={star <= rating ? '#FFD700' : colors.text}
-                        />
-                    </Pressable>
-                ))}
-            </View>
-        );
     };
 
     return (
@@ -82,7 +68,7 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
                             },
                         ]}
                         placeholder="Enter your name"
-                        placeholderTextColor={colors.text + '60'}
+                        placeholderTextColor={colors.textSecondary}
                         value={userName}
                         onChangeText={setUserName}
                         maxLength={50}
@@ -91,12 +77,9 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
 
                 <View style={styles.section}>
                     <Text style={styles.label}>Your Rating</Text>
-                    {renderStars()}
-                    {rating > 0 && (
-                        <Text style={[styles.ratingText, { color: colors.text }]}>
-                            {rating} {rating === 1 ? 'star' : 'stars'}
-                        </Text>
-                    )}
+                    <View style={styles.starsContainer}>
+                        <StarRating rating={rating} size="lg" onRatingChange={setRating} />
+                    </View>
                 </View>
 
                 <View style={styles.section}>
@@ -120,19 +103,7 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
                     />
                 </View>
 
-                <Pressable
-                    style={[
-                        styles.submitButton,
-                        { backgroundColor: colors.primary },
-                        rating === 0 && styles.submitButtonDisabled,
-                    ]}
-                    onPress={handleSubmit}
-                    disabled={rating === 0}
-                >
-                    <Text style={[styles.submitButtonText, { color: colors.onPrimary }]}>
-                        Submit Review
-                    </Text>
-                </Pressable>
+                <Button title="Submit Review" onPress={handleSubmit} />
             </View>
         </BottomSheetModal>
     );
@@ -146,7 +117,7 @@ const styles = StyleSheet.create({
         padding: spacing.lg,
     },
     title: {
-        fontSize: 24,
+        fontSize: fontSize.xl,
         fontWeight: 'bold',
         marginBottom: spacing.lg,
     },
@@ -154,49 +125,26 @@ const styles = StyleSheet.create({
         marginBottom: spacing.xl,
     },
     label: {
-        fontSize: 16,
+        fontSize: fontSize.base,
         fontWeight: '600',
         marginBottom: spacing.md,
     },
     starsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: spacing.sm,
+        alignItems: 'center',
         marginBottom: spacing.sm,
-    },
-    starButton: {
-        padding: spacing.xs,
-    },
-    ratingText: {
-        textAlign: 'center',
-        fontSize: 14,
-        opacity: 0.7,
     },
     nameInput: {
         borderWidth: 1,
-        borderRadius: 12,
+        borderRadius: borderRadius.md,
         padding: spacing.md,
-        fontSize: 16,
-        height: 50,
+        fontSize: fontSize.base,
+        height: INPUT_HEIGHT,
     },
     textInput: {
         borderWidth: 1,
-        borderRadius: 12,
+        borderRadius: borderRadius.md,
         padding: spacing.md,
-        fontSize: 16,
-        minHeight: 120,
-    },
-    submitButton: {
-        padding: spacing.lg,
-        borderRadius: 12,
-        alignItems: 'center',
-        marginTop: 'auto',
-    },
-    submitButtonDisabled: {
-        opacity: 0.5,
-    },
-    submitButtonText: {
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: fontSize.base,
+        minHeight: TEXT_INPUT_MIN_HEIGHT,
     },
 });

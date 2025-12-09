@@ -1,8 +1,9 @@
+import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { MovieCard } from '@/src/components/movie/MovieCard';
-import { Skeleton } from '@/src/components/ui';
-import { spacing } from '@/src/constants/DesignTokens';
-import { useFavorites, useMovies } from '@/src/hooks';
-import { reorderFavorites, useAppDispatch } from '@/src/store';
+import { Skeleton, Text } from '@/src/components/ui';
+import { fontSize, spacing } from '@/src/constants/DesignTokens';
+import { useFavorites, useMovies, useTheme } from '@/src/hooks';
+import { setFavoriteOrder, useAppDispatch } from '@/src/store';
 import { Movie } from '@/src/types';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
@@ -12,22 +13,18 @@ import DraggableFlatList, {
     RenderItemParams,
     ScaleDecorator,
 } from 'react-native-draggable-flatlist';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
-import { Text } from '@/src/components/ui';
-import { useTheme } from '@/src/hooks';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const FavouritesScreen = () => {
     const { colors } = useTheme();
     const dispatch = useAppDispatch();
     const { favoriteIds } = useFavorites();
+    const { bottom: bottomInset } = useSafeAreaInsets();
     const { data: allMovies = [], isLoading } = useMovies();
 
-    // Filter movies to only show favorites
     const favoriteMovies = useMemo(() => {
         if (!allMovies.length || !favoriteIds.length) return [];
 
-        // Maintain the order from favoriteIds (user's custom order)
         return favoriteIds
             .map(id => allMovies.find(movie => movie._id === id))
             .filter((movie): movie is Movie => movie !== undefined);
@@ -40,18 +37,9 @@ export const FavouritesScreen = () => {
     const handleDragEnd = useCallback(
         ({ data }: { data: Movie[] }) => {
             const newOrder = data.map(movie => movie._id);
-            const oldOrder = favoriteIds;
-
-            // Find what moved
-            const fromIndex = oldOrder.findIndex((id, i) => id !== newOrder[i]);
-            if (fromIndex === -1) return; // No change
-
-            const movedId = oldOrder[fromIndex];
-            const toIndex = newOrder.indexOf(movedId);
-
-            dispatch(reorderFavorites({ from: fromIndex, to: toIndex }));
+            dispatch(setFavoriteOrder(newOrder));
         },
-        [favoriteIds, dispatch]
+        [dispatch]
     );
 
     const renderMovie = ({ item, drag, isActive }: RenderItemParams<Movie>) => (
@@ -62,10 +50,7 @@ export const FavouritesScreen = () => {
                 disabled={isActive}
                 style={[styles.movieItem, isActive && styles.movieItemActive]}
             >
-                <MovieCard movie={item} />
-                <View style={styles.dragHandle}>
-                    <Ionicons name="menu" size={24} color={colors.text} style={{ opacity: 0.5 }} />
-                </View>
+                <MovieCard movie={item} showFavoriteButton />
             </Pressable>
         </ScaleDecorator>
     );
@@ -97,34 +82,33 @@ export const FavouritesScreen = () => {
     }
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <SafeAreaScreen style={[styles.container, { backgroundColor: colors.background }]}>
-                <View style={styles.header}>
-                    <View>
-                        <Text style={styles.headerTitle}>Favourites</Text>
-                        {favoriteMovies.length > 0 && (
-                            <Text
-                                style={[
-                                    styles.headerSubtitle,
-                                    { color: colors.text, opacity: 0.6 },
-                                ]}
-                            >
-                                Long press to reorder
-                            </Text>
-                        )}
-                    </View>
+        <SafeAreaScreen
+            edges={['top', 'bottom']}
+            style={[styles.container, { backgroundColor: colors.background }]}
+        >
+            <View style={styles.header}>
+                <View>
+                    <Text style={styles.headerTitle}>Favourites</Text>
+                    {favoriteMovies.length > 0 && (
+                        <Text variant="secondary">Long press to reorder</Text>
+                    )}
                 </View>
-                <DraggableFlatList
-                    data={favoriteMovies}
-                    renderItem={renderMovie}
-                    keyExtractor={item => item._id}
-                    onDragEnd={handleDragEnd}
-                    contentContainerStyle={styles.listContent}
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={renderEmpty}
-                />
-            </SafeAreaScreen>
-        </GestureHandlerRootView>
+            </View>
+            <DraggableFlatList
+                data={favoriteMovies}
+                renderItem={renderMovie}
+                keyExtractor={item => item._id}
+                onDragEnd={handleDragEnd}
+                contentContainerStyle={[
+                    styles.listContent,
+                    { paddingBottom: bottomInset + spacing.xxl },
+                ]}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                style={{ height: '100%' }}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={renderEmpty}
+            />
+        </SafeAreaScreen>
     );
 };
 
@@ -136,37 +120,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        paddingHorizontal: spacing.md,
-        marginBottom: spacing.md,
+        marginBottom: spacing.xl,
     },
     headerTitle: {
-        fontSize: 28,
+        fontSize: fontSize.xxl,
         fontWeight: 'bold',
         marginBottom: spacing.xs,
     },
-    headerSubtitle: {
-        fontSize: 14,
-    },
     listContent: {
-        padding: spacing.md,
-        gap: spacing.lg,
         flexGrow: 1,
     },
     movieItem: {
-        marginBottom: spacing.md,
         position: 'relative',
+    },
+    separator: {
+        height: spacing.xxl,
     },
     movieItemActive: {
         opacity: 0.8,
         transform: [{ scale: 1.02 }],
-    },
-    dragHandle: {
-        position: 'absolute',
-        top: spacing.sm,
-        left: spacing.sm,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: spacing.xs,
-        borderRadius: 8,
     },
     emptyContainer: {
         flex: 1,

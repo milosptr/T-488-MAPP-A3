@@ -10,9 +10,10 @@ import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
     movie: Movie;
+    showFavoriteButton?: boolean;
 };
 
-export const MovieCard = ({ movie }: Props) => {
+export const MovieCard = ({ movie, showFavoriteButton = false }: Props) => {
     const { colors } = useTheme();
     const { image: backdropImage, isLoading } = useMovieBackdrop(movie.ids.tmdb);
 
@@ -24,9 +25,11 @@ export const MovieCard = ({ movie }: Props) => {
                     resizeMode="contain"
                     style={styles.poster}
                 />
-                <View style={styles.favoriteButton}>
-                    <FavoriteButton movieId={movie._id} />
-                </View>
+                {showFavoriteButton && (
+                    <View style={styles.favoriteButton}>
+                        <FavoriteButton movieId={movie._id} />
+                    </View>
+                )}
                 <LinearGradient
                     colors={['transparent', colors.surface]}
                     style={styles.gradient}

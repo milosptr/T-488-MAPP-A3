@@ -1,16 +1,18 @@
 import { BottomSheetModal } from '@/src/components/bottom-sheet';
 import { ImdbIcon, RottenTomatoesIcon } from '@/src/components/icons';
-import { MovieDetailsList, MoviePosterSection, SkeletonMovie } from '@/src/components/movie';
-import { MovieReviews } from '@/src/components/movie/MovieReviews';
-import { ReviewModal } from '@/src/components/movie/ReviewModal';
+import {
+    MovieDetailsList,
+    MoviePosterSection,
+    MovieReviewsSection,
+    SkeletonMovie,
+} from '@/src/components/movie';
 import { TrailerModal } from '@/src/components/trailer';
 import { Text } from '@/src/components/ui';
 import { fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useMovie } from '@/src/hooks';
-import { Ionicons } from '@expo/vector-icons';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const MovieScreen = () => {
@@ -21,7 +23,6 @@ export const MovieScreen = () => {
     const { toggleFavoriteStatus } = useFavorites();
 
     const trailerRef = useRef<BottomSheetModal>(null);
-    const reviewRef = useRef<BottomSheetModal>(null);
     const trailerKey = useMemo(() => {
         if (!movie?.trailers?.length) return null;
 
@@ -118,26 +119,10 @@ export const MovieScreen = () => {
                             <Text variant="secondary">{omdbCountry}</Text>
                         </View>
                     )}
-
-                    {/* Action Buttons */}
-                    <View style={styles.actionsContainer}>
-                        <Pressable
-                            style={styles.actionButtonFull}
-                            onPress={() => reviewRef.current?.present()}
-                        >
-                            <Ionicons name="create-outline" size={20} color="#fff" />
-                            <Text style={styles.actionButtonText}>Write Review</Text>
-                        </Pressable>
-                    </View>
-
-                    {/* Reviews Section */}
-                    <View style={styles.reviewsSection}>
-                        <MovieReviews movieId={movie._id} />
-                    </View>
+                    <MovieReviewsSection movieId={movie._id} title={movie.title} />
                 </View>
             </View>
             <TrailerModal ref={trailerRef} videoKey={trailerKey} />
-            <ReviewModal ref={reviewRef} movieId={movie._id} movieTitle={movie.title} />
         </ScrollView>
     );
 };
@@ -178,32 +163,5 @@ const styles = StyleSheet.create({
     },
     label: {
         fontWeight: 'bold',
-    },
-    actionsContainer: {
-        flexDirection: 'row',
-        gap: spacing.md,
-        marginTop: spacing.lg,
-    },
-    actionButtonFull: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: spacing.sm,
-        backgroundColor: '#6366F1',
-        paddingVertical: spacing.md,
-        paddingHorizontal: spacing.lg,
-        borderRadius: 12,
-    },
-    actionButtonText: {
-        color: '#fff',
-        fontWeight: '600',
-        fontSize: 14,
-    },
-    reviewsSection: {
-        marginTop: spacing.xl,
-        paddingTop: spacing.xl,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255, 255, 255, 0.1)',
     },
 });

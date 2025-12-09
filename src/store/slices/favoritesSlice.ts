@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const FAVORITES_STORAGE_KEY = '@favorites';
 
@@ -50,14 +50,23 @@ const favoritesSlice = createSlice({
             const { from, to } = action.payload;
             const [removed] = state.movieIds.splice(from, 1);
             state.movieIds.splice(to, 0, removed);
-            // Persist to AsyncStorage
+            AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
+        },
+        setFavoriteOrder: (state, action: PayloadAction<string[]>) => {
+            state.movieIds = action.payload;
             AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
     },
 });
 
-export const { addFavorite, removeFavorite, toggleFavorite, setFavorites, reorderFavorites } =
-    favoritesSlice.actions;
+export const {
+    addFavorite,
+    removeFavorite,
+    toggleFavorite,
+    setFavorites,
+    reorderFavorites,
+    setFavoriteOrder,
+} = favoritesSlice.actions;
 
 export const favoritesReducer = favoritesSlice.reducer;
 

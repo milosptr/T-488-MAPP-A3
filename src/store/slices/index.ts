@@ -18,8 +18,9 @@ export {
     loadFavorites,
     removeFavorite,
     reorderFavorites,
-    toggleFavorite,
+    setFavoriteOrder,
     setFavorites,
+    toggleFavorite,
 } from './favoritesSlice';
 
 export {
