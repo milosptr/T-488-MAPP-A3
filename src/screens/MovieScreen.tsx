@@ -1,10 +1,15 @@
 import { BottomSheetModal } from '@/src/components/bottom-sheet';
 import { ImdbIcon, RottenTomatoesIcon } from '@/src/components/icons';
-import { MovieDetailsList, MoviePosterSection, SkeletonMovie } from '@/src/components/movie';
+import {
+    MovieDetailsList,
+    MoviePosterSection,
+    MovieReviewsSection,
+    SkeletonMovie,
+} from '@/src/components/movie';
 import { TrailerModal } from '@/src/components/trailer';
 import { Text } from '@/src/components/ui';
 import { fontSize, spacing } from '@/src/constants/DesignTokens';
-import { useMovie } from '@/src/hooks';
+import { useFavorites, useMovie } from '@/src/hooks';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -15,6 +20,7 @@ export const MovieScreen = () => {
     const { id } = useLocalSearchParams();
     const { data: movie, isLoading } = useMovie(id as string);
     const insets = useSafeAreaInsets();
+    const { toggleFavoriteStatus } = useFavorites();
 
     const trailerRef = useRef<BottomSheetModal>(null);
     const trailerKey = useMemo(() => {
@@ -73,16 +79,22 @@ export const MovieScreen = () => {
             <MoviePosterSection
                 posterUri={movie.poster}
                 trailerKey={trailerKey}
+                movieId={movie._id}
                 onBack={() => router.back()}
                 onTrailerPress={() => trailerRef.current?.present()}
+                onFavoritePress={() => toggleFavoriteStatus(movie._id)}
             />
             <View style={styles.content}>
                 <View style={styles.infoDetails}>
                     <Text variant="secondary">{movie.year}</Text>
                     <Text>•</Text>
                     <Text variant="secondary">{movie.durationMinutes} min</Text>
-                    <Text>•</Text>
-                    <Text variant="secondary">PG-{movie.certificate.number}</Text>
+                    {movie.certificate?.number && (
+                        <>
+                            <Text>•</Text>
+                            <Text variant="secondary">PG-{movie.certificate.number}</Text>
+                        </>
+                    )}
                 </View>
                 <View style={styles.details}>
                     <Text style={styles.title}>{movie.title}</Text>
@@ -107,6 +119,7 @@ export const MovieScreen = () => {
                             <Text variant="secondary">{omdbCountry}</Text>
                         </View>
                     )}
+                    <MovieReviewsSection movieId={movie._id} title={movie.title} />
                 </View>
             </View>
             <TrailerModal ref={trailerRef} videoKey={trailerKey} />

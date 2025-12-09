@@ -1,4 +1,5 @@
 import { borderRadius } from '@/src/constants/DesignTokens';
+import { useFavorites } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { Link, useRouter } from 'expo-router';
 import { Image, Platform } from 'react-native';
@@ -10,6 +11,7 @@ type Props = {
 
 export const MovieListItem = ({ movie }: Props) => {
     const router = useRouter();
+    const { toggleFavoriteStatus, isFavorite } = useFavorites();
 
     if (Platform.OS === 'android') {
         return (
@@ -18,6 +20,8 @@ export const MovieListItem = ({ movie }: Props) => {
             </Link>
         );
     }
+
+    const isMovieFavorite = isFavorite(movie._id);
 
     return (
         <Link href={`/movies/${movie._id}`}>
@@ -42,7 +46,11 @@ export const MovieListItem = ({ movie }: Props) => {
                     onPress={() => router.push(`/movies/${movie._id}`)}
                 />
                 <Link.MenuAction title="Share" icon="square.and.arrow.up" onPress={() => {}} />
-                <Link.MenuAction title="Add to favourites" icon="heart" onPress={() => {}} />
+                <Link.MenuAction
+                    title={isMovieFavorite ? 'Remove from favourites' : 'Add to favourites'}
+                    icon={isMovieFavorite ? 'heart.fill' : 'heart'}
+                    onPress={() => toggleFavoriteStatus(movie._id)}
+                />
             </Link.Menu>
         </Link>
     );
