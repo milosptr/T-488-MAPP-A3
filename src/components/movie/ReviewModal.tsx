@@ -25,6 +25,7 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(
         const dispatch = useAppDispatch();
         const [rating, setRating] = useState(0);
         const [reviewText, setReviewText] = useState('');
+        const [userName, setUserName] = useState('');
         const bottomSheetRef = useRef<BottomSheetModal>(null);
 
         useImperativeHandle(ref, () => bottomSheetRef.current as BottomSheetModal);
@@ -40,12 +41,14 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(
                     movieId,
                     rating,
                     text: reviewText.trim(),
+                    userName: userName.trim() || undefined,
                 })
             );
 
             // Reset form
             setRating(0);
             setReviewText('');
+            setUserName('');
 
             Alert.alert('Success', 'Your review has been added!');
             
@@ -74,10 +77,29 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(
         };
 
         return (
-            <BottomSheetModal ref={bottomSheetRef} snapPoints={['70%']}>
+            <BottomSheetModal ref={bottomSheetRef} snapPoints={['75%']}>
                 <View style={[styles.container, { backgroundColor: colors.background }]}>
                     <Text style={styles.title}>Review {movieTitle}</Text>
                     
+                    <View style={styles.section}>
+                        <Text style={styles.label}>Your Name (Optional)</Text>
+                        <TextInput
+                            style={[
+                                styles.nameInput,
+                                {
+                                    backgroundColor: colors.surface,
+                                    color: colors.text,
+                                    borderColor: colors.border,
+                                },
+                            ]}
+                            placeholder="Enter your name"
+                            placeholderTextColor={colors.text + '60'}
+                            value={userName}
+                            onChangeText={setUserName}
+                            maxLength={50}
+                        />
+                    </View>
+
                     <View style={styles.section}>
                         <Text style={styles.label}>Your Rating</Text>
                         {renderStars()}
@@ -161,6 +183,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
         opacity: 0.7,
+    },
+    nameInput: {
+        borderWidth: 1,
+        borderRadius: 12,
+        padding: spacing.md,
+        fontSize: 16,
+        height: 50,
     },
     textInput: {
         borderWidth: 1,
