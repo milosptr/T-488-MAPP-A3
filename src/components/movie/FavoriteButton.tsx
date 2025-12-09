@@ -20,10 +20,7 @@ export const FavoriteButton = ({ movieId, size = 24, color = '#fff' }: Props) =>
     return (
         <Pressable
             onPress={handlePress}
-            style={({ pressed }) => [
-                styles.button,
-                pressed && styles.pressed,
-            ]}
+            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
             hitSlop={8}
         >
             <Ionicons

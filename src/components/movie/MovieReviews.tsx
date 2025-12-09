@@ -13,15 +13,18 @@ type Props = {
 
 export const MovieReviews = ({ movieId }: Props) => {
     const { colors } = useTheme();
-    const reviews = useAppSelector((state) => selectReviewsByMovieId(state, movieId));
-    const averageRating = useAppSelector((state) =>
-        selectAverageRatingByMovieId(state, movieId)
-    );
+    const reviews = useAppSelector(state => selectReviewsByMovieId(state, movieId));
+    const averageRating = useAppSelector(state => selectAverageRatingByMovieId(state, movieId));
 
     if (reviews.length === 0) {
         return (
             <View style={styles.emptyContainer}>
-                <Ionicons name="chatbubbles-outline" size={48} color={colors.text} style={{ opacity: 0.3 }} />
+                <Ionicons
+                    name="chatbubbles-outline"
+                    size={48}
+                    color={colors.text}
+                    style={{ opacity: 0.3 }}
+                />
                 <Text style={[styles.emptyText, { color: colors.text, opacity: 0.6 }]}>
                     No reviews yet. Be the first to review!
                 </Text>
@@ -32,7 +35,7 @@ export const MovieReviews = ({ movieId }: Props) => {
     const renderStars = (rating: number) => {
         return (
             <View style={styles.starsRow}>
-                {[1, 2, 3, 4, 5].map((star) => (
+                {[1, 2, 3, 4, 5].map(star => (
                     <Ionicons
                         key={star}
                         name={star <= rating ? 'star' : 'star-outline'}
@@ -51,14 +54,12 @@ export const MovieReviews = ({ movieId }: Props) => {
                 {reviews.length > 0 && (
                     <View style={styles.averageContainer}>
                         <Ionicons name="star" size={20} color="#FFD700" />
-                        <Text style={styles.averageText}>
-                            {averageRating.toFixed(1)} / 5
-                        </Text>
+                        <Text style={styles.averageText}>{averageRating.toFixed(1)} / 5</Text>
                     </View>
                 )}
             </View>
 
-            {reviews.map((review) => (
+            {reviews.map(review => (
                 <ReviewItem key={review.id} review={review} renderStars={renderStars} />
             ))}
         </View>
@@ -76,20 +77,21 @@ const ReviewItem = ({
     const date = new Date(review.createdAt).toLocaleDateString();
 
     return (
-        <View style={[styles.reviewItem, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View
+            style={[
+                styles.reviewItem,
+                { backgroundColor: colors.surface, borderColor: colors.border },
+            ]}
+        >
             <View style={styles.reviewHeader}>
                 <View style={styles.reviewInfo}>
                     <Text style={styles.userName}>{review.userName || 'Anonymous'}</Text>
-                    <Text style={[styles.date, { color: colors.text, opacity: 0.6 }]}>
-                        {date}
-                    </Text>
+                    <Text style={[styles.date, { color: colors.text, opacity: 0.6 }]}>{date}</Text>
                 </View>
                 {renderStars(review.rating)}
             </View>
             {review.text && (
-                <Text style={[styles.reviewText, { color: colors.text }]}>
-                    {review.text}
-                </Text>
+                <Text style={[styles.reviewText, { color: colors.text }]}>{review.text}</Text>
             )}
         </View>
     );

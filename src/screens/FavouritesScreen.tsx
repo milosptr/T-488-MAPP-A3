@@ -26,10 +26,10 @@ export const FavouritesScreen = () => {
     // Filter movies to only show favorites
     const favoriteMovies = useMemo(() => {
         if (!allMovies.length || !favoriteIds.length) return [];
-        
+
         // Maintain the order from favoriteIds (user's custom order)
         return favoriteIds
-            .map((id) => allMovies.find((movie) => movie._id === id))
+            .map(id => allMovies.find(movie => movie._id === id))
             .filter((movie): movie is Movie => movie !== undefined);
     }, [allMovies, favoriteIds]);
 
@@ -39,16 +39,16 @@ export const FavouritesScreen = () => {
 
     const handleDragEnd = useCallback(
         ({ data }: { data: Movie[] }) => {
-            const newOrder = data.map((movie) => movie._id);
+            const newOrder = data.map(movie => movie._id);
             const oldOrder = favoriteIds;
-            
+
             // Find what moved
             const fromIndex = oldOrder.findIndex((id, i) => id !== newOrder[i]);
             if (fromIndex === -1) return; // No change
-            
+
             const movedId = oldOrder[fromIndex];
             const toIndex = newOrder.indexOf(movedId);
-            
+
             dispatch(reorderFavorites({ from: fromIndex, to: toIndex }));
         },
         [favoriteIds, dispatch]
@@ -60,10 +60,7 @@ export const FavouritesScreen = () => {
                 onPress={() => handleMoviePress(item)}
                 onLongPress={drag}
                 disabled={isActive}
-                style={[
-                    styles.movieItem,
-                    isActive && styles.movieItemActive,
-                ]}
+                style={[styles.movieItem, isActive && styles.movieItemActive]}
             >
                 <MovieCard movie={item} />
                 <View style={styles.dragHandle}>
@@ -106,7 +103,12 @@ export const FavouritesScreen = () => {
                     <View>
                         <Text style={styles.headerTitle}>Favourites</Text>
                         {favoriteMovies.length > 0 && (
-                            <Text style={[styles.headerSubtitle, { color: colors.text, opacity: 0.6 }]}>
+                            <Text
+                                style={[
+                                    styles.headerSubtitle,
+                                    { color: colors.text, opacity: 0.6 },
+                                ]}
+                            >
                                 Long press to reorder
                             </Text>
                         )}
@@ -115,7 +117,7 @@ export const FavouritesScreen = () => {
                 <DraggableFlatList
                     data={favoriteMovies}
                     renderItem={renderMovie}
-                    keyExtractor={(item) => item._id}
+                    keyExtractor={item => item._id}
                     onDragEnd={handleDragEnd}
                     contentContainerStyle={styles.listContent}
                     showsVerticalScrollIndicator={false}

@@ -88,8 +88,12 @@ export const MovieScreen = () => {
                     <Text variant="secondary">{movie.year}</Text>
                     <Text>•</Text>
                     <Text variant="secondary">{movie.durationMinutes} min</Text>
-                    <Text>•</Text>
-                    <Text variant="secondary">PG-{movie.certificate.number}</Text>
+                    {movie.certificate?.number && (
+                        <>
+                            <Text>•</Text>
+                            <Text variant="secondary">PG-{movie.certificate.number}</Text>
+                        </>
+                    )}
                 </View>
                 <View style={styles.details}>
                     <Text style={styles.title}>{movie.title}</Text>

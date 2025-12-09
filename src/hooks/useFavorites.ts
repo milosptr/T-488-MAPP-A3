@@ -4,8 +4,8 @@ import { addFavorite, removeFavorite, toggleFavorite } from '../store/slices';
 
 export const useFavorites = () => {
     const dispatch = useAppDispatch();
-    const favoriteIds = useAppSelector((state) => state.favorites.movieIds);
-    const isHydrated = useAppSelector((state) => state.favorites.isHydrated);
+    const favoriteIds = useAppSelector(state => state.favorites.movieIds);
+    const isHydrated = useAppSelector(state => state.favorites.isHydrated);
 
     const isFavorite = useCallback(
         (movieId: string) => {

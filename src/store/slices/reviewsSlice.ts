@@ -37,14 +37,14 @@ const reviewsSlice = createSlice({
             AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
         },
         updateReview: (state, action: PayloadAction<Review>) => {
-            const index = state.reviews.findIndex((r) => r.id === action.payload.id);
+            const index = state.reviews.findIndex(r => r.id === action.payload.id);
             if (index > -1) {
                 state.reviews[index] = action.payload;
                 AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
             }
         },
         deleteReview: (state, action: PayloadAction<string>) => {
-            state.reviews = state.reviews.filter((r) => r.id !== action.payload);
+            state.reviews = state.reviews.filter(r => r.id !== action.payload);
             AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
         },
         setReviews: (state, action: PayloadAction<Review[]>) => {
@@ -76,14 +76,11 @@ export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[
 
 // Selectors
 export const selectReviewsByMovieId = (state: { reviews: ReviewsState }, movieId: string) => {
-    return state.reviews.reviews.filter((r) => r.movieId === movieId);
+    return state.reviews.reviews.filter(r => r.movieId === movieId);
 };
 
-export const selectAverageRatingByMovieId = (
-    state: { reviews: ReviewsState },
-    movieId: string
-) => {
-    const movieReviews = state.reviews.reviews.filter((r) => r.movieId === movieId);
+export const selectAverageRatingByMovieId = (state: { reviews: ReviewsState }, movieId: string) => {
+    const movieReviews = state.reviews.reviews.filter(r => r.movieId === movieId);
     if (movieReviews.length === 0) return 0;
     const sum = movieReviews.reduce((acc, r) => acc + r.rating, 0);
     return sum / movieReviews.length;

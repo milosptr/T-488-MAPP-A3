@@ -27,7 +27,7 @@ const favoritesSlice = createSlice({
         },
         removeFavorite: (state, action: PayloadAction<string>) => {
             const movieId = action.payload;
-            state.movieIds = state.movieIds.filter((id) => id !== movieId);
+            state.movieIds = state.movieIds.filter(id => id !== movieId);
             // Persist to AsyncStorage
             AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
