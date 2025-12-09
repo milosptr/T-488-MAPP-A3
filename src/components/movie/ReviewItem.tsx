@@ -29,7 +29,7 @@ export const ReviewItem = ({ review }: Props) => {
                 </View>
                 <StarRating rating={review.rating} size="sm" />
             </View>
-            {review.text && <Text style={styles.reviewText}>{review.text}</Text>}
+            {!!review.text && <Text style={styles.reviewText}>{review.text}</Text>}
         </View>
     );
 };
