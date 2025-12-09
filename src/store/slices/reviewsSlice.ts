@@ -1,12 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const REVIEWS_STORAGE_KEY = '@reviews';
 
 export type Review = {
     id: string;
     movieId: string;
-    rating: number; // 1-5 stars
+    rating: number;
     text: string;
     createdAt: string;
     userName?: string;
@@ -33,7 +33,6 @@ const reviewsSlice = createSlice({
                 createdAt: new Date().toISOString(),
             };
             state.reviews.unshift(newReview);
-            // Persist to AsyncStorage
             AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
         },
         updateReview: (state, action: PayloadAction<Review>) => {
@@ -58,7 +57,6 @@ export const { addReview, updateReview, deleteReview, setReviews } = reviewsSlic
 
 export const reviewsReducer = reviewsSlice.reducer;
 
-// Thunk to load reviews from AsyncStorage
 export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[]>) => void) => {
     try {
         const stored = await AsyncStorage.getItem(REVIEWS_STORAGE_KEY);
@@ -74,7 +72,6 @@ export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[
     }
 };
 
-// Selectors
 export const selectReviewsByMovieId = (state: { reviews: ReviewsState }, movieId: string) => {
     return state.reviews.reviews.filter(r => r.movieId === movieId);
 };

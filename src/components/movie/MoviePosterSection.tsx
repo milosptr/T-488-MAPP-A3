@@ -71,7 +71,7 @@ export const MoviePosterSection = ({
                         <Ionicons
                             name={isFav ? 'heart' : 'heart-outline'}
                             size={24}
-                            color={isFav ? '#FF6B6B' : colors.text}
+                            color={isFav ? colors.secondary : colors.text}
                         />
                     }
                     onPress={onFavoritePress}

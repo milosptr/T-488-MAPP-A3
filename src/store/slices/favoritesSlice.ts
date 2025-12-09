@@ -21,14 +21,12 @@ const favoritesSlice = createSlice({
             const movieId = action.payload;
             if (!state.movieIds.includes(movieId)) {
                 state.movieIds.push(movieId);
-                // Persist to AsyncStorage
                 AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
             }
         },
         removeFavorite: (state, action: PayloadAction<string>) => {
             const movieId = action.payload;
             state.movieIds = state.movieIds.filter(id => id !== movieId);
-            // Persist to AsyncStorage
             AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
         toggleFavorite: (state, action: PayloadAction<string>) => {
@@ -39,7 +37,6 @@ const favoritesSlice = createSlice({
             } else {
                 state.movieIds.push(movieId);
             }
-            // Persist to AsyncStorage
             AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
         setFavorites: (state, action: PayloadAction<string[]>) => {
@@ -70,7 +67,6 @@ export const {
 
 export const favoritesReducer = favoritesSlice.reducer;
 
-// Thunk to load favorites from AsyncStorage
 export const loadFavorites = () => async (dispatch: (action: PayloadAction<string[]>) => void) => {
     try {
         const stored = await AsyncStorage.getItem(FAVORITES_STORAGE_KEY);

@@ -1,15 +1,15 @@
-import { useFavorites } from '@/src/hooks';
+import { useFavorites, useTheme } from '@/src/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { LiquidButton } from '../ui';
 
 type Props = {
     movieId: string;
-    size?: number;
-    color?: string;
 };
 
-export const FavoriteButton = ({ movieId, size = 24, color = '#fff' }: Props) => {
+export const FavoriteButton = ({ movieId }: Props) => {
+    const { colors } = useTheme();
     const { isFavorite, toggleFavoriteStatus } = useFavorites();
     const favorite = isFavorite(movieId);
 
@@ -18,28 +18,26 @@ export const FavoriteButton = ({ movieId, size = 24, color = '#fff' }: Props) =>
     };
 
     return (
-        <Pressable
+        <LiquidButton
+            style={styles.iconButton}
+            glassEffectStyle="regular"
+            leadingIcon={
+                <Ionicons
+                    name={favorite ? 'heart' : 'heart-outline'}
+                    size={24}
+                    color={favorite ? colors.secondary : colors.text}
+                />
+            }
             onPress={handlePress}
-            style={({ pressed }) => [styles.button, pressed && styles.pressed]}
-            hitSlop={8}
-        >
-            <Ionicons
-                name={favorite ? 'heart' : 'heart-outline'}
-                size={size}
-                color={favorite ? '#FF6B6B' : color}
-            />
-        </Pressable>
+        />
     );
 };
 
 const styles = StyleSheet.create({
-    button: {
-        padding: 8,
-        borderRadius: 20,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    pressed: {
-        opacity: 0.7,
-        transform: [{ scale: 0.95 }],
+    iconButton: {
+        borderRadius: 48,
+        width: 48,
+        paddingHorizontal: 0,
+        height: 48,
     },
 });
