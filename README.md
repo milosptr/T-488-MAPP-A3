@@ -40,6 +40,15 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
     - Age Certificate (PG rating)
 - Skeleton loading states for smooth UX
 - Bottom sheet modals for filter selection
+- **Favourites**: Save movies to your favorites list with AsyncStorage persistence
+    - Add/remove movies from any screen via heart button
+    - Drag-to-reorder favorites list
+    - Prioritized list persists across app restarts
+- **Reviews & Ratings** (Extra Feature - Social):
+    - Write text reviews for movies
+    - Rate movies on a 1-5 star scale
+    - View all reviews on movie detail screen with average rating
+    - Reviews stored locally with AsyncStorage
 
 ## Screenshots
 
@@ -68,8 +77,9 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 ### State Management & Data Fetching
 
 - **TanStack React Query v5** - Server state management, caching, and synchronization
-- **Redux Toolkit** - Client state management (filters, search)
+- **Redux Toolkit** - Client state management (filters, favorites, reviews)
 - **React Redux** - React bindings for Redux
+- **AsyncStorage** - Local persistence for favorites and reviews
 
 ### UI Components
 
@@ -79,6 +89,7 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - **React Native Reanimated** - Animations
 - **@gorhom/bottom-sheet** - Modal bottom sheets for filters
 - **Moti** - Skeleton loading animations
+- **react-native-draggable-flatlist** - Drag-to-reorder lists
 
 ### Developer Tools
 
@@ -124,7 +135,9 @@ src/
 │   ├── store.ts            # Store configuration
 │   ├── hooks.ts            # Typed useSelector/useDispatch
 │   └── slices/             # Redux slices
-│       └── filtersSlice.ts # Filter state management
+│       ├── filtersSlice.ts  # Filter state management
+│       ├── favoritesSlice.ts # Favorites with AsyncStorage
+│       └── reviewsSlice.ts  # Reviews with AsyncStorage
 ├── hooks/                   # Custom React hooks
 │   ├── api/                # Data fetching hooks
 │   │   ├── useAuth.ts     # Authentication
@@ -135,10 +148,11 @@ src/
 │   │   ├── useGenres.ts   # Genre lookup
 │   │   └── useSearch.ts   # Search functionality
 │   ├── useTheme.tsx       # Theme hook
-│   └── useFilteredMovies.ts # Movie filtering logic
+│   ├── useFilteredMovies.ts # Movie filtering logic
+│   └── useFavorites.ts    # Favorites hook
 ├── screens/                 # Screen components
 ├── components/              # Reusable UI components
-│   ├── ui/                 # Base UI (Button, Text, Skeleton, FilterChip)
+│   ├── ui/                 # Base UI (Button, Text, Skeleton, StarRating, FilterChip)
 │   ├── layout/             # Layout components
 │   ├── movie/              # Movie-related components
 │   ├── filters/            # Filter modal components
@@ -255,16 +269,18 @@ npm run format:check  # Check formatting
 ## Future Improvements
 
 - [ ] Complete cinema detail screen with movie listings
-- [ ] Implement movie detail screen with full information
+- [x] ~~Implement movie detail screen with full information~~ (Implemented)
 - [ ] Add trailer playback functionality
-- [ ] Implement favorites with AsyncStorage persistence
+- [x] ~~Implement favorites with AsyncStorage persistence~~ (Implemented: add/remove, reorder, persist)
 - [x] ~~Add filtering by genre, rating, and showtime~~ (Implemented: cinema, rating, showtime, actors, directors, certificate)
 - [x] ~~Implement search functionality~~ (Implemented: animated search bar with title filtering)
+- [x] ~~Add movie reviews and ratings~~ (Implemented: 1-5 star ratings, text reviews, AsyncStorage)
 - [ ] Add pull-to-refresh on all lists
 - [ ] Implement offline caching
 - [ ] Add localization (Icelandic/English)
 - [ ] Persist filter state with AsyncStorage
 - [ ] Add unit tests for filter logic
+- [ ] Implement share functionality for movies
 
 ## Author
 
