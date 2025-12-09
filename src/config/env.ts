@@ -12,12 +12,16 @@ const getEnvVar = (key: string): string => {
     return value;
 };
 
+const getOptionalEnvVar = (key: string): string | undefined => {
+    return process.env[key] || undefined;
+};
+
 export const env = {
     kvikmyndir: {
         baseUrl: getEnvVar('EXPO_PUBLIC_KVIKMYNDIR_API_BASE_URL'),
         username: getEnvVar('EXPO_PUBLIC_KVIKMYNDIR_API_AUTH_USERNAME'),
         password: getEnvVar('EXPO_PUBLIC_KVIKMYNDIR_API_AUTH_PASSWORD'),
-        tmdbKey: getEnvVar('EXPO_PUBLIC_TMDB_API_KEY'),
+        tmdbKey: getOptionalEnvVar('EXPO_PUBLIC_TMDB_API_KEY'),
     },
 } as const;
 

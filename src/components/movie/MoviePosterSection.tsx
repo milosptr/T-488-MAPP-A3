@@ -1,6 +1,6 @@
 import { LiquidButton } from '@/src/components/ui';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
-import { useTheme } from '@/src/hooks';
+import { useFavorites, useTheme } from '@/src/hooks';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image, StyleSheet, View } from 'react-native';
@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 type Props = {
     posterUri: string;
     trailerKey: string | null;
+    movieId?: string;
     onBack: () => void;
     onTrailerPress: () => void;
     onSharePress?: () => void;
@@ -18,6 +19,7 @@ type Props = {
 export const MoviePosterSection = ({
     posterUri,
     trailerKey,
+    movieId,
     onBack,
     onTrailerPress,
     onSharePress,
@@ -25,6 +27,8 @@ export const MoviePosterSection = ({
 }: Props) => {
     const { colors } = useTheme();
     const insets = useSafeAreaInsets();
+    const { isFavorite } = useFavorites();
+    const isFav = movieId ? isFavorite(movieId) : false;
 
     return (
         <View style={styles.container}>
@@ -63,7 +67,13 @@ export const MoviePosterSection = ({
                 />
                 <LiquidButton
                     style={styles.iconButton}
-                    leadingIcon={<Ionicons name="heart-outline" size={24} color={colors.text} />}
+                    leadingIcon={
+                        <Ionicons
+                            name={isFav ? 'heart' : 'heart-outline'}
+                            size={24}
+                            color={isFav ? '#FF6B6B' : colors.text}
+                        />
+                    }
                     onPress={onFavoritePress}
                 />
             </View>

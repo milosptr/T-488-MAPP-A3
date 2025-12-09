@@ -6,6 +6,7 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { ImdbIcon } from '../icons';
 import { Skeleton, Text } from '../ui';
+import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
     movie: Movie;
@@ -23,6 +24,9 @@ export const MovieCard = ({ movie }: Props) => {
                     resizeMode="contain"
                     style={styles.poster}
                 />
+                <View style={styles.favoriteButton}>
+                    <FavoriteButton movieId={movie._id} />
+                </View>
                 <LinearGradient
                     colors={['transparent', colors.surface]}
                     style={styles.gradient}
@@ -96,5 +100,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: spacing.sm,
         opacity: 0.8,
+    },
+    favoriteButton: {
+        position: 'absolute',
+        top: spacing.sm,
+        right: spacing.sm,
+        zIndex: 1,
     },
 });
