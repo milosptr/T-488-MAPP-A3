@@ -62,7 +62,7 @@ export const { addFavorite, removeFavorite, toggleFavorite, setFavorites, reorde
 export const favoritesReducer = favoritesSlice.reducer;
 
 // Thunk to load favorites from AsyncStorage
-export const loadFavorites = () => async (dispatch: any) => {
+export const loadFavorites = () => async (dispatch: (action: PayloadAction<string[]>) => void) => {
     try {
         const stored = await AsyncStorage.getItem(FAVORITES_STORAGE_KEY);
         if (stored) {

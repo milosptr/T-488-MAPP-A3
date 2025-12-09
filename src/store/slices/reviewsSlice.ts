@@ -59,7 +59,7 @@ export const { addReview, updateReview, deleteReview, setReviews } = reviewsSlic
 export const reviewsReducer = reviewsSlice.reducer;
 
 // Thunk to load reviews from AsyncStorage
-export const loadReviews = () => async (dispatch: any) => {
+export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[]>) => void) => {
     try {
         const stored = await AsyncStorage.getItem(REVIEWS_STORAGE_KEY);
         if (stored) {
