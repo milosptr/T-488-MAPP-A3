@@ -13,8 +13,10 @@ const palette = {
 
     // Neutrals (cool-tinted to harmonize with teal)
     white: '#f2f2f2',
+    dirtyWhite: '#d5d5d5',
     gray: '#7a7f82',
     black: '#1e2022',
+    dirtyBlack: '#141820',
 
     // Dark theme backgrounds
     backgroundDark: '#141820',
@@ -48,6 +50,7 @@ export const Colors = {
         background: palette.white,
         card: '#ffffff',
         text: palette.black,
+        textSecondary: palette.dirtyBlack,
         border: palette.neutral200,
         notification: palette.error,
 
@@ -93,6 +96,7 @@ export const Colors = {
         background: palette.backgroundDark,
         card: palette.surfaceDark,
         text: palette.white,
+        textSecondary: palette.dirtyWhite,
         border: '#2a3040',
         notification: palette.errorLight,
 

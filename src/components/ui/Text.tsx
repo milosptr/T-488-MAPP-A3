@@ -19,13 +19,13 @@ export const Text = ({
             case 'primary':
                 return { color: colors.primary };
             case 'secondary':
-                return { color: colors.secondary };
+                return { color: colors.textSecondary };
             case 'danger':
                 return { color: colors.error };
             default:
                 return { color: colors.text };
         }
-    }, [variant, colors.primary, colors.secondary, colors.error, colors.text]);
+    }, [variant, colors.primary, colors.textSecondary, colors.error, colors.text]);
 
     return (
         <RNText style={[{ fontSize: fontSize.base }, variantStyles, style]} {...props}>

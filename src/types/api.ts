@@ -89,7 +89,7 @@ export type Movie = {
     certificate: Certificate;
     trailers?: Trailer[];
     showtimes: Showtime[];
-    omdb?: OmdbData;
+    omdb?: OmdbData[];
 };
 
 export type UpcomingMovie = Omit<Movie, 'showtimes' | 'certificate'> & {
