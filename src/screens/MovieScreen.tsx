@@ -9,7 +9,7 @@ import {
 import { TrailerModal } from '@/src/components/trailer';
 import { Text } from '@/src/components/ui';
 import { fontSize, spacing } from '@/src/constants/DesignTokens';
-import { useFavorites, useMovie } from '@/src/hooks';
+import { useFavorites, useMovie, useShare } from '@/src/hooks';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -21,6 +21,7 @@ export const MovieScreen = () => {
     const { data: movie, isLoading } = useMovie(id as string);
     const insets = useSafeAreaInsets();
     const { toggleFavoriteStatus } = useFavorites();
+    const { shareMovie } = useShare();
 
     const trailerRef = useRef<BottomSheetModal>(null);
     const trailerKey = useMemo(() => {
@@ -83,6 +84,7 @@ export const MovieScreen = () => {
                 onBack={() => router.back()}
                 onTrailerPress={() => trailerRef.current?.present()}
                 onFavoritePress={() => toggleFavoriteStatus(movie._id)}
+                onSharePress={() => shareMovie(movie)}
             />
             <View style={styles.content}>
                 <View style={styles.infoDetails}>

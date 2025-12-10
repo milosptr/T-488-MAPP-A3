@@ -52,6 +52,10 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
     - Rate movies on a 1-5 star scale
     - View all reviews on movie detail screen with average rating
     - Reviews stored locally with AsyncStorage
+- **Share Movies**: Share movie details with deep linking support
+    - Native share dialog on iOS and Android
+    - Deep links (drcinema://movies/{id}) open directly in app
+    - Share from movie detail screen or context menu
 
 ## Screenshots
 
@@ -152,7 +156,8 @@ src/
 │   │   └── useSearch.ts   # Search functionality
 │   ├── useTheme.tsx       # Theme hook
 │   ├── useFilteredMovies.ts # Movie filtering logic
-│   └── useFavorites.ts    # Favorites hook
+│   ├── useFavorites.ts    # Favorites hook
+│   └── useShare.ts        # Share with deep linking
 ├── screens/                 # Screen components
 ├── components/              # Reusable UI components
 │   ├── ui/                 # Base UI (Button, Text, Skeleton, StarRating, FilterChip)
@@ -283,7 +288,7 @@ npm run format:check  # Check formatting
 - [ ] Add localization (Icelandic/English)
 - [ ] Persist filter state with AsyncStorage
 - [ ] Add unit tests for filter logic
-- [ ] Implement share functionality for movies
+- [x] ~~Implement share functionality for movies~~ (Implemented: deep linking support with drcinema:// scheme)
 
 ## Author
 
