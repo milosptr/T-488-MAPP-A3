@@ -1,6 +1,7 @@
 import { apiClient, queryKeys, STALE_TIMES } from '@/src/api';
 import type { Movie, MoviesQueryParams, Showtime } from '@/src/types';
 import { useQuery } from '@tanstack/react-query';
+import { useCallback } from 'react';
 
 /**
  * Fetch all movies with optional filters
@@ -28,6 +29,18 @@ export const useMovies = (params?: MoviesQueryParams) => {
     });
 };
 
+const movieQueryOptions = (id: string | undefined) => ({
+    queryKey: queryKeys.movies.detail(id ?? ''),
+    queryFn: async () => {
+        const movies = await apiClient<Movie[]>('/movies', {
+            params: { mongoid: id },
+        });
+        return movies[0] ?? null;
+    },
+    enabled: !!id,
+    staleTime: STALE_TIMES.movies,
+});
+
 /**
  * Fetch a single movie by its MongoDB ID
  *
@@ -35,37 +48,27 @@ export const useMovies = (params?: MoviesQueryParams) => {
  * const { data: movie } = useMovie('507f1f77bcf86cd799439011');
  */
 export const useMovie = (id: string | undefined) => {
-    return useQuery({
-        queryKey: queryKeys.movies.detail(id ?? ''),
-        queryFn: async () => {
-            const movies = await apiClient<Movie[]>('/movies', {
-                params: { mongoid: id },
-            });
-            return movies[0] ?? null;
-        },
-        enabled: !!id,
-        staleTime: STALE_TIMES.movies,
-    });
+    return useQuery(movieQueryOptions(id));
 };
 
 /**
- * Fetch movies filtered by cinema ID
- * Filters movies that have showtimes at the specified cinema
+ * Get showtimes for a movie at a specific cinema
+ * Uses the same cache as useMovie, with select for derived data
  *
  * @example
- * const { data: cinemaMovies } = useMoviesByCinema(1);
+ * const { data: showtimes, isLoading } = useMovieShowtimes('507f1f77bcf86cd799439011', 1);
  */
-export const useMoviesByCinema = (cinemaId: number | undefined) => {
+export const useMovieShowtimes = (movieId: string | undefined, cinemaId: string | undefined) => {
+    const selectShowtimes = useCallback(
+        (movie: Movie | null) =>
+            movie?.showtimes.filter((st: Showtime) => String(st.cinema.id) === String(cinemaId)),
+        [cinemaId]
+    );
+
     return useQuery({
-        queryKey: queryKeys.movies.byCinema(cinemaId ?? 0),
-        queryFn: async () => {
-            const movies = await apiClient<Movie[]>('/movies');
-            return movies.filter(movie =>
-                movie.showtimes.some((st: Showtime) => st.cinema.id === cinemaId)
-            );
-        },
-        enabled: !!cinemaId,
-        staleTime: STALE_TIMES.movies,
+        ...movieQueryOptions(movieId),
+        enabled: !!movieId && !!cinemaId,
+        select: selectShowtimes,
     });
 };
 

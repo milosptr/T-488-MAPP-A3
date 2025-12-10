@@ -14,10 +14,11 @@ import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CinemaShowtimes } from '../components/cinema/CinemaShowtimes';
 
 export const MovieScreen = () => {
     const router = useRouter();
-    const { id } = useLocalSearchParams();
+    const { id, cinemaId } = useLocalSearchParams<{ id: string; cinemaId: string }>();
     const { data: movie, isLoading } = useMovie(id as string);
     const insets = useSafeAreaInsets();
     const { toggleFavoriteStatus } = useFavorites();
@@ -121,6 +122,7 @@ export const MovieScreen = () => {
                             <Text variant="secondary">{omdbCountry}</Text>
                         </View>
                     )}
+                    <CinemaShowtimes cinemaId={cinemaId} movieId={movie._id} />
                     <MovieReviewsSection movieId={movie._id} title={movie.title} />
                 </View>
             </View>
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
         gap: spacing.md,
     },
     title: {
-        fontSize: fontSize.xl,
+        fontSize: fontSize.xxl,
         fontWeight: 'bold',
     },
     ratingContainer: {

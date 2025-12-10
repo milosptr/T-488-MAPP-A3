@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const REVIEWS_STORAGE_KEY = '@reviews';
 
@@ -72,13 +72,16 @@ export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[
     }
 };
 
-export const selectReviewsByMovieId = (state: { reviews: ReviewsState }, movieId: string) => {
-    return state.reviews.reviews.filter(r => r.movieId === movieId);
-};
+const selectReviews = (state: { reviews: ReviewsState }) => state.reviews.reviews;
+const selectMovieId = (_state: { reviews: ReviewsState }, movieId: string) => movieId;
 
-export const selectAverageRatingByMovieId = (state: { reviews: ReviewsState }, movieId: string) => {
-    const movieReviews = state.reviews.reviews.filter(r => r.movieId === movieId);
-    if (movieReviews.length === 0) return 0;
-    const sum = movieReviews.reduce((acc, r) => acc + r.rating, 0);
-    return sum / movieReviews.length;
-};
+export const selectReviewsByMovieId = createSelector(
+    [selectReviews, selectMovieId],
+    (reviews, movieId) => reviews.filter(r => r.movieId === movieId)
+);
+
+export const selectAverageRatingByMovieId = createSelector([selectReviewsByMovieId], reviews => {
+    if (reviews.length === 0) return 0;
+    const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+    return sum / reviews.length;
+});

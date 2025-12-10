@@ -13,8 +13,6 @@ type Props = {
 
 const ITEM_WIDTH = MOVIE_LIST_ITEM_WIDTH + spacing.md;
 
-const renderItem = ({ item }: ListRenderItemInfo<Movie>) => <MovieListItem movie={item} />;
-
 const keyExtractor = (item: Movie) => item._id;
 
 const Separator = () => <View style={styles.separator} />;
@@ -27,6 +25,10 @@ const getItemLayout = (_: unknown, index: number) => ({
 
 export const CinemaSection = ({ cinema, movies }: Props) => {
     const { colors } = useTheme();
+    const renderItem = ({ item }: ListRenderItemInfo<Movie>) => (
+        <MovieListItem movie={item} cinemaId={cinema.id} />
+    );
+
     return (
         <View style={styles.container}>
             <Text

@@ -8,16 +8,18 @@ import { MovieCard } from './MovieCard';
 
 type Props = {
     movie: Movie;
+    cinemaId?: number;
 };
 
-export const MovieListItem = ({ movie }: Props) => {
+export const MovieListItem = ({ movie, cinemaId }: Props) => {
     const router = useRouter();
     const { toggleFavoriteStatus, isFavorite } = useFavorites();
     const { shareMovie } = useShare();
+    const cinemaPath = cinemaId ? `?cinemaId=${cinemaId}` : '';
 
     if (Platform.OS === 'android') {
         return (
-            <Link href={`/movies/${movie._id}`}>
+            <Link href={`/movies/${movie._id}${cinemaPath}`}>
                 <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} showGenres />
             </Link>
         );
@@ -26,7 +28,7 @@ export const MovieListItem = ({ movie }: Props) => {
     const isMovieFavorite = isFavorite(movie._id);
 
     return (
-        <Link href={`/movies/${movie._id}`}>
+        <Link href={`/movies/${movie._id}${cinemaPath}`}>
             <Link.Trigger>
                 <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} showGenres />
             </Link.Trigger>
