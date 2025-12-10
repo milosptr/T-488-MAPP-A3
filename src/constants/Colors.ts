@@ -17,6 +17,7 @@ const palette = {
     gray: '#7a7f82',
     black: '#1e2022',
     dirtyBlack: '#141820',
+    trueBlack: '#111111',
 
     // Dark theme backgrounds
     backgroundDark: '#141820',
@@ -89,6 +90,7 @@ export const Colors = {
         inverseSurface: palette.black,
         inverseOnSurface: palette.white,
         inversePrimary: palette.primaryLight,
+        trueBlack: palette.trueBlack,
     },
     dark: {
         // React Navigation required
@@ -135,6 +137,7 @@ export const Colors = {
         inverseSurface: palette.white,
         inverseOnSurface: palette.black,
         inversePrimary: palette.primary,
+        trueBlack: palette.trueBlack,
     },
 } as const;
 

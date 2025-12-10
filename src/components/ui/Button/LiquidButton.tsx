@@ -2,7 +2,7 @@ import { fontSize } from '@/src/constants/DesignTokens';
 import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
 import * as Haptics from 'expo-haptics';
 import { ReactNode, useCallback } from 'react';
-import { Platform, StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { Text } from '../Text';
 import { Button } from './Button';
 
@@ -12,7 +12,10 @@ type Props = {
     trailingIcon?: ReactNode;
     onPress?: () => void;
     style?: StyleProp<ViewStyle>;
+    textStyle?: StyleProp<TextStyle>;
     glassEffectStyle?: 'clear' | 'regular';
+    tintColor?: string;
+    isInteractive?: boolean;
 };
 
 export const LiquidButton = ({
@@ -21,7 +24,10 @@ export const LiquidButton = ({
     trailingIcon,
     onPress,
     style,
+    textStyle,
     glassEffectStyle = 'clear',
+    tintColor,
+    isInteractive = true,
 }: Props) => {
     const handlePress = useCallback(() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -40,13 +46,18 @@ export const LiquidButton = ({
     }
 
     return (
-        <TouchableOpacity activeOpacity={0.8} onPress={handlePress}>
-            <GlassView style={[styles.container, style]} glassEffectStyle={glassEffectStyle}>
+        <Pressable onPress={handlePress}>
+            <GlassView
+                style={[styles.container, style]}
+                glassEffectStyle={glassEffectStyle}
+                tintColor={tintColor}
+                isInteractive={isInteractive}
+            >
                 {leadingIcon}
-                {!!text && <Text style={styles.text}>{text}</Text>}
+                {!!text && <Text style={[styles.text, textStyle]}>{text}</Text>}
                 {trailingIcon}
             </GlassView>
-        </TouchableOpacity>
+        </Pressable>
     );
 };
 

@@ -18,7 +18,7 @@ export const MovieListItem = ({ movie }: Props) => {
     if (Platform.OS === 'android') {
         return (
             <Link href={`/movies/${movie._id}`}>
-                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} />
+                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} showGenres />
             </Link>
         );
     }
@@ -28,7 +28,7 @@ export const MovieListItem = ({ movie }: Props) => {
     return (
         <Link href={`/movies/${movie._id}`}>
             <Link.Trigger>
-                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} />
+                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} showGenres />
             </Link.Trigger>
             <Link.Preview>
                 <Image
