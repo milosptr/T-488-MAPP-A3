@@ -2,7 +2,7 @@ import { useTheme } from '@/src/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-type Size = 'sm' | 'md' | 'lg';
+type Size = 'xs' | 'sm' | 'md' | 'lg';
 
 type Props = {
     rating: number;
@@ -11,8 +11,8 @@ type Props = {
 };
 
 const STAR_COLOR = '#FFD700';
-const STAR_SIZES: Record<Size, number> = { sm: 16, md: 24, lg: 40 };
-const STAR_GAPS: Record<Size, number> = { sm: 2, md: 4, lg: 8 };
+const STAR_SIZES: Record<Size, number> = { xs: 12, sm: 16, md: 24, lg: 40 };
+const STAR_GAPS: Record<Size, number> = { xs: 1, sm: 2, md: 4, lg: 8 };
 
 export const StarRating = ({ rating, size = 'md', onRatingChange }: Props) => {
     const { colors } = useTheme();

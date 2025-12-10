@@ -88,6 +88,9 @@ export const HomeScreen = () => {
                 ListEmptyComponent={
                     <MovieListEmpty isLoading={isLoading} cardHeight={cardHeight} />
                 }
+                contentContainerStyle={{
+                    paddingBottom: spacing.xl,
+                }}
             />
         </SafeAreaScreen>
     );

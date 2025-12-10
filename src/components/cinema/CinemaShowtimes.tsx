@@ -1,6 +1,7 @@
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useMovieShowtimes, useTheme } from '@/src/hooks';
 import { Showtime, ShowtimeSchedule } from '@/src/types';
+import { ExternalPathString, Link } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../ui';
 
@@ -30,15 +31,16 @@ export const CinemaShowtimes = ({ cinemaId, movieId }: Props) => {
             <View style={styles.showtimesContainer}>
                 {showtimes?.map((showtime: Showtime) =>
                     showtime.schedule.map((s: ShowtimeSchedule) => (
-                        <View
+                        <Link
                             key={s.time}
+                            href={`${s.purchase_url as ExternalPathString}`}
                             style={[
                                 styles.showtimeItem,
                                 { borderColor: colors.border, backgroundColor: colors.surface },
                             ]}
                         >
                             <Text style={styles.showtimeText}>{s.time}</Text>
-                        </View>
+                        </Link>
                     ))
                 )}
             </View>
@@ -63,12 +65,13 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     showtimeItem: {
-        padding: spacing.sm,
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.md,
         borderRadius: borderRadius.sm,
         borderWidth: 1,
     },
     showtimeText: {
-        fontSize: fontSize.sm,
+        fontSize: fontSize.lg,
         fontWeight: 'bold',
     },
     subtitle: {

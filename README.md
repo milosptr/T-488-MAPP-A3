@@ -22,17 +22,13 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 
 ## Features
 
+### Home Screen
+
 - Browse movies currently playing in Icelandic cinemas
-- View movie details including title, year, duration, and IMDB ratings
+- Movies grouped by cinema (Netflix-style horizontal scroll)
 - High-quality movie backdrops from TMDB (16:9 aspect ratio)
-- Dark and light theme support
-- Tab-based navigation (Home, Cinemas, Upcoming, Favourites)
-- Automatic authentication with the kvikmyndir.is API
-- Haptic feedback on button interactions
-- Optimized list rendering with Legend List
 - **Search**: Animated search bar with real-time title filtering
 - **Advanced Filtering**: Filter movies by:
-    - Cinema (multi-select)
     - IMDB Rating (preset thresholds)
     - Showtime (morning, afternoon, evening, night)
     - Actors (multi-select)
@@ -40,22 +36,52 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
     - Age Certificate (PG rating)
 - Skeleton loading states for smooth UX
 - Bottom sheet modals for filter selection
-- **Upcoming Movies**: Browse upcoming releases sorted by release date
-    - Watch trailers directly in the app (for movies that have trailers)
-    - View release dates and movie posters
-- **Favourites**: Save movies to your favorites list with AsyncStorage persistence
-    - Add/remove movies from any screen via heart button
-    - Drag-to-reorder favorites list
-    - Prioritized list persists across app restarts
-- **Reviews & Ratings** (Extra Feature - Social):
-    - Write text reviews for movies
-    - Rate movies on a 1-5 star scale
-    - View all reviews on movie detail screen with average rating
-    - Reviews stored locally with AsyncStorage
-- **Share Movies**: Share movie details with deep linking support
-    - Native share dialog on iOS and Android
-    - Deep links (drcinema://movies/{id}) open directly in app
-    - Share from movie detail screen or context menu
+- Pull-to-refresh
+
+### Movie Detail Screen
+
+- Full movie information: name, poster, plot, duration, year, PG rating
+- Directors, writers, actors, country of origin
+- IMDB and Rotten Tomatoes ratings with icons
+- Genre tags
+- **Cinema Showtimes**: View showtimes for the selected cinema with purchase links
+- **Trailer Playback**: Watch trailers in-app via YouTube player
+- **Reviews Modal**: Full-screen modal with all reviews and average rating
+- Add to favorites, share movie
+
+### Upcoming Movies Screen
+
+- Browse upcoming releases sorted by release date (ascending)
+- Movie thumbnail, name, and release date
+- Watch trailers directly in the app (for movies that have trailers)
+
+### Favourites Screen
+
+- Save movies to your favorites list with AsyncStorage persistence
+- Add/remove movies from any screen via heart button
+- **Drag-to-reorder**: Long press to reorder favorites list
+- Prioritized list persists across app restarts
+
+### Reviews & Ratings (Extra Feature - Option 1: Social)
+
+- Write text reviews for movies
+- Rate movies on a 1-5 star scale
+- View all reviews in dedicated modal screen with average rating
+- Reviews stored locally with AsyncStorage
+
+### Share Movies (Extra Feature - Option 1: Social)
+
+- Native share dialog on iOS and Android
+- Deep links (`drcinema://movies/{id}`) open directly in app
+- Share from movie detail screen
+
+### General
+
+- Dark and light theme support
+- Tab-based navigation (Home, Cinemas, Upcoming, Favourites)
+- Automatic authentication with the kvikmyndir.is API
+- Haptic feedback on button interactions
+- Optimized list rendering with Legend List
 
 ## Screenshots
 
@@ -270,25 +296,18 @@ npm run format:check  # Check formatting
 
 ## Known Issues
 
-- Button component has TypeScript errors related to theme types (pre-existing, does not affect functionality)
 - Some movies may not have TMDB images available
 - Authentication token is stored in memory only (cleared on app restart)
+- Cinemas screen is a placeholder only
 
 ## Future Improvements
 
-- [ ] Complete cinema detail screen with movie listings
-- [x] ~~Implement movie detail screen with full information~~ (Implemented)
-- [x] ~~Add trailer playback functionality~~ (Implemented: watch trailers for upcoming movies)
-- [x] ~~Implement favorites with AsyncStorage persistence~~ (Implemented: add/remove, reorder, persist)
-- [x] ~~Add filtering by genre, rating, and showtime~~ (Implemented: cinema, rating, showtime, actors, directors, certificate)
-- [x] ~~Implement search functionality~~ (Implemented: animated search bar with title filtering)
-- [x] ~~Add movie reviews and ratings~~ (Implemented: 1-5 star ratings, text reviews, AsyncStorage)
-- [x] ~~Add pull-to-refresh on all lists~~ (Implemented: Home and Upcoming screens)
+- [ ] Implement Cinemas screen with list of all cinemas
+- [ ] Implement Cinema detail screen with movies and showtimes
+- [ ] Add share favourites list functionality
 - [ ] Implement offline caching
 - [ ] Add localization (Icelandic/English)
 - [ ] Persist filter state with AsyncStorage
-- [ ] Add unit tests for filter logic
-- [x] ~~Implement share functionality for movies~~ (Implemented: deep linking support with drcinema:// scheme)
 
 ## Author
 

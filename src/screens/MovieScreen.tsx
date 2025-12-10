@@ -3,7 +3,7 @@ import { ImdbIcon, RottenTomatoesIcon } from '@/src/components/icons';
 import {
     MovieDetailsList,
     MoviePosterSection,
-    MovieReviewsSection,
+    ReviewsSummaryCard,
     SkeletonMovie,
 } from '@/src/components/movie';
 import { TrailerModal } from '@/src/components/trailer';
@@ -123,7 +123,7 @@ export const MovieScreen = () => {
                         </View>
                     )}
                     <CinemaShowtimes cinemaId={cinemaId} movieId={movie._id} />
-                    <MovieReviewsSection movieId={movie._id} title={movie.title} />
+                    <ReviewsSummaryCard movieId={movie._id} movieTitle={movie.title} />
                 </View>
             </View>
             <TrailerModal ref={trailerRef} videoKey={trailerKey} />

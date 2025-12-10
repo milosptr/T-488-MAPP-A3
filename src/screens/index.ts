@@ -4,4 +4,5 @@ export * from './HomeScreen';
 export * from './MovieScreen';
 export * from './NotAuthenticatedScreen';
 export * from './NotFoundScreen';
+export * from './ReviewsScreen';
 export * from './UpcomingScreen';
