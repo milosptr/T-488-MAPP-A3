@@ -1,4 +1,5 @@
 import { BottomSheetModal } from '@/src/components/bottom-sheet';
+import { CinemaShowtimes } from '@/src/components/cinema';
 import { ImdbIcon, RottenTomatoesIcon } from '@/src/components/icons';
 import {
     MovieDetailsList,
@@ -9,17 +10,18 @@ import {
 import { TrailerModal } from '@/src/components/trailer';
 import { Text } from '@/src/components/ui';
 import { fontSize, spacing } from '@/src/constants/DesignTokens';
-import { useFavorites, useMovie, useShare } from '@/src/hooks';
+import { useFavorites, useMovie, useMovieShowtimes, useShare, useTheme } from '@/src/hooks';
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { CinemaShowtimes } from '../components/cinema/CinemaShowtimes';
 
 export const MovieScreen = () => {
     const router = useRouter();
+    const { colors } = useTheme();
     const { id, cinemaId } = useLocalSearchParams<{ id: string; cinemaId: string }>();
     const { data: movie, isLoading } = useMovie(id as string);
+    const { data: showtimes, isLoading: isLoadingShowtimes } = useMovieShowtimes(id, cinemaId);
     const insets = useSafeAreaInsets();
     const { toggleFavoriteStatus } = useFavorites();
     const { shareMovie } = useShare();
@@ -72,6 +74,7 @@ export const MovieScreen = () => {
         })) ?? [];
 
     const omdbCountry = movie.omdb?.[0]?.Country;
+    const cinemaName = showtimes?.[0]?.cinema.name;
 
     return (
         <ScrollView
@@ -122,7 +125,17 @@ export const MovieScreen = () => {
                             <Text variant="secondary">{omdbCountry}</Text>
                         </View>
                     )}
-                    <CinemaShowtimes cinemaId={cinemaId} movieId={movie._id} />
+                    {cinemaId && (
+                        <View style={[styles.showtimesSection, { borderColor: colors.border }]}>
+                            <Text style={styles.sectionTitle}>Cinema Showtimes</Text>
+                            {cinemaName && (
+                                <Text variant="secondary" style={styles.cinemaName}>
+                                    {cinemaName}
+                                </Text>
+                            )}
+                            <CinemaShowtimes showtimes={showtimes} isLoading={isLoadingShowtimes} />
+                        </View>
+                    )}
                     <ReviewsSummaryCard movieId={movie._id} movieTitle={movie.title} />
                 </View>
             </View>
@@ -166,6 +179,19 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     label: {
+        fontWeight: 'bold',
+    },
+    showtimesSection: {
+        gap: spacing.md,
+        borderTopWidth: 1,
+        marginTop: spacing.xl,
+        paddingTop: spacing.xl,
+    },
+    sectionTitle: {
+        fontSize: fontSize.xl,
+        fontWeight: 'bold',
+    },
+    cinemaName: {
         fontWeight: 'bold',
     },
 });

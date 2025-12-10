@@ -3,7 +3,7 @@ import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View, ViewStyle } from 'react-native';
 import { ImdbIcon } from '../icons';
 import { LiquidButton, Skeleton, Text } from '../ui';
 import { FavoriteButton } from './FavoriteButton';
@@ -12,7 +12,7 @@ type Props = {
     movie: Movie;
     showFavoriteButton?: boolean;
     showGenres?: boolean;
-    width?: number;
+    width?: ViewStyle['width'];
 };
 
 export const MovieCard = ({

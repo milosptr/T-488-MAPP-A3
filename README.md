@@ -38,6 +38,29 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - Bottom sheet modals for filter selection
 - Pull-to-refresh
 
+### Cinemas Screen
+
+- Alphabetically ordered list of all Icelandic cinemas
+- Display cinema name and website
+- Clickable cinema cards navigate to cinema detail screen
+- Pull-to-refresh
+- Skeleton loading states
+
+### Cinema Detail Screen
+
+- Complete cinema information:
+    - Name
+    - Description
+    - Full address (street and city)
+    - Clickable phone number (opens dialer)
+    - Clickable website (opens browser)
+- Movies currently playing at the cinema with:
+    - Movie thumbnail, name, release year, genres
+    - Showtimes with purchase links
+- Each movie clickable, navigates to movie detail screen
+- Pull-to-refresh
+- Skeleton loading states
+
 ### Movie Detail Screen
 
 - Full movie information: name, poster, plot, duration, year, PG rating
@@ -156,6 +179,12 @@ app/                          # Expo Router file-based routes
 │   ├── cinemas.tsx         # Cinemas list
 │   ├── upcoming.tsx        # Upcoming movies
 │   └── favourites.tsx      # Saved favorites
+├── cinemas/
+│   └── [id].tsx            # Cinema detail screen
+├── movies/
+│   ├── [id].tsx            # Movie detail screen
+│   └── [id]/
+│       └── reviews.tsx     # Reviews screen
 ├── not-authenticated.tsx   # Auth error screen
 └── +not-found.tsx          # 404 page
 
@@ -176,6 +205,7 @@ src/
 │   │   ├── useAuth.ts     # Authentication
 │   │   ├── useMovies.ts   # Movie queries
 │   │   ├── useCinemas.ts  # Cinema queries
+│   │   ├── useMoviesByCinema.ts # Movies by cinema
 │   │   ├── useUpcoming.ts # Upcoming movies
 │   │   ├── useImages.ts   # TMDB images
 │   │   ├── useGenres.ts   # Genre lookup
@@ -185,10 +215,26 @@ src/
 │   ├── useFavorites.ts    # Favorites hook
 │   └── useShare.ts        # Share with deep linking
 ├── screens/                 # Screen components
+│   ├── HomeScreen.tsx
+│   ├── CinemasScreen.tsx
+│   ├── CinemaDetailScreen.tsx
+│   ├── MovieScreen.tsx
+│   ├── ReviewsScreen.tsx
+│   ├── UpcomingScreen.tsx
+│   ├── FavouritesScreen.tsx
+│   └── ...
 ├── components/              # Reusable UI components
 │   ├── ui/                 # Base UI (Button, Text, Skeleton, StarRating, FilterChip)
 │   ├── layout/             # Layout components
 │   ├── movie/              # Movie-related components
+│   ├── cinema/             # Cinema-related components
+│   │   ├── BackButton.tsx
+│   │   ├── CinemaDetailHeader.tsx
+│   │   ├── CinemaDetailSkeleton.tsx
+│   │   ├── CinemaListItem.tsx
+│   │   ├── CinemaListEmpty.tsx
+│   │   ├── CinemaSection.tsx
+│   │   └── CinemaShowtimes.tsx
 │   ├── filters/            # Filter modal components
 │   ├── bottom-sheet/       # Bottom sheet wrapper
 │   └── icons/              # Custom icons
@@ -298,12 +344,9 @@ npm run format:check  # Check formatting
 
 - Some movies may not have TMDB images available
 - Authentication token is stored in memory only (cleared on app restart)
-- Cinemas screen is a placeholder only
 
 ## Future Improvements
 
-- [ ] Implement Cinemas screen with list of all cinemas
-- [ ] Implement Cinema detail screen with movies and showtimes
 - [ ] Add share favourites list functionality
 - [ ] Implement offline caching
 - [ ] Add localization (Icelandic/English)

@@ -2,9 +2,10 @@ import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { LiquidButton } from '../ui';
 
-const BUTTON_SIZE = 40;
+const BUTTON_SIZE = 48;
 const ICON_SIZE = 24;
 
 export const BackButton = () => {
@@ -13,12 +14,11 @@ export const BackButton = () => {
 
     return (
         <View style={styles.container}>
-            <Pressable
+            <LiquidButton
                 onPress={() => router.back()}
                 style={[styles.button, { backgroundColor: colors.surface }]}
-            >
-                <Ionicons name="arrow-back" size={ICON_SIZE} color={colors.text} />
-            </Pressable>
+                leadingIcon={<Ionicons name="arrow-back" size={ICON_SIZE} color={colors.text} />}
+            />
         </View>
     );
 };
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
         width: BUTTON_SIZE,
         height: BUTTON_SIZE,
         borderRadius: borderRadius.full,
+        paddingHorizontal: 0,
         alignItems: 'center',
         justifyContent: 'center',
     },

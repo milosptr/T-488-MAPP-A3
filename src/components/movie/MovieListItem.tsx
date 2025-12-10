@@ -3,15 +3,16 @@ import { borderRadius } from '@/src/constants/DesignTokens';
 import { useFavorites, useShare } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { Link, useRouter } from 'expo-router';
-import { Image, Platform } from 'react-native';
+import { Image, Platform, ViewStyle } from 'react-native';
 import { MovieCard } from './MovieCard';
 
 type Props = {
     movie: Movie;
     cinemaId?: number;
+    width?: ViewStyle['width'];
 };
 
-export const MovieListItem = ({ movie, cinemaId }: Props) => {
+export const MovieListItem = ({ movie, cinemaId, width = MOVIE_LIST_ITEM_WIDTH }: Props) => {
     const router = useRouter();
     const { toggleFavoriteStatus, isFavorite } = useFavorites();
     const { shareMovie } = useShare();
@@ -20,7 +21,7 @@ export const MovieListItem = ({ movie, cinemaId }: Props) => {
     if (Platform.OS === 'android') {
         return (
             <Link href={`/movies/${movie._id}${cinemaPath}`}>
-                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} showGenres />
+                <MovieCard movie={movie} width={width} showGenres />
             </Link>
         );
     }
@@ -30,7 +31,7 @@ export const MovieListItem = ({ movie, cinemaId }: Props) => {
     return (
         <Link href={`/movies/${movie._id}${cinemaPath}`}>
             <Link.Trigger>
-                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} showGenres />
+                <MovieCard movie={movie} width={width} showGenres />
             </Link.Trigger>
             <Link.Preview>
                 <Image
