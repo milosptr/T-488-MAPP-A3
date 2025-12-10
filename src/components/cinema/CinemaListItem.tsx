@@ -2,6 +2,7 @@ import { Text } from '@/src/components/ui';
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import { Cinema } from '@/src/types';
+import { haptics } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -19,6 +20,7 @@ export const CinemaListItem = ({ cinema }: Props) => {
     const router = useRouter();
 
     const handleNavigate = () => {
+        haptics.light();
         router.push(`/cinemas/${cinema.id}`);
     };
 

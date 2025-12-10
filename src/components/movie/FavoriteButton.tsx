@@ -1,4 +1,5 @@
 import { useFavorites, useTheme } from '@/src/hooks';
+import { haptics } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -14,6 +15,11 @@ export const FavoriteButton = ({ movieId }: Props) => {
     const favorite = isFavorite(movieId);
 
     const handlePress = () => {
+        if (favorite) {
+            haptics.light();
+        } else {
+            haptics.success();
+        }
         toggleFavoriteStatus(movieId);
     };
 
@@ -29,6 +35,7 @@ export const FavoriteButton = ({ movieId }: Props) => {
                 />
             }
             onPress={handlePress}
+            disableHaptic
         />
     );
 };

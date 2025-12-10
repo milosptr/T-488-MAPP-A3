@@ -1,8 +1,10 @@
 import { MOVIE_LIST_ITEM_WIDTH } from '@/src/constants/constants';
 import { fontSize, spacing } from '@/src/constants/DesignTokens';
+import { useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
-import { useTheme } from '@react-navigation/native';
-import { FlatList, ListRenderItemInfo, StyleSheet, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { FlatList, ListRenderItemInfo, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { MovieListItem } from '../movie';
 import { Text } from '../ui';
 
@@ -12,6 +14,7 @@ type Props = {
 };
 
 const ITEM_WIDTH = MOVIE_LIST_ITEM_WIDTH + spacing.md;
+const CHEVRON_SIZE = 20;
 
 const keyExtractor = (item: Movie) => item._id;
 
@@ -25,18 +28,23 @@ const getItemLayout = (_: unknown, index: number) => ({
 
 export const CinemaSection = ({ cinema, movies }: Props) => {
     const { colors } = useTheme();
+    const router = useRouter();
     const renderItem = ({ item }: ListRenderItemInfo<Movie>) => (
         <MovieListItem movie={item} cinemaId={cinema.id} />
     );
 
+    const handleNavigate = () => {
+        router.push(`/cinemas/${cinema.id}`);
+    };
+
     return (
         <View style={styles.container}>
-            <Text
-                style={[styles.cinemaName, { borderBottomColor: colors.border }]}
-                numberOfLines={1}
-            >
-                {cinema.name}
-            </Text>
+            <TouchableOpacity style={styles.cinemaNameContainer} onPress={handleNavigate}>
+                <Text style={styles.cinemaName} numberOfLines={1}>
+                    {cinema.name}
+                </Text>
+                <Ionicons name="chevron-forward" size={CHEVRON_SIZE} color={colors.textSecondary} />
+            </TouchableOpacity>
             <FlatList
                 horizontal
                 data={movies}
@@ -61,13 +69,16 @@ const styles = StyleSheet.create({
     cinemaName: {
         fontSize: fontSize.xl,
         fontWeight: 'bold',
-        paddingBottom: spacing.sm,
-        borderBottomWidth: 1,
     },
     scrollContent: {
         gap: spacing.md,
     },
     separator: {
         width: spacing.md,
+    },
+    cinemaNameContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
 });

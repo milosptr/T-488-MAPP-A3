@@ -5,3 +5,4 @@ export * from './CinemaListEmpty';
 export * from './CinemaListItem';
 export * from './CinemaSection';
 export * from './CinemaShowtimes';
+export * from './CinemaShowtimesSkeleton';

@@ -1,7 +1,8 @@
 import { spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
+import { haptics } from '@/src/utils';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import {
     StyleProp,
     StyleSheet,
@@ -35,6 +36,11 @@ export const FilterChip = ({
 }: Props) => {
     const theme = useTheme();
 
+    const handlePress = useCallback(() => {
+        haptics.selection();
+        onPress?.();
+    }, [onPress]);
+
     const _leadingIcon = useMemo(() => {
         if (hideLeadingIcon) return null;
         return leadingIcon;
@@ -48,7 +54,7 @@ export const FilterChip = ({
 
     return (
         <TouchableOpacity
-            onPress={onPress}
+            onPress={handlePress}
             {...props}
             style={[
                 styles.container,

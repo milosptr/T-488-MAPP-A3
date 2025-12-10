@@ -2,8 +2,9 @@ import { CinemaSection } from '@/src/components/cinema';
 import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { SearchBar } from '@/src/components/SearchBar';
 import { Text } from '@/src/components/ui';
+import { haptics } from '@/src/utils';
 import { LegendList, LegendListRef, LegendListRenderItemProps } from '@legendapp/list';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
     LayoutChangeEvent,
     RefreshControl,
@@ -35,6 +36,14 @@ export const HomeScreen = () => {
     const filters = useAppSelector(state => state.filters);
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [headerWidth, setHeaderWidth] = useState(0);
+    const wasRefetching = useRef(false);
+
+    useEffect(() => {
+        if (wasRefetching.current && !isRefetching) {
+            haptics.success();
+        }
+        wasRefetching.current = isRefetching;
+    }, [isRefetching]);
 
     const handleHeaderLayout = (event: LayoutChangeEvent) => {
         const { width: layoutWidth } = event.nativeEvent.layout;

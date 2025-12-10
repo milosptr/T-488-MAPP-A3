@@ -1,4 +1,5 @@
 import { useTheme } from '@/src/hooks';
+import { haptics } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -31,7 +32,13 @@ export const StarRating = ({ rating, size = 'md', onRatingChange }: Props) => {
 
         if (interactive) {
             return (
-                <Pressable key={star} onPress={() => onRatingChange(star)}>
+                <Pressable
+                    key={star}
+                    onPress={() => {
+                        haptics.selection();
+                        onRatingChange(star);
+                    }}
+                >
                     {icon}
                 </Pressable>
             );

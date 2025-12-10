@@ -5,6 +5,7 @@ import { fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useMovies, useTheme } from '@/src/hooks';
 import { setFavoriteOrder, useAppDispatch } from '@/src/store';
 import { Movie } from '@/src/types';
+import { haptics } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
@@ -31,11 +32,17 @@ export const FavouritesScreen = () => {
     }, [allMovies, favoriteIds]);
 
     const handleMoviePress = (movie: Movie) => {
+        haptics.light();
         router.push(`/movies/${movie._id}`);
+    };
+
+    const handleDragBegin = () => {
+        haptics.medium();
     };
 
     const handleDragEnd = useCallback(
         ({ data }: { data: Movie[] }) => {
+            haptics.light();
             const newOrder = data.map(movie => movie._id);
             dispatch(setFavoriteOrder(newOrder));
         },
@@ -98,6 +105,7 @@ export const FavouritesScreen = () => {
                 data={favoriteMovies}
                 renderItem={renderMovie}
                 keyExtractor={item => item._id}
+                onDragBegin={handleDragBegin}
                 onDragEnd={handleDragEnd}
                 contentContainerStyle={[
                     styles.listContent,

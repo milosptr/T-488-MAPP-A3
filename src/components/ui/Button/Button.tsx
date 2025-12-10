@@ -1,6 +1,6 @@
 import { borderRadius } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks/useTheme';
-import * as Haptics from 'expo-haptics';
+import { haptics } from '@/src/utils';
 import { ReactNode, useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from '../Text';
@@ -45,9 +45,9 @@ export const Button = ({
 
     const handlePress = useCallback(() => {
         if (variant === 'danger') {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+            haptics.warning();
         } else {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            haptics.light();
         }
         onPress?.();
     }, [variant, onPress]);

@@ -1,6 +1,6 @@
 import { fontSize } from '@/src/constants/DesignTokens';
+import { haptics } from '@/src/utils';
 import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
-import * as Haptics from 'expo-haptics';
 import { ReactNode, useCallback } from 'react';
 import { Platform, Pressable, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { Text } from '../Text';
@@ -16,6 +16,7 @@ type Props = {
     glassEffectStyle?: 'clear' | 'regular';
     tintColor?: string;
     isInteractive?: boolean;
+    disableHaptic?: boolean;
 };
 
 export const LiquidButton = ({
@@ -28,11 +29,14 @@ export const LiquidButton = ({
     glassEffectStyle = 'clear',
     tintColor,
     isInteractive = true,
+    disableHaptic = false,
 }: Props) => {
     const handlePress = useCallback(() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        if (!disableHaptic) {
+            haptics.light();
+        }
         onPress?.();
-    }, [onPress]);
+    }, [onPress, disableHaptic]);
 
     if (Platform.OS !== 'ios' || !isLiquidGlassAvailable()) {
         return (

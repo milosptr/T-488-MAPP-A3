@@ -1,9 +1,10 @@
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import { Showtime, ShowtimeSchedule } from '@/src/types';
-import { ExternalPathString, Link } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { haptics } from '@/src/utils';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '../ui';
+import { CinemaShowtimesSkeleton } from './CinemaShowtimesSkeleton';
 
 type Props = {
     showtimes: Showtime[] | undefined;
@@ -13,8 +14,13 @@ type Props = {
 export const CinemaShowtimes = ({ showtimes, isLoading }: Props) => {
     const { colors } = useTheme();
 
+    const handleShowtimePress = (url: string) => {
+        haptics.light();
+        Linking.openURL(url);
+    };
+
     if (isLoading) {
-        return <Text variant="secondary">Loading showtimes...</Text>;
+        return <CinemaShowtimesSkeleton />;
     }
 
     if (!showtimes || showtimes.length === 0) {
@@ -25,16 +31,16 @@ export const CinemaShowtimes = ({ showtimes, isLoading }: Props) => {
         <View style={styles.container}>
             {showtimes.map((showtime: Showtime) =>
                 showtime.schedule.map((s: ShowtimeSchedule) => (
-                    <Link
+                    <Pressable
                         key={s.time}
-                        href={`${s.purchase_url as ExternalPathString}`}
+                        onPress={() => s.purchase_url && handleShowtimePress(s.purchase_url)}
                         style={[
                             styles.showtimeItem,
                             { borderColor: colors.border, backgroundColor: colors.surface },
                         ]}
                     >
                         <Text style={styles.showtimeText}>{s.time}</Text>
-                    </Link>
+                    </Pressable>
                 ))
             )}
         </View>
