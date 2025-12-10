@@ -2,7 +2,6 @@ import { CinemaSection } from '@/src/components/cinema';
 import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { SearchBar } from '@/src/components/SearchBar';
 import { Text } from '@/src/components/ui';
-import { ViewMode, ViewModeToggle } from '@/src/components/ViewModeToggle';
 import { LegendList, LegendListRef, LegendListRenderItemProps } from '@legendapp/list';
 import React, { useMemo, useRef, useState } from 'react';
 import {
@@ -13,34 +12,29 @@ import {
     View,
 } from 'react-native';
 import { HomeFilters } from '../components/HomeFilters';
-import { MovieListEmpty, MovieListItem } from '../components/movie';
+import { MovieListEmpty } from '../components/movie';
 import { fontSize, spacing } from '../constants/DesignTokens';
-import { CinemaGroup, filterMovies, groupMoviesByCinema, useMovies } from '../hooks';
+import { CinemaGroup, useFilteredMoviesGroupedByCinema, usePrefetchBackdrops } from '../hooks';
 import { setTitle, useAppDispatch, useAppSelector } from '../store';
-import { Movie } from '../types';
 
 const HEADER_HEIGHT = 48;
 
 export const HomeScreen = () => {
     const ref = useRef<LegendListRef>(null);
-    const { data = [], isLoading, isRefetching, refetch } = useMovies();
-    const [viewMode, setViewMode] = useState<ViewMode>('movies');
+    const {
+        data: cinemaGroups = [],
+        isLoading,
+        isRefetching,
+        refetch,
+    } = useFilteredMoviesGroupedByCinema();
+    const allMovies = useMemo(() => cinemaGroups.flatMap(g => g.movies), [cinemaGroups]);
+    usePrefetchBackdrops(allMovies);
     const { width } = useWindowDimensions();
     const cardHeight = (width * 9) / 16 - 32;
     const dispatch = useAppDispatch();
     const filters = useAppSelector(state => state.filters);
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [headerWidth, setHeaderWidth] = useState(0);
-
-    const isCinemasView = viewMode === 'cinemas';
-
-    const listData = useMemo(() => {
-        const filtered = filterMovies(data, filters);
-        if (!isCinemasView) {
-            return filtered;
-        }
-        return groupMoviesByCinema(filtered);
-    }, [data, filters, isCinemasView]);
 
     const handleHeaderLayout = (event: LayoutChangeEvent) => {
         const { width: layoutWidth } = event.nativeEvent.layout;
@@ -49,20 +43,11 @@ export const HomeScreen = () => {
         }
     };
 
-    const renderItem = ({ item }: LegendListRenderItemProps<Movie | CinemaGroup>) => {
-        if (isCinemasView) {
-            const group = item as CinemaGroup;
-            return <CinemaSection cinema={group.cinema} movies={group.movies} />;
-        }
-        return <MovieListItem movie={item as Movie} />;
-    };
+    const renderItem = ({ item }: LegendListRenderItemProps<CinemaGroup>) => (
+        <CinemaSection cinema={item.cinema} movies={item.movies} />
+    );
 
-    const keyExtractor = (item: Movie | CinemaGroup) => {
-        if (isCinemasView) {
-            return String((item as CinemaGroup).cinema.id);
-        }
-        return (item as Movie)._id;
-    };
+    const keyExtractor = (item: CinemaGroup) => String(item.cinema.id);
 
     const handleFilterChange = () => {
         ref.current?.scrollToIndex({ index: 0 });
@@ -88,17 +73,15 @@ export const HomeScreen = () => {
                             containerWidth={headerWidth}
                         />
                     </View>
-                    <HomeFilters hideCinemas={isCinemasView} onFilterChange={handleFilterChange} />
+                    <HomeFilters onFilterChange={handleFilterChange} />
                 </View>
-                <ViewModeToggle value={viewMode} onChange={setViewMode} />
             </View>
             <LegendList
                 ref={ref}
-                data={listData}
+                data={cinemaGroups}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
-                recycleItems={true}
-                maintainVisibleContentPosition
+                recycleItems
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}

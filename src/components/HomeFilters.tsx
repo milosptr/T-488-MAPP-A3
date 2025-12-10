@@ -6,7 +6,6 @@ import { fontSize, spacing } from '../constants/DesignTokens';
 import {
     setActors,
     setCertificate,
-    setCinemas,
     setDirectors,
     setRating,
     setShowtime,
@@ -17,7 +16,6 @@ import { BottomSheetModal } from './bottom-sheet/BottomSheetModal';
 import {
     ActorsFilter,
     CertificateFilter,
-    CinemasFilter,
     DirectorsFilter,
     RatingFilter,
     ShowtimeFilter,
@@ -25,7 +23,7 @@ import {
 import { Text } from './ui';
 import { FilterChip } from './ui/FilterChip';
 
-type Filter = 'cinemas' | 'rating' | 'showtime' | 'actors' | 'directors' | 'certificate';
+type Filter = 'rating' | 'showtime' | 'actors' | 'directors' | 'certificate';
 
 type FilterConfig = {
     title: string;
@@ -34,37 +32,23 @@ type FilterConfig = {
     Component: React.ComponentType;
 };
 
-const filterOrder: Filter[] = [
-    'cinemas',
-    'rating',
-    'showtime',
-    'actors',
-    'directors',
-    'certificate',
-];
+const filterOrder: Filter[] = ['rating', 'showtime', 'actors', 'directors', 'certificate'];
 
 type Props = {
-    hideCinemas?: boolean;
     onFilterChange?: () => void;
 };
 
-export const HomeFilters = ({ hideCinemas = false, onFilterChange }: Props) => {
+export const HomeFilters = ({ onFilterChange }: Props) => {
     const theme = useTheme();
     const ref = useRef<BottomSheetModal>(null);
     const [filter, setFilter] = useState<Filter>('rating');
     const dispatch = useAppDispatch();
 
-    const { cinemas, rating, showtime, actors, directors, certificate } = useAppSelector(
+    const { rating, showtime, actors, directors, certificate } = useAppSelector(
         state => state.filters
     );
 
     const filterConfigs: Record<Filter, FilterConfig> = {
-        cinemas: {
-            title: cinemas.length > 0 ? `Cinemas (${cinemas.length})` : 'Cinemas',
-            selected: cinemas.length > 0,
-            onClear: () => dispatch(setCinemas([])),
-            Component: CinemasFilter,
-        },
         rating: {
             title: rating?.label ? `Rating: ${rating.label}` : 'Rating',
             selected: !!rating,
@@ -124,8 +108,7 @@ export const HomeFilters = ({ hideCinemas = false, onFilterChange }: Props) => {
         />
     );
 
-    const isScrollableFilter =
-        filter === 'cinemas' || filter === 'actors' || filter === 'directors';
+    const isScrollableFilter = filter === 'actors' || filter === 'directors';
     const ActiveFilterComponent = filterConfigs[filter].Component;
     const activeFilters = filterOrder.filter(key => filterConfigs[key].selected);
 
@@ -145,7 +128,6 @@ export const HomeFilters = ({ hideCinemas = false, onFilterChange }: Props) => {
             >
                 {filterOrder.map(key => {
                     const config = filterConfigs[key];
-                    if (hideCinemas && key === 'cinemas') return null;
                     return (
                         <FilterChip
                             key={key}

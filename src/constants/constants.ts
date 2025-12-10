@@ -13,3 +13,5 @@ export const SHOWTIME_PRESETS = [
     { value: 'EVENING', label: 'Evening', start: '18:00', end: '22:00' },
     { value: 'NIGHT', label: 'Night', start: '22:00', end: '23:59' },
 ];
+
+export const MOVIE_LIST_ITEM_WIDTH = 300;

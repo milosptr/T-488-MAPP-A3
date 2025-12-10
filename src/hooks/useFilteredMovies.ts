@@ -9,7 +9,7 @@ export type CinemaGroup = {
     movies: Movie[];
 };
 
-export const groupMoviesByCinema = (movies: Movie[]): CinemaGroup[] => {
+const groupMoviesByCinema = (movies: Movie[]): CinemaGroup[] => {
     const grouped = new Map<number, CinemaGroup>();
 
     movies.forEach(movie => {
@@ -38,7 +38,7 @@ const parseShowtime = (time: string): string | null => {
     return match ? `${match[1]}:${match[2]}` : null;
 };
 
-export const filterMovies = (movies: Movie[], filters: FiltersState): Movie[] => {
+const filterMovies = (movies: Movie[], filters: FiltersState): Movie[] => {
     return movies.filter(movie => {
         if (filters.title.trim()) {
             const searchTerm = filters.title.toLowerCase();
@@ -95,11 +95,6 @@ export const filterMovies = (movies: Movie[], filters: FiltersState): Movie[] =>
 
         return true;
     });
-};
-
-export const useFilteredMovies = (movies: Movie[]): Movie[] => {
-    const filters = useAppSelector(state => state.filters);
-    return useMemo(() => filterMovies(movies, filters), [movies, filters]);
 };
 
 export const useFilteredMoviesGroupedByCinema = () => {

@@ -1,3 +1,4 @@
+import { MOVIE_LIST_ITEM_WIDTH } from '@/src/constants/constants';
 import { borderRadius } from '@/src/constants/DesignTokens';
 import { useFavorites, useShare } from '@/src/hooks';
 import { Movie } from '@/src/types';
@@ -17,7 +18,7 @@ export const MovieListItem = ({ movie }: Props) => {
     if (Platform.OS === 'android') {
         return (
             <Link href={`/movies/${movie._id}`}>
-                <MovieCard movie={movie} />
+                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} />
             </Link>
         );
     }
@@ -27,7 +28,7 @@ export const MovieListItem = ({ movie }: Props) => {
     return (
         <Link href={`/movies/${movie._id}`}>
             <Link.Trigger>
-                <MovieCard movie={movie} />
+                <MovieCard movie={movie} width={MOVIE_LIST_ITEM_WIDTH} />
             </Link.Trigger>
             <Link.Preview>
                 <Image

@@ -11,15 +11,16 @@ import { FavoriteButton } from './FavoriteButton';
 type Props = {
     movie: Movie;
     showFavoriteButton?: boolean;
+    width?: number;
 };
 
-export const MovieCard = ({ movie, showFavoriteButton = false }: Props) => {
+export const MovieCard = ({ movie, showFavoriteButton = false, width }: Props) => {
     const { colors } = useTheme();
     const { image: backdropImage, isLoading } = useMovieBackdrop(movie.ids.tmdb);
 
     return (
         <Skeleton show={isLoading}>
-            <View style={[styles.posterContainer, { backgroundColor: colors.surface }]}>
+            <View style={[styles.posterContainer, { backgroundColor: colors.surface, width }]}>
                 <Image
                     source={{ uri: backdropImage ?? movie.poster }}
                     resizeMode="contain"
