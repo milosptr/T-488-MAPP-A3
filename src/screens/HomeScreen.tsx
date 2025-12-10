@@ -1,9 +1,10 @@
+import { CinemaSection } from '@/src/components/cinema';
 import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { SearchBar } from '@/src/components/SearchBar';
-import { ViewModeToggle, ViewMode } from '@/src/components/ViewModeToggle';
 import { Text } from '@/src/components/ui';
+import { ViewMode, ViewModeToggle } from '@/src/components/ViewModeToggle';
 import { LegendList, LegendListRef, LegendListRenderItemProps } from '@legendapp/list';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import {
     LayoutChangeEvent,
     RefreshControl,
@@ -14,9 +15,11 @@ import {
 import { HomeFilters } from '../components/HomeFilters';
 import { MovieListEmpty, MovieListItem } from '../components/movie';
 import { fontSize, spacing } from '../constants/DesignTokens';
-import { useFilteredMovies, useMovies } from '../hooks';
+import { CinemaGroup, filterMovies, groupMoviesByCinema, useMovies } from '../hooks';
 import { setTitle, useAppDispatch, useAppSelector } from '../store';
 import { Movie } from '../types';
+
+const HEADER_HEIGHT = 48;
 
 export const HomeScreen = () => {
     const ref = useRef<LegendListRef>(null);
@@ -25,11 +28,19 @@ export const HomeScreen = () => {
     const { width } = useWindowDimensions();
     const cardHeight = (width * 9) / 16 - 32;
     const dispatch = useAppDispatch();
-    const searchTitle = useAppSelector(state => state.filters.title);
+    const filters = useAppSelector(state => state.filters);
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [headerWidth, setHeaderWidth] = useState(0);
 
-    const filteredData = useFilteredMovies(data);
+    const isCinemasView = viewMode === 'cinemas';
+
+    const listData = useMemo(() => {
+        const filtered = filterMovies(data, filters);
+        if (!isCinemasView) {
+            return filtered;
+        }
+        return groupMoviesByCinema(filtered);
+    }, [data, filters, isCinemasView]);
 
     const handleHeaderLayout = (event: LayoutChangeEvent) => {
         const { width: layoutWidth } = event.nativeEvent.layout;
@@ -38,8 +49,19 @@ export const HomeScreen = () => {
         }
     };
 
-    const renderItem = ({ item }: LegendListRenderItemProps<Movie>) => {
-        return <MovieListItem movie={item} />;
+    const renderItem = ({ item }: LegendListRenderItemProps<Movie | CinemaGroup>) => {
+        if (isCinemasView) {
+            const group = item as CinemaGroup;
+            return <CinemaSection cinema={group.cinema} movies={group.movies} />;
+        }
+        return <MovieListItem movie={item as Movie} />;
+    };
+
+    const keyExtractor = (item: Movie | CinemaGroup) => {
+        if (isCinemasView) {
+            return String((item as CinemaGroup).cinema.id);
+        }
+        return (item as Movie)._id;
     };
 
     const handleFilterChange = () => {
@@ -58,7 +80,7 @@ export const HomeScreen = () => {
                             In cinemas
                         </Text>
                         <SearchBar
-                            value={searchTitle}
+                            value={filters.title}
                             onChangeText={text => dispatch(setTitle(text))}
                             placeholder="Search movies..."
                             expanded={searchExpanded}
@@ -66,15 +88,15 @@ export const HomeScreen = () => {
                             containerWidth={headerWidth}
                         />
                     </View>
-                    <HomeFilters onFilterChange={handleFilterChange} />
+                    <HomeFilters hideCinemas={isCinemasView} onFilterChange={handleFilterChange} />
                 </View>
                 <ViewModeToggle value={viewMode} onChange={setViewMode} />
             </View>
             <LegendList
                 ref={ref}
-                data={filteredData}
+                data={listData}
                 renderItem={renderItem}
-                keyExtractor={item => item._id}
+                keyExtractor={keyExtractor}
                 recycleItems={true}
                 maintainVisibleContentPosition
                 ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -101,7 +123,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: spacing.md,
-        height: 48,
+        height: HEADER_HEIGHT,
     },
     title: {
         fontSize: fontSize.xxl,

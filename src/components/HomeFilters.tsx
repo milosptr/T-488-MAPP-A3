@@ -44,10 +44,11 @@ const filterOrder: Filter[] = [
 ];
 
 type Props = {
+    hideCinemas?: boolean;
     onFilterChange?: () => void;
 };
 
-export const HomeFilters = ({ onFilterChange }: Props) => {
+export const HomeFilters = ({ hideCinemas = false, onFilterChange }: Props) => {
     const theme = useTheme();
     const ref = useRef<BottomSheetModal>(null);
     const [filter, setFilter] = useState<Filter>('rating');
@@ -144,6 +145,7 @@ export const HomeFilters = ({ onFilterChange }: Props) => {
             >
                 {filterOrder.map(key => {
                     const config = filterConfigs[key];
+                    if (hideCinemas && key === 'cinemas') return null;
                     return (
                         <FilterChip
                             key={key}

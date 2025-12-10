@@ -1,7 +1,37 @@
 import { useAppSelector } from '@/src/store';
 import { FiltersState } from '@/src/store/slices/filtersSlice';
-import { Movie } from '@/src/types';
+import { Movie, Showtime } from '@/src/types';
 import { useMemo } from 'react';
+import { useMovies } from './api/useMovies';
+
+export type CinemaGroup = {
+    cinema: { id: number; name: string };
+    movies: Movie[];
+};
+
+export const groupMoviesByCinema = (movies: Movie[]): CinemaGroup[] => {
+    const grouped = new Map<number, CinemaGroup>();
+
+    movies.forEach(movie => {
+        movie.showtimes.forEach((showtime: Showtime) => {
+            const cinemaId = showtime.cinema.id;
+            if (!grouped.has(cinemaId)) {
+                grouped.set(cinemaId, {
+                    cinema: showtime.cinema,
+                    movies: [],
+                });
+            }
+            const group = grouped.get(cinemaId)!;
+            if (!group.movies.some(m => m._id === movie._id)) {
+                group.movies.push(movie);
+            }
+        });
+    });
+
+    return Array.from(grouped.values()).sort((a, b) =>
+        a.cinema.name.localeCompare(b.cinema.name, 'is')
+    );
+};
 
 const parseShowtime = (time: string): string | null => {
     const match = time.match(/^(\d{2}):(\d{2})/);
@@ -70,4 +100,21 @@ export const filterMovies = (movies: Movie[], filters: FiltersState): Movie[] =>
 export const useFilteredMovies = (movies: Movie[]): Movie[] => {
     const filters = useAppSelector(state => state.filters);
     return useMemo(() => filterMovies(movies, filters), [movies, filters]);
+};
+
+export const useFilteredMoviesGroupedByCinema = () => {
+    const { data: movies = [], isLoading, isRefetching, refetch } = useMovies();
+    const filters = useAppSelector(state => state.filters);
+
+    const filteredGroupedData = useMemo(() => {
+        const grouped = groupMoviesByCinema(movies);
+        return grouped
+            .map(group => ({
+                ...group,
+                movies: filterMovies(group.movies, filters),
+            }))
+            .filter(group => group.movies.length > 0);
+    }, [movies, filters]);
+
+    return { data: filteredGroupedData, isLoading, isRefetching, refetch };
 };
