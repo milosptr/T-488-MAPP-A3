@@ -1,3 +1,4 @@
+export * from './CinemaDetailScreen';
 export * from './CinemasScreen';
 export * from './FavouritesScreen';
 export * from './HomeScreen';

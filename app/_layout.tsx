@@ -66,6 +66,7 @@ function RootLayoutNav() {
                                 name="movies/[id]/reviews"
                                 options={{ headerShown: false }}
                             />
+                            <Stack.Screen name="cinemas/[id]" options={{ headerShown: false }} />
                         </Stack.Protected>
                         <Stack.Protected guard={!isAuthenticated}>
                             <Stack.Screen name="not-authenticated" />
