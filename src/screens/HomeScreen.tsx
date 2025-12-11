@@ -89,7 +89,6 @@ export const HomeScreen = () => {
                     <MovieListEmpty isLoading={isLoading} cardHeight={cardHeight} />
                 }
                 contentContainerStyle={styles.listContent}
-                estimatedItemSize={374}
             />
         </SafeAreaScreen>
     );
