@@ -42,29 +42,36 @@ export const CinemaDetailHeader = ({ cinema }: Props) => {
                 </Text>
             )}
 
-            <View style={[styles.divider, { backgroundColor: colors.border }]} />
+            {!!cinema.description && (
+                <View style={[styles.divider, { backgroundColor: colors.border }]} />
+            )}
 
             <View style={styles.infoSection}>
-                <TouchableOpacity style={styles.infoRow} onPress={handleAddressPress}>
-                    <Ionicons name="location-outline" size={ICON_SIZE} color={colors.primary} />
-                    <Text variant="primary" style={styles.infoText}>
-                        {fullAddress}
-                    </Text>
-                </TouchableOpacity>
+                {!!cinema.address && (
+                    <TouchableOpacity style={styles.infoRow} onPress={handleAddressPress}>
+                        <Ionicons name="location-outline" size={ICON_SIZE} color={colors.primary} />
+                        <Text variant="primary" style={styles.infoText}>
+                            {fullAddress}
+                        </Text>
+                    </TouchableOpacity>
+                )}
+                {!!cinema.phone && (
+                    <TouchableOpacity style={styles.infoRow} onPress={handlePhonePress}>
+                        <Ionicons name="call-outline" size={ICON_SIZE} color={colors.primary} />
+                        <Text variant="primary" style={styles.infoText}>
+                            {cinema.phone}
+                        </Text>
+                    </TouchableOpacity>
+                )}
 
-                <TouchableOpacity style={styles.infoRow} onPress={handlePhonePress}>
-                    <Ionicons name="call-outline" size={ICON_SIZE} color={colors.primary} />
-                    <Text variant="primary" style={styles.infoText}>
-                        {cinema.phone}
-                    </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.infoRow} onPress={handleWebsitePress}>
-                    <Ionicons name="globe-outline" size={ICON_SIZE} color={colors.primary} />
-                    <Text variant="primary" style={styles.infoText}>
-                        {cinema.website}
-                    </Text>
-                </TouchableOpacity>
+                {!!cinema.website && (
+                    <TouchableOpacity style={styles.infoRow} onPress={handleWebsitePress}>
+                        <Ionicons name="globe-outline" size={ICON_SIZE} color={colors.primary} />
+                        <Text variant="primary" style={styles.infoText}>
+                            {cinema.website}
+                        </Text>
+                    </TouchableOpacity>
+                )}
             </View>
 
             <View style={[styles.divider, { backgroundColor: colors.border }]} />

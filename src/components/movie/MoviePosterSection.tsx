@@ -2,8 +2,9 @@ import { LiquidButton } from '@/src/components/ui';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useTheme } from '@/src/hooks';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
@@ -15,6 +16,12 @@ type Props = {
     onSharePress?: () => void;
     onFavoritePress?: () => void;
 };
+
+const ICON_SIZE = 24;
+const ICON_BUTTON_SIZE = 48;
+const ASPECT_RATIO_TALL_POSTER = 10 / 16;
+const POSTER_TOP_OFFSET = -48;
+const GRADIENT_HEIGHT = 200;
 
 export const MoviePosterSection = ({
     posterUri,
@@ -32,7 +39,13 @@ export const MoviePosterSection = ({
 
     return (
         <View style={styles.container}>
-            <Image source={{ uri: posterUri }} style={styles.poster} resizeMode="cover" />
+            <Image
+                source={{ uri: posterUri }}
+                style={styles.poster}
+                contentFit="cover"
+                cachePolicy="memory-disk"
+                recyclingKey={movieId}
+            />
             <LinearGradient
                 colors={['transparent', colors.background]}
                 style={styles.gradient}
@@ -44,7 +57,11 @@ export const MoviePosterSection = ({
                     style={styles.iconButton}
                     glassEffectStyle="regular"
                     leadingIcon={
-                        <Ionicons name="chevron-back-outline" size={24} color={colors.text} />
+                        <Ionicons
+                            name="chevron-back-outline"
+                            size={ICON_SIZE}
+                            color={colors.text}
+                        />
                     }
                     onPress={onBack}
                 />
@@ -53,7 +70,11 @@ export const MoviePosterSection = ({
                 {!!trailerKey && (
                     <LiquidButton
                         leadingIcon={
-                            <Ionicons name="play-circle-outline" size={24} color={colors.text} />
+                            <Ionicons
+                                name="play-circle-outline"
+                                size={ICON_SIZE}
+                                color={colors.text}
+                            />
                         }
                         text="Trailer"
                         onPress={onTrailerPress}
@@ -62,7 +83,9 @@ export const MoviePosterSection = ({
                 <View style={styles.spacer} />
                 <LiquidButton
                     style={styles.iconButton}
-                    leadingIcon={<Ionicons name="share-outline" size={24} color={colors.text} />}
+                    leadingIcon={
+                        <Ionicons name="share-outline" size={ICON_SIZE} color={colors.text} />
+                    }
                     onPress={onSharePress}
                 />
                 <LiquidButton
@@ -70,7 +93,7 @@ export const MoviePosterSection = ({
                     leadingIcon={
                         <Ionicons
                             name={isFav ? 'heart' : 'heart-outline'}
-                            size={24}
+                            size={ICON_SIZE}
                             color={isFav ? colors.secondary : colors.text}
                         />
                     }
@@ -88,16 +111,16 @@ const styles = StyleSheet.create({
     },
     poster: {
         width: '100%',
-        aspectRatio: 10 / 16,
+        aspectRatio: ASPECT_RATIO_TALL_POSTER,
         opacity: 0.8,
-        marginTop: -48,
+        marginTop: POSTER_TOP_OFFSET,
     },
     gradient: {
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
-        height: 200,
+        height: GRADIENT_HEIGHT,
     },
     backButton: {
         position: 'absolute',
@@ -118,8 +141,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     iconButton: {
-        borderRadius: 48,
-        width: 48,
+        borderRadius: borderRadius.full,
+        width: ICON_BUTTON_SIZE,
         paddingHorizontal: 0,
     },
 });

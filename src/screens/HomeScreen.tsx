@@ -2,9 +2,8 @@ import { CinemaSection } from '@/src/components/cinema';
 import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { SearchBar } from '@/src/components/SearchBar';
 import { Text } from '@/src/components/ui';
-import { haptics } from '@/src/utils';
 import { LegendList, LegendListRef, LegendListRenderItemProps } from '@legendapp/list';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     LayoutChangeEvent,
     RefreshControl,
@@ -15,10 +14,12 @@ import {
 import { HomeFilters } from '../components/HomeFilters';
 import { MovieListEmpty } from '../components/movie';
 import { fontSize, spacing } from '../constants/DesignTokens';
-import { CinemaGroup, useFilteredMoviesGroupedByCinema, usePrefetchBackdrops } from '../hooks';
+import { CinemaGroup, useFilteredMoviesGroupedByCinema } from '../hooks';
 import { setTitle, useAppDispatch, useAppSelector } from '../store';
 
 const HEADER_HEIGHT = 48;
+
+const ItemSeparator = () => <View style={styles.separator} />;
 
 export const HomeScreen = () => {
     const ref = useRef<LegendListRef>(null);
@@ -28,22 +29,12 @@ export const HomeScreen = () => {
         isRefetching,
         refetch,
     } = useFilteredMoviesGroupedByCinema();
-    const allMovies = useMemo(() => cinemaGroups.flatMap(g => g.movies), [cinemaGroups]);
-    usePrefetchBackdrops(allMovies);
     const { width } = useWindowDimensions();
     const cardHeight = (width * 9) / 16 - 32;
     const dispatch = useAppDispatch();
     const filters = useAppSelector(state => state.filters);
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [headerWidth, setHeaderWidth] = useState(0);
-    const wasRefetching = useRef(false);
-
-    useEffect(() => {
-        if (wasRefetching.current && !isRefetching) {
-            haptics.success();
-        }
-        wasRefetching.current = isRefetching;
-    }, [isRefetching]);
 
     const handleHeaderLayout = (event: LayoutChangeEvent) => {
         const { width: layoutWidth } = event.nativeEvent.layout;
@@ -91,15 +82,14 @@ export const HomeScreen = () => {
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 recycleItems
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                ItemSeparatorComponent={ItemSeparator}
                 showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
                 ListEmptyComponent={
                     <MovieListEmpty isLoading={isLoading} cardHeight={cardHeight} />
                 }
-                contentContainerStyle={{
-                    paddingBottom: spacing.xl,
-                }}
+                contentContainerStyle={styles.listContent}
+                estimatedItemSize={374}
             />
         </SafeAreaScreen>
     );
@@ -129,5 +119,8 @@ const styles = StyleSheet.create({
     },
     separator: {
         height: spacing.xxl,
+    },
+    listContent: {
+        paddingBottom: spacing.xl,
     },
 });

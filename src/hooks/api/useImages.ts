@@ -1,6 +1,7 @@
 import { queryKeys, STALE_TIMES, tmdbClient } from '@/src/api';
 import type { ImageInfo, TmdbImagesResponse } from '@/src/types';
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
 export const useImages = (tmdbId: number | undefined) => {
     return useQuery({
@@ -19,20 +20,23 @@ export const useMovieBackdrop = (
 ): { image: string | null; isLoading: boolean } => {
     const { data: images, isLoading } = useImages(tmdbId ?? undefined);
 
-    if (!images?.backdrops.length) return { image: null, isLoading };
+    return useMemo(() => {
+        if (!images?.backdrops.length) return { image: null, isLoading };
 
-    const backdrops16x9 = images.backdrops.filter(
-        (img: ImageInfo) => Math.abs(img.aspect_ratio - ASPECT_RATIO_16_9) < ASPECT_RATIO_TOLERANCE
-    );
+        const backdrops16x9 = images.backdrops.filter(
+            (img: ImageInfo) =>
+                Math.abs(img.aspect_ratio - ASPECT_RATIO_16_9) < ASPECT_RATIO_TOLERANCE
+        );
 
-    if (!backdrops16x9.length) return { image: null, isLoading };
+        if (!backdrops16x9.length) return { image: null, isLoading };
 
-    const best = backdrops16x9.reduce((a: ImageInfo, b: ImageInfo) =>
-        b.vote_average > a.vote_average ? b : a
-    );
+        const best = backdrops16x9.reduce((a: ImageInfo, b: ImageInfo) =>
+            b.vote_average > a.vote_average ? b : a
+        );
 
-    return {
-        image: `https://image.tmdb.org/t/p/w1280${best.file_path}`,
-        isLoading,
-    };
+        return {
+            image: `https://image.tmdb.org/t/p/w780${best.file_path}`,
+            isLoading,
+        };
+    }, [images, isLoading]);
 };

@@ -20,6 +20,8 @@ const BACK_ICON_SIZE = 24;
 
 const keyExtractor = (item: Review) => item.id;
 
+const ItemSeparator = () => <View style={styles.separator} />;
+
 export const ReviewsScreen = () => {
     const { colors } = useTheme();
     const router = useRouter();
@@ -54,8 +56,8 @@ export const ReviewsScreen = () => {
     const renderEmpty = () => <ReviewsEmpty />;
 
     return (
-        <SafeAreaScreen>
-            <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <SafeAreaScreen paddingLeft={0} paddingRight={0}>
+            <View style={styles.container}>
                 <View style={[styles.header, { borderBottomColor: colors.border }]}>
                     <View style={styles.headerTitleContainer}>
                         <Text style={styles.headerTitle} numberOfLines={1}>
@@ -90,7 +92,7 @@ export const ReviewsScreen = () => {
                         styles.listContent,
                         { paddingBottom: insets.bottom + 80 },
                     ]}
-                    ItemSeparatorComponent={() => <View style={styles.separator} />}
+                    ItemSeparatorComponent={ItemSeparator}
                     showsVerticalScrollIndicator={false}
                 />
 
@@ -98,7 +100,6 @@ export const ReviewsScreen = () => {
                     style={[
                         styles.footer,
                         {
-                            backgroundColor: colors.background,
                             borderTopColor: colors.border,
                             paddingBottom: insets.bottom || spacing.md,
                         },
@@ -124,12 +125,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: spacing.md,
         paddingVertical: spacing.md,
+        paddingBottom: spacing.lg,
         borderBottomWidth: 1,
     },
     closeButtonContainer: {
         position: 'absolute',
         top: spacing.sm,
-        left: 0,
+        left: spacing.lg,
         zIndex: 1,
     },
     closeButton: {

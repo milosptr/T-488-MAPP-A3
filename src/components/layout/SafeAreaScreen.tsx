@@ -4,6 +4,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { View } from 'react-native';
 import type { Edge } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Background } from '../Background';
 
 type SafeAreaScreenProps = {
     children?: ReactNode;
@@ -13,6 +14,7 @@ type SafeAreaScreenProps = {
     paddingBottom?: number;
     paddingLeft?: number;
     paddingRight?: number;
+    background?: boolean;
 } & Omit<ComponentProps<typeof View>, 'style' | 'children'>;
 
 const DEFAULT_EDGES = ['top'] as const;
@@ -36,6 +38,7 @@ export const SafeAreaScreen = ({
     paddingBottom = 0,
     paddingLeft = DEFAULT_HORIZONTAL_PADDING,
     paddingRight = DEFAULT_HORIZONTAL_PADDING,
+    background = true,
     ...rest
 }: SafeAreaScreenProps) => {
     const insets = useSafeAreaInsets();
@@ -71,8 +74,11 @@ export const SafeAreaScreen = ({
     }, [insetPaddingStyle, style]);
 
     return (
-        <View style={_style} {...rest}>
-            {children ?? null}
-        </View>
+        <>
+            {background && <Background />}
+            <View style={_style} {...rest}>
+                {children ?? null}
+            </View>
+        </>
     );
 };

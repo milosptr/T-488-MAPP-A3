@@ -12,6 +12,7 @@ import { Movie } from '@/src/types';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FlatList, ListRenderItemInfo, RefreshControl, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaScreen } from '../components/layout';
 
 const CARD_HEIGHT = 200;
 
@@ -61,7 +62,7 @@ export const CinemaDetailScreen = () => {
 
     const renderItem = ({ item }: ListRenderItemInfo<Movie>) => (
         <View style={styles.itemContainer}>
-            <MovieListItem movie={item} cinemaId={cinemaId} width={'100%'} />
+            <MovieListItem movie={item} cinemaId={cinemaId} width={'100%'} horizontal />
             <CinemaShowtimes
                 showtimes={item.showtimes.filter(st => st.cinema.id === cinemaId)}
                 isLoading={false}
@@ -79,7 +80,7 @@ export const CinemaDetailScreen = () => {
     const Separator = () => <View style={[styles.separator, { backgroundColor: colors.border }]} />;
 
     return (
-        <View style={[styles.container, { paddingTop: insets.top }]}>
+        <SafeAreaScreen style={styles.container}>
             <BackButton />
             <FlatList
                 data={movies}
@@ -101,7 +102,7 @@ export const CinemaDetailScreen = () => {
                 ]}
                 showsVerticalScrollIndicator={false}
             />
-        </View>
+        </SafeAreaScreen>
     );
 };
 
@@ -110,7 +111,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     listContent: {
-        paddingHorizontal: spacing.lg,
         flexGrow: 1,
     },
     sectionTitle: {

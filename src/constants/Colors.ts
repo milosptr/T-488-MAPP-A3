@@ -1,27 +1,36 @@
 import { fonts } from './fonts';
 
 const palette = {
-    // Primary - Teal
-    primary: '#62b0ba',
-    primaryLight: '#89c5cd',
-    primaryDark: '#4a8f97',
+    // Primary - Teal (deeper, richer to emerge from gradient)
+    primary: '#489784',
+    primaryLight: '#6bb8c2',
+    primaryDark: '#3a8088',
 
-    // Secondary - Coral/Orange
-    secondary: '#f2623d',
-    secondaryLight: '#f58468',
-    secondaryDark: '#d44a28',
+    // Secondary - Coral/Orange (warmer for teal contrast)
+    secondary: '#e85a3a',
+    secondaryLight: '#f07858',
+    secondaryDark: '#c44a2a',
 
-    // Neutrals (cool-tinted to harmonize with teal)
+    // Neutrals (teal-tinted to harmonize with gradient)
     white: '#f2f2f2',
     dirtyWhite: '#d5d5d5',
     gray: '#7a7f82',
     black: '#1e2022',
     dirtyBlack: '#141820',
     trueBlack: '#111111',
+    pureBlack: '#000000',
+
+    // Light theme teal-tinted neutrals
+    whiteTeal: '#f5f7f7',
+    surfaceLight: '#fafbfb',
+    neutral100Teal: '#e3e8e8',
+    neutral200Teal: '#c8d0d0',
+    neutral300Teal: '#9aa2a2',
 
     // Dark theme backgrounds
-    backgroundDark: '#141820',
-    surfaceDark: '#1e2430', // 5% lighter than backgroundDark
+    backgroundDark: '#0E181A',
+    backgroundPrimary: '#1B3033',
+    surfaceDark: '#1c2a2d',
 
     // Neutral scale (cool grays)
     neutral100: '#e5e7e8',
@@ -48,31 +57,31 @@ export const Colors = {
     light: {
         // React Navigation required
         primary: palette.primary,
-        background: palette.white,
-        card: '#ffffff',
+        background: palette.whiteTeal,
+        card: palette.surfaceLight,
         text: palette.black,
         textSecondary: palette.dirtyBlack,
-        border: palette.neutral200,
+        border: palette.neutral200Teal,
         notification: palette.error,
 
         // Material Design tokens
         onPrimary: '#ffffff',
-        primaryContainer: '#d4eef1',
+        primaryContainer: '#c8e8ec',
         onPrimaryContainer: palette.primaryDark,
 
         secondary: palette.secondary,
         onSecondary: '#ffffff',
-        secondaryContainer: '#fde0d9',
+        secondaryContainer: '#fcdcd4',
         onSecondaryContainer: palette.secondaryDark,
 
         onBackground: palette.black,
-        surface: '#ffffff',
+        surface: palette.surfaceLight,
         onSurface: palette.black,
-        surfaceVariant: palette.neutral100,
+        surfaceVariant: palette.neutral100Teal,
         onSurfaceVariant: palette.gray,
 
-        outline: palette.neutral200,
-        outlineVariant: palette.neutral300,
+        outline: palette.neutral200Teal,
+        outlineVariant: palette.neutral300Teal,
 
         error: palette.error,
         onError: '#ffffff',
@@ -86,7 +95,7 @@ export const Colors = {
         action: palette.action,
         onAction: '#ffffff',
 
-        scrim: 'rgba(98, 176, 186, 0.5)',
+        scrim: 'rgba(98, 176, 186, 0.4)',
         inverseSurface: palette.black,
         inverseOnSurface: palette.white,
         inversePrimary: palette.primaryLight,
@@ -94,12 +103,12 @@ export const Colors = {
     },
     dark: {
         // React Navigation required
-        primary: palette.primaryLight,
+        primary: palette.primary,
         background: palette.backgroundDark,
-        card: palette.surfaceDark,
+        card: palette.pureBlack,
         text: palette.white,
         textSecondary: palette.dirtyWhite,
-        border: '#2a3040',
+        border: '#354547',
         notification: palette.errorLight,
 
         // Material Design tokens
@@ -115,25 +124,25 @@ export const Colors = {
         onBackground: palette.white,
         surface: palette.surfaceDark,
         onSurface: palette.white,
-        surfaceVariant: '#2a3040',
+        surfaceVariant: '#253638',
         onSurfaceVariant: palette.neutral300,
 
-        outline: '#5a6064',
-        outlineVariant: '#6a7074',
+        outline: '#4a5658',
+        outlineVariant: '#5a6668',
 
         error: palette.errorLight,
         onError: palette.black,
-        errorContainer: '#5c2828',
+        errorContainer: '#4a2828',
         onErrorContainer: palette.errorLight,
         success: palette.successLight,
         onSuccess: palette.black,
-        successContainer: '#2a4a32',
+        successContainer: '#1e3a30',
         onSuccessContainer: palette.successLight,
 
         action: palette.actionLight,
         onAction: palette.black,
 
-        scrim: 'rgba(98, 176, 186, 0.2)',
+        scrim: 'rgba(27, 48, 51, 0.6)',
         inverseSurface: palette.white,
         inverseOnSurface: palette.black,
         inversePrimary: palette.primary,

@@ -53,7 +53,7 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
 
     return (
         <BottomSheetModal ref={bottomSheetRef} snapPoints={['75%']}>
-            <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <View style={styles.container}>
                 <Text style={styles.title}>Review {movieTitle}</Text>
 
                 <View style={styles.section}>

@@ -1,4 +1,4 @@
-import { spacing } from '@/src/constants/DesignTokens';
+import { fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useEffect, useRef } from 'react';
@@ -69,7 +69,7 @@ export const SearchBar = ({
             <Animated.View
                 style={[
                     styles.container,
-                    { backgroundColor: theme.colors.card, borderColor: theme.colors.border },
+                    { backgroundColor: theme.colors.background, borderColor: theme.colors.border },
                     animatedContainerStyle,
                 ]}
             >
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: 16,
+        fontSize: fontSize.base,
         paddingVertical: 0,
     },
 });

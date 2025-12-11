@@ -2,17 +2,32 @@ import { MOVIE_LIST_ITEM_WIDTH } from '@/src/constants/constants';
 import { borderRadius } from '@/src/constants/DesignTokens';
 import { useFavorites, useShare } from '@/src/hooks';
 import { Movie } from '@/src/types';
+import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router';
-import { Image, Platform, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, ViewStyle } from 'react-native';
 import { MovieCard } from './MovieCard';
+
+const styles = StyleSheet.create({
+    previewImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: borderRadius.md,
+    },
+});
 
 type Props = {
     movie: Movie;
     cinemaId?: number;
     width?: ViewStyle['width'];
+    horizontal?: boolean;
 };
 
-export const MovieListItem = ({ movie, cinemaId, width = MOVIE_LIST_ITEM_WIDTH }: Props) => {
+export const MovieListItem = ({
+    movie,
+    cinemaId,
+    width = MOVIE_LIST_ITEM_WIDTH,
+    horizontal = false,
+}: Props) => {
     const router = useRouter();
     const { toggleFavoriteStatus, isFavorite } = useFavorites();
     const { shareMovie } = useShare();
@@ -21,7 +36,7 @@ export const MovieListItem = ({ movie, cinemaId, width = MOVIE_LIST_ITEM_WIDTH }
     if (Platform.OS === 'android') {
         return (
             <Link href={`/movies/${movie._id}${cinemaPath}`}>
-                <MovieCard movie={movie} width={width} showGenres />
+                <MovieCard movie={movie} width={width} horizontal={horizontal} />
             </Link>
         );
     }
@@ -31,17 +46,15 @@ export const MovieListItem = ({ movie, cinemaId, width = MOVIE_LIST_ITEM_WIDTH }
     return (
         <Link href={`/movies/${movie._id}${cinemaPath}`}>
             <Link.Trigger>
-                <MovieCard movie={movie} width={width} showGenres />
+                <MovieCard movie={movie} width={width} horizontal={horizontal} />
             </Link.Trigger>
             <Link.Preview>
                 <Image
                     source={{ uri: movie.poster }}
-                    style={{
-                        width: '100%',
-                        height: '100%',
-                        resizeMode: 'contain',
-                        borderRadius: borderRadius.md,
-                    }}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                    recyclingKey={movie._id}
+                    style={styles.previewImage}
                 />
             </Link.Preview>
             <Link.Menu>

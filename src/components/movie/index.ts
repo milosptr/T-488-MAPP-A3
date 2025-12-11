@@ -1,3 +1,4 @@
+export * from './EmptyFavourites';
 export * from './MovieCard';
 export * from './MovieDetailsList';
 export * from './MovieListEmpty';

@@ -1,64 +1,83 @@
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
-import { Image, StyleSheet, View, ViewStyle } from 'react-native';
-import { ImdbIcon } from '../icons';
-import { LiquidButton, Skeleton, Text } from '../ui';
+import React, { useMemo } from 'react';
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import { Skeleton, Text } from '../ui';
 import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
     movie: Movie;
     showFavoriteButton?: boolean;
-    showGenres?: boolean;
     width?: ViewStyle['width'];
+    horizontal?: boolean;
 };
 
+const ASPECT_RATIO_LANDSCAPE = 16 / 9;
+const ASPECT_RATIO_POSTER = 1 / 1.53;
+const GRADIENT_HEIGHT = 200;
+
+const fontSizes = {
+    horizontal: {
+        title: fontSize.lg,
+        detailText: fontSize.sm,
+    },
+    vertical: {
+        title: fontSize.base,
+        detailText: fontSize.xs,
+    },
+};
 export const MovieCard = ({
     movie,
     showFavoriteButton = false,
-    showGenres = false,
     width,
+    horizontal = false,
 }: Props) => {
     const { colors } = useTheme();
-    const { image: backdropImage, isLoading } = useMovieBackdrop(movie.ids.tmdb);
+    const { image: backdropImage, isLoading } = useMovieBackdrop(
+        horizontal ? movie?.ids.tmdb : undefined
+    );
 
-    const _showGenres = showGenres && movie.genres.length > 0 && !showFavoriteButton;
-    const _showFavoriteButton = showFavoriteButton && !showGenres;
+    const genre = movie?.genres?.map(g => g.NameEN ?? g.Name).at(0);
 
-    const genres = movie.genres.map(g => g.NameEN ?? g.Name).slice(0, 2);
+    const detailTextStyle = useMemo(() => {
+        return {
+            ...styles.detailText,
+            fontSize: fontSizes[horizontal ? 'horizontal' : 'vertical'].detailText,
+        };
+    }, [horizontal]);
+
+    const titleStyle = useMemo(() => {
+        return {
+            ...styles.title,
+            fontSize: fontSizes[horizontal ? 'horizontal' : 'vertical'].title,
+        };
+    }, [horizontal]);
 
     return (
         <Skeleton show={isLoading}>
-            <View style={[styles.posterContainer, { backgroundColor: colors.surface, width }]}>
+            <View
+                style={[
+                    styles.posterContainer,
+                    {
+                        backgroundColor: colors.surface,
+                        width,
+                        aspectRatio: horizontal ? ASPECT_RATIO_LANDSCAPE : ASPECT_RATIO_POSTER,
+                    },
+                ]}
+            >
                 <Image
-                    source={{ uri: backdropImage ?? movie.poster }}
-                    resizeMode="contain"
+                    source={{ uri: backdropImage ?? movie?.poster }}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                    recyclingKey={movie._id}
                     style={styles.poster}
                 />
-                {_showFavoriteButton && (
-                    <View style={styles.topRightContainer}>
+                {showFavoriteButton && (
+                    <View style={styles.bottomRightContainer}>
                         <FavoriteButton movieId={movie._id} />
-                    </View>
-                )}
-                {_showGenres && (
-                    <View
-                        style={[
-                            styles.topRightContainer,
-                            { flexDirection: 'row', gap: spacing.sm },
-                        ]}
-                    >
-                        {genres.map((genre, index) => (
-                            <LiquidButton
-                                key={index}
-                                text={genre}
-                                style={styles.genreItem}
-                                textStyle={styles.ganreText}
-                                glassEffectStyle="clear"
-                                isInteractive={false}
-                            />
-                        ))}
                     </View>
                 )}
                 <LinearGradient
@@ -67,30 +86,18 @@ export const MovieCard = ({
                     start={{ x: 0, y: 0.5 }}
                     end={{ x: 0, y: 1 }}
                 />
-                <LinearGradient
-                    colors={[colors.trueBlack, 'transparent']}
-                    style={styles.topGradient}
-                    start={{ x: 0, y: -0.1 }}
-                    end={{ x: 0, y: 1 }}
-                />
                 <View style={styles.infoContainer}>
                     <View>
-                        <Text style={styles.title} numberOfLines={2}>
-                            {movie.title}
+                        <Text style={titleStyle} numberOfLines={2}>
+                            {movie?.title}
                         </Text>
                     </View>
                     <View style={styles.infoDetails}>
                         <View style={styles.infoItem}>
-                            <Text style={styles.detailText}>{movie.year}</Text>
-                            <Text style={styles.detailText}>•</Text>
-                            <Text style={styles.detailText}>{movie.durationMinutes} min</Text>
+                            <Text style={detailTextStyle}>{movie?.year}</Text>
+                            <Text style={detailTextStyle}>•</Text>
+                            <Text style={detailTextStyle}>{genre}</Text>
                         </View>
-                        {!!movie.ratings.imdb && (
-                            <View style={[styles.infoItem, { gap: spacing.sm }]}>
-                                <ImdbIcon height={14} width={24} />
-                                <Text style={styles.detailText}>{movie.ratings.imdb} / 10</Text>
-                            </View>
-                        )}
                     </View>
                 </View>
             </View>
@@ -101,7 +108,6 @@ export const MovieCard = ({
 const styles = StyleSheet.create({
     posterContainer: {
         width: '100%',
-        aspectRatio: 16 / 9,
         borderRadius: borderRadius.md,
         overflow: 'hidden',
     },
@@ -111,7 +117,7 @@ const styles = StyleSheet.create({
         opacity: 0.8,
     },
     title: {
-        fontSize: fontSize.lg,
+        fontSize: fontSize.base,
         fontWeight: 'bold',
     },
     infoContainer: {
@@ -133,14 +139,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        height: 200,
-    },
-    topGradient: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 50,
+        height: GRADIENT_HEIGHT,
     },
     infoItem: {
         flexDirection: 'row',
@@ -148,20 +147,13 @@ const styles = StyleSheet.create({
         gap: spacing.xs,
         opacity: 0.8,
     },
-    topRightContainer: {
+    bottomRightContainer: {
         position: 'absolute',
-        top: spacing.sm,
+        bottom: spacing.sm,
         right: spacing.sm,
         zIndex: 1,
     },
-    genreItem: {
-        paddingHorizontal: spacing.md,
-        paddingVertical: spacing.xs,
-    },
-    ganreText: {
-        fontSize: fontSize.xs,
-    },
     detailText: {
-        fontSize: fontSize.sm,
+        fontSize: fontSize.xs,
     },
 });

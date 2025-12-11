@@ -1,4 +1,4 @@
-import { spacing } from '@/src/constants/DesignTokens';
+import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useCallback, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
@@ -27,10 +27,6 @@ export const TrailerModal = ({ ref, videoKey }: Props) => {
         setPlaying(false);
     }, []);
 
-    if (!videoKey) {
-        return null;
-    }
-
     return (
         <BottomSheetModal
             ref={ref}
@@ -43,14 +39,16 @@ export const TrailerModal = ({ ref, videoKey }: Props) => {
                 <View style={styles.header}>
                     <Text style={styles.title}>Trailer</Text>
                 </View>
-                <View style={styles.playerContainer}>
-                    <YoutubePlayer
-                        height={videoHeight}
-                        play={playing}
-                        videoId={videoKey}
-                        onChangeState={handleStateChange}
-                    />
-                </View>
+                {videoKey && (
+                    <View style={styles.playerContainer}>
+                        <YoutubePlayer
+                            height={videoHeight}
+                            play={playing}
+                            videoId={videoKey}
+                            onChangeState={handleStateChange}
+                        />
+                    </View>
+                )}
             </BottomSheetView>
         </BottomSheetModal>
     );
@@ -69,11 +67,11 @@ const styles = StyleSheet.create({
         marginBottom: spacing.md,
     },
     title: {
-        fontSize: 18,
+        fontSize: fontSize.lg,
         fontWeight: '600',
     },
     playerContainer: {
-        borderRadius: 12,
+        borderRadius: borderRadius.md,
         overflow: 'hidden',
     },
 });

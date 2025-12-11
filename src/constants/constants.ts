@@ -14,4 +14,4 @@ export const SHOWTIME_PRESETS = [
     { value: 'NIGHT', label: 'Night', start: '22:00', end: '23:59' },
 ];
 
-export const MOVIE_LIST_ITEM_WIDTH = 300;
+export const MOVIE_LIST_ITEM_WIDTH = 180;

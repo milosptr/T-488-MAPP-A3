@@ -1,98 +1,94 @@
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { UpcomingMovie } from '@/src/types';
+import { getTrailerKey } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useMemo, useRef } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
-import { TrailerModal } from '../trailer/TrailerModal';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { LiquidButton, Skeleton, Text } from '../ui';
 
 type Props = {
     movie: UpcomingMovie;
+    onTrailerPress?: (trailerKey: string) => void;
 };
 
 const PLAY_ICON_SIZE = 22;
+const ASPECT_RATIO_LANDSCAPE = 16 / 9;
+const GRADIENT_HEIGHT = 200;
 
 const formatReleaseDate = (releaseDate: string) => {
     const date = new Date(releaseDate);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 };
 
-export const UpcomingMovieCard = ({ movie }: Props) => {
+export const UpcomingMovieCard = ({ movie, onTrailerPress }: Props) => {
     const { colors } = useTheme();
     const { image: backdropImage, isLoading } = useMovieBackdrop(movie.ids.tmdb);
 
-    const trailerRef = useRef<BottomSheetModal>(null);
-    const trailerKey = useMemo(() => {
-        if (!movie?.trailers?.length) return null;
+    const trailerKey = getTrailerKey(movie);
 
-        const allResults = movie.trailers.flatMap(t => t.results);
-
-        return (
-            allResults.find(r => r.type === 'Trailer')?.key ??
-            allResults.find(r => r.name.toLowerCase().includes('trailer'))?.key ??
-            allResults[0]?.key ??
-            null
-        );
-    }, [movie]);
+    const handleTrailerPress = () => {
+        if (trailerKey && onTrailerPress) {
+            onTrailerPress(trailerKey);
+        }
+    };
 
     return (
-        <>
-            <Skeleton show={isLoading}>
-                <View style={[styles.posterContainer, { backgroundColor: colors.surface }]}>
-                    <Image
-                        source={{ uri: backdropImage ?? movie.poster }}
-                        resizeMode="contain"
-                        style={styles.poster}
-                    />
-                    <LinearGradient
-                        colors={['transparent', colors.surface]}
-                        style={styles.gradient}
-                        start={{ x: 0, y: 0.3 }}
-                        end={{ x: 0, y: 1 }}
-                    />
-                    {!!trailerKey && (
-                        <View style={styles.trailerButton}>
-                            <LiquidButton
-                                glassEffectStyle="regular"
-                                leadingIcon={
-                                    <Ionicons
-                                        name="play-circle-outline"
-                                        size={PLAY_ICON_SIZE}
-                                        color={colors.text}
-                                    />
-                                }
-                                text="Watch Trailer"
-                                style={styles.trailerButtonInner}
-                                onPress={() => trailerRef.current?.present()}
-                            />
-                        </View>
-                    )}
-                    <View style={styles.infoContainer}>
-                        <View>
-                            <Text style={styles.title} numberOfLines={2}>
-                                {movie.title}
-                            </Text>
-                        </View>
-                        <View style={styles.infoDetails}>
-                            <View style={styles.infoItem}>
-                                <Text>{formatReleaseDate(movie['release-dateIS'])}</Text>
-                            </View>
+        <Skeleton show={isLoading}>
+            <View style={[styles.posterContainer, { backgroundColor: colors.surface }]}>
+                <Image
+                    source={{ uri: backdropImage ?? movie.poster }}
+                    contentFit="cover"
+                    cachePolicy="memory-disk"
+                    recyclingKey={movie._id}
+                    style={styles.poster}
+                />
+                <LinearGradient
+                    colors={['transparent', colors.surface]}
+                    style={styles.gradient}
+                    start={{ x: 0, y: 0.3 }}
+                    end={{ x: 0, y: 1 }}
+                />
+                {!!trailerKey && (
+                    <View style={styles.trailerButton}>
+                        <LiquidButton
+                            glassEffectStyle="regular"
+                            leadingIcon={
+                                <Ionicons
+                                    name="play-circle-outline"
+                                    size={PLAY_ICON_SIZE}
+                                    color={colors.text}
+                                />
+                            }
+                            text="Watch Trailer"
+                            style={styles.trailerButtonInner}
+                            onPress={handleTrailerPress}
+                        />
+                    </View>
+                )}
+                <View style={styles.infoContainer}>
+                    <View>
+                        <Text style={styles.title} numberOfLines={2}>
+                            {movie.title}
+                        </Text>
+                    </View>
+                    <View style={styles.infoDetails}>
+                        <View style={styles.infoItem}>
+                            <Text>{formatReleaseDate(movie['release-dateIS'])}</Text>
                         </View>
                     </View>
                 </View>
-            </Skeleton>
-            <TrailerModal ref={trailerRef} videoKey={trailerKey} />
-        </>
+            </View>
+        </Skeleton>
     );
 };
 
 const styles = StyleSheet.create({
     posterContainer: {
         width: '100%',
-        aspectRatio: 16 / 9,
+        aspectRatio: ASPECT_RATIO_LANDSCAPE,
         borderRadius: borderRadius.md,
         overflow: 'hidden',
     },
@@ -124,7 +120,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        height: 200,
+        height: GRADIENT_HEIGHT,
     },
     infoItem: {
         flexDirection: 'row',

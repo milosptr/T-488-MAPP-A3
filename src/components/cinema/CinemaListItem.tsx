@@ -4,6 +4,7 @@ import { useTheme } from '@/src/hooks';
 import { Cinema } from '@/src/types';
 import { haptics } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
+import { GlassView } from 'expo-glass-effect';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -25,29 +26,21 @@ export const CinemaListItem = ({ cinema }: Props) => {
     };
 
     return (
-        <Pressable
-            onPress={handleNavigate}
-            style={({ pressed }) => [
-                styles.container,
-                {
-                    backgroundColor: colors.surface,
-                    borderColor: colors.border,
-                    opacity: pressed ? 0.7 : 1,
-                },
-            ]}
-        >
-            <View style={[styles.iconContainer, { backgroundColor: colors.surfaceVariant }]}>
-                <Ionicons name="film-outline" size={ICON_SIZE} color={colors.primary} />
-            </View>
-            <View style={styles.infoContainer}>
-                <Text style={styles.name} numberOfLines={1}>
-                    {cinema.name}
-                </Text>
-                <Text variant="secondary" style={styles.website} numberOfLines={1}>
-                    {cinema.website}
-                </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={CHEVRON_SIZE} color={colors.textSecondary} />
+        <Pressable onPress={handleNavigate}>
+            <GlassView glassEffectStyle="clear" isInteractive style={styles.container}>
+                <View style={[styles.iconContainer, { backgroundColor: colors.surfaceVariant }]}>
+                    <Ionicons name="film-outline" size={ICON_SIZE} color={colors.primary} />
+                </View>
+                <View style={styles.infoContainer}>
+                    <Text style={styles.name} numberOfLines={1}>
+                        {cinema.name}
+                    </Text>
+                    <Text variant="secondary" style={styles.website} numberOfLines={1}>
+                        {cinema.website}
+                    </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={CHEVRON_SIZE} color={colors.textSecondary} />
+            </GlassView>
         </Pressable>
     );
 };
@@ -58,8 +51,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: spacing.lg,
         borderRadius: borderRadius.md,
-        borderWidth: 1,
         gap: spacing.lg,
+        marginHorizontal: spacing.lg,
     },
     iconContainer: {
         width: ICON_CONTAINER_SIZE,

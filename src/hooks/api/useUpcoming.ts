@@ -2,6 +2,24 @@ import { apiClient, queryKeys, STALE_TIMES } from '@/src/api';
 import type { Trailer, UpcomingMovie, UpcomingQueryParams } from '@/src/types';
 import { useQuery } from '@tanstack/react-query';
 
+const processUpcomingMovies = async (params?: UpcomingQueryParams) => {
+    const movies = await apiClient<UpcomingMovie[]>('/upcoming', {
+        params: params as Record<string, string | number | undefined>,
+    });
+    const seen = new Set<string>();
+    const uniqueMovies = movies.filter(movie => {
+        const id = movie.id.toString();
+        if (seen.has(id)) return false;
+        seen.add(id);
+        return true;
+    });
+    return uniqueMovies.sort((a, b) => {
+        const dateA = new Date(a['release-dateIS']).getTime();
+        const dateB = new Date(b['release-dateIS']).getTime();
+        return dateA - dateB;
+    });
+};
+
 /**
  * Fetch upcoming movies, sorted by release date (ascending)
  *
@@ -12,25 +30,7 @@ import { useQuery } from '@tanstack/react-query';
 export const useUpcoming = (params?: UpcomingQueryParams) => {
     return useQuery({
         queryKey: queryKeys.upcoming.list(params),
-        queryFn: async () => {
-            const movies = await apiClient<UpcomingMovie[]>('/upcoming', {
-                params: params as Record<string, string | number | undefined>,
-            });
-            // Remove duplicates by id
-            const seen = new Set<string>();
-            const uniqueMovies = movies.filter(movie => {
-                const id = movie.id.toString();
-                if (seen.has(id)) return false;
-                seen.add(id);
-                return true;
-            });
-            // Sort by release date (ascending)
-            return uniqueMovies.sort((a, b) => {
-                const dateA = new Date(a['release-dateIS']).getTime();
-                const dateB = new Date(b['release-dateIS']).getTime();
-                return dateA - dateB;
-            });
-        },
+        queryFn: () => processUpcomingMovies(params),
         staleTime: STALE_TIMES.upcoming,
     });
 };
@@ -55,30 +55,26 @@ export const useUpcomingMovie = (id: string | undefined) => {
     });
 };
 
+const selectWithTrailers = (movies: UpcomingMovie[]) =>
+    movies.filter(
+        movie =>
+            movie.trailers &&
+            movie.trailers.length > 0 &&
+            movie.trailers.some((t: Trailer) => t.results.length > 0)
+    );
+
 /**
  * Fetch only upcoming movies that have trailers
+ * Derives from the same cache as useUpcoming()
  *
  * @example
  * const { data: moviesWithTrailers } = useUpcomingWithTrailers();
  */
 export const useUpcomingWithTrailers = () => {
     return useQuery({
-        queryKey: [...queryKeys.upcoming.all, 'with-trailers'] as const,
-        queryFn: async () => {
-            const movies = await apiClient<UpcomingMovie[]>('/upcoming');
-            return movies
-                .filter(
-                    movie =>
-                        movie.trailers &&
-                        movie.trailers.length > 0 &&
-                        movie.trailers.some((t: Trailer) => t.results.length > 0)
-                )
-                .sort((a, b) => {
-                    const dateA = new Date(a['release-dateIS']).getTime();
-                    const dateB = new Date(b['release-dateIS']).getTime();
-                    return dateA - dateB;
-                });
-        },
+        queryKey: queryKeys.upcoming.list(),
+        queryFn: () => processUpcomingMovies(),
         staleTime: STALE_TIMES.upcoming,
+        select: selectWithTrailers,
     });
 };

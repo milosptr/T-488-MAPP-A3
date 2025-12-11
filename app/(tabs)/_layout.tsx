@@ -2,23 +2,33 @@ import { useTheme } from '@/src/hooks';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
+const TAB_ICON_SIZE = 28;
+
 function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']; color: string }) {
-    return <Ionicons size={28} {...props} />;
+    return <Ionicons size={TAB_ICON_SIZE} {...props} />;
 }
 
 export default function TabLayout() {
     const { colors } = useTheme();
 
+    const TabBarBackground = () => (
+        <View
+            style={[
+                styles.tabBarBackground,
+                { backgroundColor: colors.card, borderTopColor: colors.border },
+            ]}
+        />
+    );
+
     return (
         <Tabs
             screenOptions={{
                 headerShown: false,
-                tabBarActiveTintColor: colors.primary,
-                tabBarLabelStyle: {
-                    marginTop: 3,
-                },
+                tabBarActiveTintColor: colors.text,
+                tabBarBackground: TabBarBackground,
+                tabBarLabelStyle: styles.tabBarLabel,
             }}
         >
             <Tabs.Screen
@@ -52,3 +62,13 @@ export default function TabLayout() {
         </Tabs>
     );
 }
+
+const styles = StyleSheet.create({
+    tabBarBackground: {
+        flex: 1,
+        borderTopWidth: 1,
+    },
+    tabBarLabel: {
+        marginTop: 3,
+    },
+});

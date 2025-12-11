@@ -17,7 +17,7 @@ export const CinemasScreen = () => {
     const renderItem = ({ item }: ListRenderItemInfo<Cinema>) => <CinemaListItem cinema={item} />;
 
     return (
-        <SafeAreaScreen>
+        <SafeAreaScreen paddingLeft={0} paddingRight={0}>
             <View style={styles.header}>
                 <Text style={styles.title}>Cinemas</Text>
             </View>
@@ -46,7 +46,7 @@ export const CinemasScreen = () => {
 
 const styles = StyleSheet.create({
     header: {
-        marginBottom: spacing.xl,
+        paddingHorizontal: spacing.lg,
     },
     title: {
         fontSize: fontSize.xxl,
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
         height: spacing.md,
     },
     listContent: {
+        paddingTop: spacing.xl,
         paddingBottom: spacing.xl,
         flexGrow: 1,
     },

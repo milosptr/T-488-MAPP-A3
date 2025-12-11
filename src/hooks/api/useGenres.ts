@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient, queryKeys, STALE_TIMES } from '@/src/api';
 import type { Genre } from '@/src/types';
+import { useMemo } from 'react';
 
 /**
  * Fetch all genres
@@ -25,11 +26,14 @@ export const useGenres = () => {
  */
 export const useGenreById = (id: number | undefined) => {
     const { data: genres } = useGenres();
-    return genres?.find(genre => genre.ID === id);
+    return useMemo(() => genres?.find(genre => genre.ID === id), [genres, id]);
 };
+
+const selectGenresMap = (genres: Genre[]) => new Map(genres.map(genre => [genre.ID, genre]));
 
 /**
  * Get genres as a lookup map for quick access
+ * Derives from the same cache as useGenres()
  *
  * @example
  * const { data: genreMap } = useGenresMap();
@@ -37,11 +41,9 @@ export const useGenreById = (id: number | undefined) => {
  */
 export const useGenresMap = () => {
     return useQuery({
-        queryKey: [...queryKeys.genres.all, 'map'] as const,
-        queryFn: async () => {
-            const genres = await apiClient<Genre[]>('/genres');
-            return new Map(genres.map(genre => [genre.ID, genre]));
-        },
+        queryKey: queryKeys.genres.list(),
+        queryFn: () => apiClient<Genre[]>('/genres'),
         staleTime: STALE_TIMES.genres,
+        select: selectGenresMap,
     });
 };

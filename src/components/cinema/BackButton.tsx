@@ -25,7 +25,6 @@ export const BackButton = () => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: spacing.lg,
         paddingVertical: spacing.md,
     },
     button: {

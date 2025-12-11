@@ -1,6 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { apiClient, queryKeys, STALE_TIMES } from '@/src/api';
 import type { Cinema } from '@/src/types';
+import { useCallback } from 'react';
+
+const fetchCinemas = async () => {
+    const cinemas = await apiClient<Cinema[]>('/theaters');
+    return cinemas.sort((a, b) => a.name.localeCompare(b.name, 'is'));
+};
 
 /**
  * Fetch all cinemas, sorted alphabetically
@@ -11,29 +17,29 @@ import type { Cinema } from '@/src/types';
 export const useCinemas = () => {
     return useQuery({
         queryKey: queryKeys.cinemas.list(),
-        queryFn: async () => {
-            const cinemas = await apiClient<Cinema[]>('/theaters');
-            // Sort alphabetically by name (Icelandic locale)
-            return cinemas.sort((a, b) => a.name.localeCompare(b.name, 'is'));
-        },
+        queryFn: fetchCinemas,
         staleTime: STALE_TIMES.cinemas,
     });
 };
 
 /**
  * Fetch a single cinema by ID
+ * Derives from the same cache as useCinemas()
  *
  * @example
  * const { data: cinema } = useCinema(1);
  */
 export const useCinema = (id: number | undefined) => {
+    const selectCinema = useCallback(
+        (cinemas: Cinema[]) => cinemas.find(c => c.id === id) ?? null,
+        [id]
+    );
+
     return useQuery({
-        queryKey: queryKeys.cinemas.detail(id ?? 0),
-        queryFn: async () => {
-            const cinemas = await apiClient<Cinema[]>('/theaters');
-            return cinemas.find(cinema => cinema.id === id) ?? null;
-        },
+        queryKey: queryKeys.cinemas.list(),
+        queryFn: fetchCinemas,
         enabled: !!id,
         staleTime: STALE_TIMES.cinemas,
+        select: selectCinema,
     });
 };

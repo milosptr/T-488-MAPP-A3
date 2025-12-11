@@ -1,10 +1,12 @@
 import { Text } from '@/src/components/ui';
+import { fontSize, spacing } from '@/src/constants/DesignTokens';
 import { Stack } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+import { SafeAreaScreen } from '../components/layout';
 
 export const NotAuthenticatedScreen = () => {
     return (
-        <>
+        <SafeAreaScreen>
             <Stack.Screen options={{ title: 'Oops!' }} />
             <View style={styles.container}>
                 <Text style={styles.title}>You are not authenticated.</Text>
@@ -17,7 +19,7 @@ export const NotAuthenticatedScreen = () => {
                     add the login credentials to the .env file and restart the app.
                 </Text>
             </View>
-        </>
+        </SafeAreaScreen>
     );
 };
 
@@ -26,15 +28,15 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 20,
-        gap: 10,
+        padding: spacing.xl,
+        gap: spacing.sm,
     },
     title: {
-        fontSize: 24,
+        fontSize: fontSize.xl,
         fontWeight: 'bold',
     },
     text: {
-        fontSize: 16,
+        fontSize: fontSize.base,
         textAlign: 'center',
     },
 });

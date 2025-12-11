@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from '@react-navigation/native';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { fontSize, spacing } from '../constants/DesignTokens';
 import {
@@ -48,38 +48,41 @@ export const HomeFilters = ({ onFilterChange }: Props) => {
         state => state.filters
     );
 
-    const filterConfigs: Record<Filter, FilterConfig> = {
-        rating: {
-            title: rating?.label ? `Rating: ${rating.label}` : 'Rating',
-            selected: !!rating,
-            onClear: () => dispatch(setRating(null)),
-            Component: RatingFilter,
-        },
-        showtime: {
-            title: showtime?.label ? `Showtime: ${showtime.label}` : 'Showtime',
-            selected: !!showtime,
-            onClear: () => dispatch(setShowtime(null)),
-            Component: ShowtimeFilter,
-        },
-        actors: {
-            title: actors.length > 0 ? `Actors (${actors.length})` : 'Actors',
-            selected: actors.length > 0,
-            onClear: () => dispatch(setActors([])),
-            Component: ActorsFilter,
-        },
-        directors: {
-            title: directors.length > 0 ? `Directors (${directors.length})` : 'Directors',
-            selected: directors.length > 0,
-            onClear: () => dispatch(setDirectors([])),
-            Component: DirectorsFilter,
-        },
-        certificate: {
-            title: certificate ? `PG Rating: ${certificate}` : 'PG Rating',
-            selected: !!certificate,
-            onClear: () => dispatch(setCertificate(null)),
-            Component: CertificateFilter,
-        },
-    };
+    const filterConfigs: Record<Filter, FilterConfig> = useMemo(
+        () => ({
+            rating: {
+                title: rating?.label ? `Rating: ${rating.label}` : 'Rating',
+                selected: !!rating,
+                onClear: () => dispatch(setRating(null)),
+                Component: RatingFilter,
+            },
+            showtime: {
+                title: showtime?.label ? `Showtime: ${showtime.label}` : 'Showtime',
+                selected: !!showtime,
+                onClear: () => dispatch(setShowtime(null)),
+                Component: ShowtimeFilter,
+            },
+            actors: {
+                title: actors.length > 0 ? `Actors (${actors.length})` : 'Actors',
+                selected: actors.length > 0,
+                onClear: () => dispatch(setActors([])),
+                Component: ActorsFilter,
+            },
+            directors: {
+                title: directors.length > 0 ? `Directors (${directors.length})` : 'Directors',
+                selected: directors.length > 0,
+                onClear: () => dispatch(setDirectors([])),
+                Component: DirectorsFilter,
+            },
+            certificate: {
+                title: certificate ? `PG Rating: ${certificate}` : 'PG Rating',
+                selected: !!certificate,
+                onClear: () => dispatch(setCertificate(null)),
+                Component: CertificateFilter,
+            },
+        }),
+        [rating, showtime, actors, directors, certificate, dispatch]
+    );
 
     const handleOpenFilters = (filterType: Filter) => {
         setFilter(filterType);
@@ -113,10 +116,10 @@ export const HomeFilters = ({ onFilterChange }: Props) => {
     const activeFilters = filterOrder.filter(key => filterConfigs[key].selected);
 
     return (
-        <View style={{ gap: spacing.xs }}>
-            <View style={{ height: 20 }}>
+        <View style={styles.wrapper}>
+            <View style={styles.activeFiltersContainer}>
                 {activeFilters.length > 0 && (
-                    <Text variant="primary" style={{ fontSize: fontSize.sm }}>
+                    <Text variant="primary" style={styles.activeFiltersText}>
                         {activeFilters.length} active filter{activeFilters.length > 1 ? 's' : ''}
                     </Text>
                 )}
@@ -152,7 +155,18 @@ export const HomeFilters = ({ onFilterChange }: Props) => {
     );
 };
 
+const ACTIVE_FILTERS_HEIGHT = 20;
+
 const styles = StyleSheet.create({
+    wrapper: {
+        gap: spacing.xs,
+    },
+    activeFiltersContainer: {
+        height: ACTIVE_FILTERS_HEIGHT,
+    },
+    activeFiltersText: {
+        fontSize: fontSize.sm,
+    },
     container: {
         flexDirection: 'row',
         gap: spacing.md,

@@ -1,12 +1,11 @@
 import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
-import { MovieCard } from '@/src/components/movie/MovieCard';
+import { EmptyFavourites, MovieCard } from '@/src/components/movie';
 import { Skeleton, Text } from '@/src/components/ui';
-import { fontSize, spacing } from '@/src/constants/DesignTokens';
+import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useMovies, useTheme } from '@/src/hooks';
 import { setFavoriteOrder, useAppDispatch } from '@/src/store';
 import { Movie } from '@/src/types';
 import { haptics } from '@/src/utils';
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -15,6 +14,8 @@ import DraggableFlatList, {
     ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const ASPECT_RATIO_LANDSCAPE = 16 / 9;
 
 export const FavouritesScreen = () => {
     const { colors } = useTheme();
@@ -57,20 +58,12 @@ export const FavouritesScreen = () => {
                 disabled={isActive}
                 style={[styles.movieItem, isActive && styles.movieItemActive]}
             >
-                <MovieCard movie={item} showFavoriteButton />
+                <MovieCard movie={item} showFavoriteButton horizontal />
             </Pressable>
         </ScaleDecorator>
     );
 
-    const renderEmpty = () => (
-        <View style={styles.emptyContainer}>
-            <Ionicons name="heart-outline" size={64} color={colors.text} style={{ opacity: 0.3 }} />
-            <Text style={[styles.emptyTitle, { color: colors.text }]}>No favorites yet</Text>
-            <Text style={[styles.emptySubtitle, { color: colors.text, opacity: 0.6 }]}>
-                Tap the heart icon on any movie to add it to your favorites
-            </Text>
-        </View>
-    );
+    const ItemSeparator = () => <View style={styles.separator} />;
 
     if (isLoading) {
         return (
@@ -89,10 +82,7 @@ export const FavouritesScreen = () => {
     }
 
     return (
-        <SafeAreaScreen
-            edges={['top', 'bottom']}
-            style={[styles.container, { backgroundColor: colors.background }]}
-        >
+        <SafeAreaScreen background edges={['top', 'bottom']} style={styles.container}>
             <View style={styles.header}>
                 <View>
                     <Text style={styles.headerTitle}>Favourites</Text>
@@ -111,10 +101,10 @@ export const FavouritesScreen = () => {
                     styles.listContent,
                     { paddingBottom: bottomInset + spacing.xxl },
                 ]}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                style={{ height: '100%' }}
+                ItemSeparatorComponent={ItemSeparator}
+                style={styles.list}
                 showsVerticalScrollIndicator={false}
-                ListEmptyComponent={renderEmpty}
+                ListEmptyComponent={EmptyFavourites}
             />
         </SafeAreaScreen>
     );
@@ -138,6 +128,9 @@ const styles = StyleSheet.create({
     listContent: {
         flexGrow: 1,
     },
+    list: {
+        height: '100%',
+    },
     movieItem: {
         position: 'relative',
     },
@@ -148,29 +141,13 @@ const styles = StyleSheet.create({
         opacity: 0.8,
         transform: [{ scale: 1.02 }],
     },
-    emptyContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: spacing.xl,
-        gap: spacing.md,
-    },
-    emptyTitle: {
-        fontSize: 20,
-        fontWeight: '600',
-        textAlign: 'center',
-    },
-    emptySubtitle: {
-        fontSize: 14,
-        textAlign: 'center',
-    },
     loadingContainer: {
         padding: spacing.md,
         gap: spacing.lg,
     },
     skeletonItem: {
         width: '100%',
-        aspectRatio: 16 / 9,
-        borderRadius: 12,
+        aspectRatio: ASPECT_RATIO_LANDSCAPE,
+        borderRadius: borderRadius.md,
     },
 });
