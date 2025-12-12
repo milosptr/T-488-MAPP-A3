@@ -3,7 +3,8 @@ import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useTheme } from '@/src/hooks';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
     onTrailerPress: () => void;
     onSharePress?: () => void;
     onFavoritePress?: () => void;
+    buttonsAnimatedStyle?: StyleProp<ViewStyle>;
 };
 
 const ICON_SIZE = 24;
@@ -30,6 +32,7 @@ export const MoviePosterSection = ({
     onTrailerPress,
     onSharePress,
     onFavoritePress,
+    buttonsAnimatedStyle,
 }: Props) => {
     const { colors } = useTheme();
     const insets = useSafeAreaInsets();
@@ -37,7 +40,7 @@ export const MoviePosterSection = ({
     const isFav = movieId ? isFavorite(movieId) : false;
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={styles.container}>
             <Image source={{ uri: posterUri }} style={styles.poster} resizeMode="cover" />
             <LinearGradient
                 colors={['transparent', colors.background]}
@@ -59,7 +62,7 @@ export const MoviePosterSection = ({
                     onPress={onBack}
                 />
             </View>
-            <View style={styles.content}>
+            <Animated.View style={[styles.content, buttonsAnimatedStyle]}>
                 {!!trailerKey && (
                     <LiquidButton
                         leadingIcon={
@@ -92,8 +95,8 @@ export const MoviePosterSection = ({
                     }
                     onPress={onFavoritePress}
                 />
-            </View>
-        </View>
+            </Animated.View>
+        </Animated.View>
     );
 };
 

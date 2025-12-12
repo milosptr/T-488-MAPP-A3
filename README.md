@@ -125,39 +125,47 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 ## Screenshots
 
 ### Splash Screen
+
 <img src="docs/splash-screen.png" width="250" alt="Splash Screen" />
 
 ### Home Screen
-| Home Screen | Movie Preview |
-| ----------- | ------------- |
+
+| Home Screen                                                      | Movie Preview                                                                    |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | <img src="docs/home-screen.png" width="250" alt="Home Screen" /> | <img src="docs/home-screen-movie-preview.png" width="250" alt="Movie Preview" /> |
 
 ### Filters
-| Showtime Filter | Showtime Filter Active |
-| --------------- | ---------------------- |
+
+| Showtime Filter                                                                       | Showtime Filter Active                                                                              |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | <img src="docs/home-screen-filter-showtimes.png" width="250" alt="Showtime Filter" /> | <img src="docs/home-screen-filter-showtimes-active.png" width="250" alt="Showtime Filter Active" /> |
 
 ### Cinemas
-| Cinemas List | Cinema Details |
-| ------------ | -------------- |
+
+| Cinemas List                                                           | Cinema Details                                                                |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | <img src="docs/cinemas-screen.png" width="250" alt="Cinemas Screen" /> | <img src="docs/cinema-details-screen.png" width="250" alt="Cinema Details" /> |
 
 ### Movie Details
-| Movie Screen (Top) | Movie Screen (Bottom) |
-| ------------------ | --------------------- |
+
+| Movie Screen (Top)                                                         | Movie Screen (Bottom)                                                            |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | <img src="docs/movie-screen-top.png" width="250" alt="Movie Screen Top" /> | <img src="docs/movie-screen-bottom.png" width="250" alt="Movie Screen Bottom" /> |
 
 ### Reviews
-| Reviews List | Write Review |
-| ------------ | ------------ |
+
+| Reviews List                                                                | Write Review                                                             |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | <img src="docs/movie-reviews-screen.png" width="250" alt="Movie Reviews" /> | <img src="docs/movie-write-review.png" width="250" alt="Write Review" /> |
 
 ### Upcoming Movies
+
 <img src="docs/upcoming-movies-screen.png" width="250" alt="Upcoming Movies" />
 
 ### Favourites
-| Favourites | Shared Favourites |
-| ---------- | ----------------- |
+
+| Favourites                                                                   | Shared Favourites                                                                   |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | <img src="docs/favourites-screen.png" width="250" alt="Favourites Screen" /> | <img src="docs/shared-favourites-screen.png" width="250" alt="Shared Favourites" /> |
 
 ## Technologies Used

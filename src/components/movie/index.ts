@@ -6,6 +6,7 @@ export * from './MovieListEmpty';
 export * from './MovieListItem';
 export * from './MoviePosterSection';
 export * from './MoviesLoadingSkeleton';
+export * from './MovieStickyHeader';
 export * from './MovieWithShowtimesSkeleton';
 export * from './ReviewItem';
 export * from './ReviewModal';

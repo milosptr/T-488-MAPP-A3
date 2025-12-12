@@ -4,6 +4,7 @@ import { ImdbIcon, RottenTomatoesIcon } from '@/src/components/icons';
 import {
     MovieDetailsList,
     MoviePosterSection,
+    MovieStickyHeader,
     ReviewsSummaryCard,
     SkeletonMovie,
 } from '@/src/components/movie';
@@ -14,7 +15,17 @@ import { useFavorites, useMovie, useMovieShowtimes, useShare, useTheme } from '@
 import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, {
+    Extrapolation,
+    interpolate,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    useSharedValue,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const HEADER_SHOW_THRESHOLD = 80;
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 
 export const MovieScreen = () => {
     const router = useRouter();
@@ -27,6 +38,32 @@ export const MovieScreen = () => {
     const { shareMovie } = useShare();
 
     const trailerRef = useRef<BottomSheetModal>(null);
+    const scrollY = useSharedValue(0);
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: event => {
+            scrollY.value = event.contentOffset.y;
+        },
+    });
+
+    const headerAnimatedStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            scrollY.value,
+            [HEADER_SHOW_THRESHOLD - 20, HEADER_SHOW_THRESHOLD + 20],
+            [0, 1],
+            Extrapolation.CLAMP
+        ),
+    }));
+
+    const posterButtonsAnimatedStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            scrollY.value,
+            [HEADER_SHOW_THRESHOLD - 20, HEADER_SHOW_THRESHOLD + 20],
+            [1, 0],
+            Extrapolation.CLAMP
+        ),
+    }));
+
     const trailerKey = useMemo(() => {
         if (!movie?.trailers?.length) return null;
 
@@ -77,78 +114,100 @@ export const MovieScreen = () => {
     const cinemaName = showtimes?.[0]?.cinema.name;
 
     return (
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: insets.bottom }}
-        >
-            <MoviePosterSection
-                posterUri={movie.poster}
+        <View style={styles.container}>
+            <MovieStickyHeader
                 trailerKey={trailerKey}
                 movieId={movie._id}
                 onBack={() => router.back()}
                 onTrailerPress={() => trailerRef.current?.present()}
-                onFavoritePress={() => toggleFavoriteStatus(movie._id)}
                 onSharePress={() => shareMovie(movie)}
+                onFavoritePress={() => toggleFavoriteStatus(movie._id)}
+                style={headerAnimatedStyle}
             />
-            <View style={styles.content}>
-                <View style={styles.infoDetails}>
-                    <Text variant="secondary">{movie.year}</Text>
-                    <Text>•</Text>
-                    <Text variant="secondary">{movie.durationMinutes} min</Text>
-                    {movie.certificate?.number && (
-                        <>
-                            <Text>•</Text>
-                            <Text variant="secondary">PG-{movie.certificate.number}</Text>
-                        </>
-                    )}
-                </View>
-                <View style={styles.details}>
-                    <Text style={styles.title}>{movie.title}</Text>
-                    <View style={styles.ratingContainer}>
-                        <View style={styles.ratingItem}>
-                            <ImdbIcon height={16} width={32} />
-                            <Text>{movie.ratings.imdb ? `${movie.ratings.imdb} / 10` : 'N/A'}</Text>
-                        </View>
-                        <View style={styles.ratingItem}>
-                            <RottenTomatoesIcon height={18} width={20} />
-                            <Text>
-                                {movie.ratings.rotten_audience
-                                    ? `${movie.ratings.rotten_audience}%`
-                                    : 'N/A'}
-                            </Text>
-                        </View>
+            <AnimatedScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: insets.bottom }}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
+            >
+                <MoviePosterSection
+                    posterUri={movie.poster}
+                    trailerKey={trailerKey}
+                    movieId={movie._id}
+                    onBack={() => router.back()}
+                    onTrailerPress={() => trailerRef.current?.present()}
+                    onFavoritePress={() => toggleFavoriteStatus(movie._id)}
+                    onSharePress={() => shareMovie(movie)}
+                    buttonsAnimatedStyle={posterButtonsAnimatedStyle}
+                />
+                <View style={styles.content}>
+                    <View style={styles.infoDetails}>
+                        <Text variant="secondary">{movie.year}</Text>
+                        <Text>•</Text>
+                        <Text variant="secondary">{movie.durationMinutes} min</Text>
+                        {movie.certificate?.number && (
+                            <>
+                                <Text>•</Text>
+                                <Text variant="secondary">PG-{movie.certificate.number}</Text>
+                            </>
+                        )}
                     </View>
-                    <Text variant="secondary">{movie.plot}</Text>
-                    <MovieDetailsList label="Director" items={directors} />
-                    <MovieDetailsList label="Actor" items={actors} />
-                    <MovieDetailsList label="Genre" items={genres} />
-                    <MovieDetailsList label="Writer" items={writers} />
-                    {!!omdbCountry && (
-                        <View style={styles.countryContainer}>
-                            <Text style={styles.label}>Country of origin:</Text>
-                            <Text variant="secondary">{omdbCountry}</Text>
-                        </View>
-                    )}
-                    {cinemaId && (
-                        <View style={[styles.showtimesSection, { borderColor: colors.border }]}>
-                            <Text style={styles.sectionTitle}>Cinema Showtimes</Text>
-                            {cinemaName && (
-                                <Text variant="secondary" style={styles.cinemaName}>
-                                    {cinemaName}
+                    <View style={styles.details}>
+                        <Text style={styles.title}>{movie.title}</Text>
+                        <View style={styles.ratingContainer}>
+                            <View style={styles.ratingItem}>
+                                <ImdbIcon height={16} width={32} />
+                                <Text>
+                                    {movie.ratings.imdb ? `${movie.ratings.imdb} / 10` : 'N/A'}
                                 </Text>
-                            )}
-                            <CinemaShowtimes showtimes={showtimes} isLoading={isLoadingShowtimes} />
+                            </View>
+                            <View style={styles.ratingItem}>
+                                <RottenTomatoesIcon height={18} width={20} />
+                                <Text>
+                                    {movie.ratings.rotten_audience
+                                        ? `${movie.ratings.rotten_audience}%`
+                                        : 'N/A'}
+                                </Text>
+                            </View>
                         </View>
-                    )}
-                    <ReviewsSummaryCard movieId={movie._id} movieTitle={movie.title} />
+                        <Text variant="secondary">{movie.plot}</Text>
+                        <MovieDetailsList label="Director" items={directors} />
+                        <MovieDetailsList label="Actor" items={actors} />
+                        <MovieDetailsList label="Genre" items={genres} />
+                        <MovieDetailsList label="Writer" items={writers} />
+                        {!!omdbCountry && (
+                            <View style={styles.countryContainer}>
+                                <Text style={styles.label}>Country of origin:</Text>
+                                <Text variant="secondary">{omdbCountry}</Text>
+                            </View>
+                        )}
+                        {cinemaId && (
+                            <View style={[styles.showtimesSection, { borderColor: colors.border }]}>
+                                <Text style={styles.sectionTitle}>Cinema Showtimes</Text>
+                                {cinemaName && (
+                                    <Text variant="secondary" style={styles.cinemaName}>
+                                        {cinemaName}
+                                    </Text>
+                                )}
+                                <CinemaShowtimes
+                                    showtimes={showtimes}
+                                    isLoading={isLoadingShowtimes}
+                                />
+                            </View>
+                        )}
+                        <ReviewsSummaryCard movieId={movie._id} movieTitle={movie.title} />
+                    </View>
                 </View>
-            </View>
-            <TrailerModal ref={trailerRef} videoKey={trailerKey} />
-        </ScrollView>
+                <TrailerModal ref={trailerRef} videoKey={trailerKey} />
+            </AnimatedScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     content: {
         padding: spacing.lg,
     },
