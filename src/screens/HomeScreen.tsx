@@ -3,7 +3,7 @@ import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { SearchBar } from '@/src/components/SearchBar';
 import { Text } from '@/src/components/ui';
 import { LegendList, LegendListRef, LegendListRenderItemProps } from '@legendapp/list';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useTransition } from 'react';
 import {
     LayoutChangeEvent,
     RefreshControl,
@@ -35,6 +35,13 @@ export const HomeScreen = () => {
     const filters = useAppSelector(state => state.filters);
     const [searchExpanded, setSearchExpanded] = useState(false);
     const [headerWidth, setHeaderWidth] = useState(0);
+    const [, startTransition] = useTransition();
+
+    const handleSearchChange = (text: string) => {
+        startTransition(() => {
+            dispatch(setTitle(text));
+        });
+    };
 
     const handleHeaderLayout = (event: LayoutChangeEvent) => {
         const { width: layoutWidth } = event.nativeEvent.layout;
@@ -66,7 +73,7 @@ export const HomeScreen = () => {
                         </Text>
                         <SearchBar
                             value={filters.title}
-                            onChangeText={text => dispatch(setTitle(text))}
+                            onChangeText={handleSearchChange}
                             placeholder="Search movies..."
                             expanded={searchExpanded}
                             onExpandedChange={setSearchExpanded}

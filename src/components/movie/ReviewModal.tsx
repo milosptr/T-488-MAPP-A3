@@ -4,27 +4,25 @@ import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import { useAppDispatch, useAppSelector } from '@/src/store';
 import { addReview, Review, saveReviews } from '@/src/store/slices';
-import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, StyleSheet, TextInput, View } from 'react-native';
 
 type Props = {
     movieId: string;
     movieTitle: string;
+    ref: React.RefObject<BottomSheetModal | null>;
 };
 
 const INPUT_HEIGHT = 50;
 const TEXT_INPUT_MIN_HEIGHT = 120;
 
-export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movieTitle }, ref) => {
+export const ReviewModal = ({ movieId, movieTitle, ref }: Props) => {
     const { colors } = useTheme();
     const dispatch = useAppDispatch();
     const existingReviews = useAppSelector(state => state.reviews.reviews);
     const [rating, setRating] = useState(0);
     const [reviewText, setReviewText] = useState('');
     const [userName, setUserName] = useState('');
-    const bottomSheetRef = useRef<BottomSheetModal>(null);
-
-    useImperativeHandle(ref, () => bottomSheetRef.current as BottomSheetModal);
 
     const resetForm = () => {
         setRating(0);
@@ -60,11 +58,11 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
 
         resetForm();
         Alert.alert('Success', 'Your review has been added!');
-        bottomSheetRef.current?.dismiss();
+        ref.current?.dismiss();
     };
 
     return (
-        <BottomSheetModal ref={bottomSheetRef} snapPoints={['75%']}>
+        <BottomSheetModal ref={ref} snapPoints={['75%']}>
             <View style={styles.container}>
                 <Text style={styles.title}>Review {movieTitle}</Text>
 
@@ -119,9 +117,7 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
             </View>
         </BottomSheetModal>
     );
-});
-
-ReviewModal.displayName = 'ReviewModal';
+};
 
 const styles = StyleSheet.create({
     container: {
