@@ -50,6 +50,7 @@ export type Trailer = {
 
 export type ShowtimeSchedule = {
     time: string;
+    info?: string;
     purchase_url?: string;
 };
 

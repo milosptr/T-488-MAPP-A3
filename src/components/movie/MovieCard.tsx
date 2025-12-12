@@ -1,11 +1,12 @@
+import { ASPECT_RATIO } from '@/src/constants/constants';
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
-import { Image } from 'expo-image';
+import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
-import { Skeleton, Text } from '../ui';
+import { Image, StyleSheet, View, ViewStyle } from 'react-native';
+import { Text } from '../ui';
 import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
@@ -15,8 +16,6 @@ type Props = {
     horizontal?: boolean;
 };
 
-const ASPECT_RATIO_LANDSCAPE = 16 / 9;
-const ASPECT_RATIO_POSTER = 1 / 1.53;
 const GRADIENT_HEIGHT = 200;
 
 const fontSizes = {
@@ -36,9 +35,7 @@ export const MovieCard = ({
     horizontal = false,
 }: Props) => {
     const { colors } = useTheme();
-    const { image: backdropImage, isLoading } = useMovieBackdrop(
-        horizontal ? movie?.ids.tmdb : undefined
-    );
+    const { image: backdropImage } = useMovieBackdrop(horizontal ? movie?.ids.tmdb : undefined);
 
     const genre = movie?.genres?.map(g => g.NameEN ?? g.Name).at(0);
 
@@ -57,22 +54,20 @@ export const MovieCard = ({
     }, [horizontal]);
 
     return (
-        <Skeleton show={isLoading}>
+        <GlassView isInteractive style={styles.container}>
             <View
                 style={[
                     styles.posterContainer,
                     {
                         backgroundColor: colors.surface,
                         width,
-                        aspectRatio: horizontal ? ASPECT_RATIO_LANDSCAPE : ASPECT_RATIO_POSTER,
+                        aspectRatio: horizontal ? ASPECT_RATIO.LANDSCAPE : ASPECT_RATIO.POSTER,
                     },
                 ]}
             >
                 <Image
                     source={{ uri: backdropImage ?? movie?.poster }}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                    recyclingKey={movie._id}
+                    resizeMode="cover"
                     style={styles.poster}
                 />
                 {showFavoriteButton && (
@@ -101,11 +96,14 @@ export const MovieCard = ({
                     </View>
                 </View>
             </View>
-        </Skeleton>
+        </GlassView>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        borderRadius: borderRadius.md,
+    },
     posterContainer: {
         width: '100%',
         borderRadius: borderRadius.md,

@@ -1,11 +1,13 @@
 import { SafeAreaScreen } from '@/src/components/layout/SafeAreaScreen';
 import { EmptyFavourites, MovieCard } from '@/src/components/movie';
-import { Skeleton, Text } from '@/src/components/ui';
+import { LiquidButton, Skeleton, Text } from '@/src/components/ui';
+import { ASPECT_RATIO, ICON_BUTTON_SIZE } from '@/src/constants/constants';
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
-import { useFavorites, useMovies, useTheme } from '@/src/hooks';
-import { setFavoriteOrder, useAppDispatch } from '@/src/store';
+import { useFavorites, useMovies, useShare, useTheme } from '@/src/hooks';
+import { saveFavorites, setFavoriteOrder, useAppDispatch } from '@/src/store';
 import { Movie } from '@/src/types';
 import { haptics } from '@/src/utils';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -15,12 +17,11 @@ import DraggableFlatList, {
 } from 'react-native-draggable-flatlist';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ASPECT_RATIO_LANDSCAPE = 16 / 9;
-
 export const FavouritesScreen = () => {
     const { colors } = useTheme();
     const dispatch = useAppDispatch();
     const { favoriteIds } = useFavorites();
+    const { shareFavourites } = useShare();
     const { bottom: bottomInset } = useSafeAreaInsets();
     const { data: allMovies = [], isLoading } = useMovies();
 
@@ -37,6 +38,11 @@ export const FavouritesScreen = () => {
         router.push(`/movies/${movie._id}`);
     };
 
+    const handleSharePress = useCallback(() => {
+        haptics.light();
+        shareFavourites(favoriteIds);
+    }, [favoriteIds, shareFavourites]);
+
     const handleDragBegin = () => {
         haptics.medium();
     };
@@ -46,6 +52,7 @@ export const FavouritesScreen = () => {
             haptics.light();
             const newOrder = data.map(movie => movie._id);
             dispatch(setFavoriteOrder(newOrder));
+            saveFavorites(newOrder);
         },
         [dispatch]
     );
@@ -90,6 +97,15 @@ export const FavouritesScreen = () => {
                         <Text variant="secondary">Long press to reorder</Text>
                     )}
                 </View>
+                {favoriteMovies.length > 0 && (
+                    <LiquidButton
+                        leadingIcon={
+                            <Ionicons name="share-outline" size={24} color={colors.text} />
+                        }
+                        style={styles.shareButton}
+                        onPress={handleSharePress}
+                    />
+                )}
             </View>
             <DraggableFlatList
                 data={favoriteMovies}
@@ -147,7 +163,13 @@ const styles = StyleSheet.create({
     },
     skeletonItem: {
         width: '100%',
-        aspectRatio: ASPECT_RATIO_LANDSCAPE,
+        aspectRatio: ASPECT_RATIO.LANDSCAPE,
         borderRadius: borderRadius.md,
+    },
+    shareButton: {
+        width: ICON_BUTTON_SIZE,
+        height: ICON_BUTTON_SIZE,
+        paddingHorizontal: 0,
+        borderRadius: borderRadius.full,
     },
 });

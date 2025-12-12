@@ -3,7 +3,7 @@ import { useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, ListRenderItemInfo, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { MovieListItem } from '../movie';
 import { Text } from '../ui';
 
@@ -21,6 +21,9 @@ export const CinemaSection = ({ cinema, movies }: Props) => {
     const handleNavigate = () => {
         router.push(`/cinemas/${cinema.id}`);
     };
+    const renderItem = ({ item: movie }: ListRenderItemInfo<Movie>) => (
+        <MovieListItem key={movie._id} movie={movie} cinemaId={cinema.id} />
+    );
 
     return (
         <View style={styles.container}>
@@ -30,17 +33,18 @@ export const CinemaSection = ({ cinema, movies }: Props) => {
                 </Text>
                 <Ionicons name="chevron-forward" size={CHEVRON_SIZE} color={colors.textSecondary} />
             </TouchableOpacity>
-            <ScrollView
+            <FlatList
+                data={movies}
+                renderItem={renderItem}
+                keyExtractor={item => item._id}
+                ItemSeparatorComponent={() => <View style={styles.itemSpacing} />}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.scrollContent}
-            >
-                {movies.map((movie, index) => (
-                    <View key={movie._id} style={index > 0 && styles.itemSpacing}>
-                        <MovieListItem movie={movie} cinemaId={cinema.id} />
-                    </View>
-                ))}
-            </ScrollView>
+                initialNumToRender={3}
+                maxToRenderPerBatch={5}
+                windowSize={3}
+            />
         </View>
     );
 };
@@ -57,7 +61,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     itemSpacing: {
-        marginLeft: spacing.lg,
+        width: spacing.lg,
     },
     cinemaNameContainer: {
         flexDirection: 'row',

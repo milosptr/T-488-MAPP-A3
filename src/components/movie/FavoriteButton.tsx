@@ -1,3 +1,5 @@
+import { ICON_BUTTON_SIZE } from '@/src/constants/constants';
+import { borderRadius } from '@/src/constants/DesignTokens';
 import { useFavorites, useTheme } from '@/src/hooks';
 import { haptics } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
@@ -42,9 +44,9 @@ export const FavoriteButton = ({ movieId }: Props) => {
 
 const styles = StyleSheet.create({
     iconButton: {
-        borderRadius: 48,
-        width: 48,
+        borderRadius: borderRadius.full,
+        width: ICON_BUTTON_SIZE,
         paddingHorizontal: 0,
-        height: 48,
+        height: ICON_BUTTON_SIZE,
     },
 });

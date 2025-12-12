@@ -14,6 +14,7 @@ type Props = {
 export const TrailerModal = ({ ref, videoKey }: Props) => {
     const { width } = useWindowDimensions();
     const [playing, setPlaying] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const videoHeight = (width - spacing.lg * 2) * (9 / 16);
 
@@ -23,8 +24,11 @@ export const TrailerModal = ({ ref, videoKey }: Props) => {
         }
     }, []);
 
-    const handleClose = useCallback(() => {
-        setPlaying(false);
+    const handleSheetChange = useCallback((index: number) => {
+        setIsOpen(index >= 0);
+        if (index < 0) {
+            setPlaying(false);
+        }
     }, []);
 
     return (
@@ -33,22 +37,24 @@ export const TrailerModal = ({ ref, videoKey }: Props) => {
             index={0}
             snapPoints={['50%']}
             enablePanDownToClose
-            onDismiss={handleClose}
+            onChange={handleSheetChange}
         >
             <BottomSheetView style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.title}>Trailer</Text>
                 </View>
-                {videoKey && (
-                    <View style={styles.playerContainer}>
-                        <YoutubePlayer
-                            height={videoHeight}
-                            play={playing}
-                            videoId={videoKey}
-                            onChangeState={handleStateChange}
-                        />
-                    </View>
-                )}
+                <View style={styles.playerWrapper}>
+                    {isOpen && videoKey && (
+                        <View style={styles.playerContainer}>
+                            <YoutubePlayer
+                                height={videoHeight}
+                                play={playing}
+                                videoId={videoKey}
+                                onChangeState={handleStateChange}
+                            />
+                        </View>
+                    )}
+                </View>
             </BottomSheetView>
         </BottomSheetModal>
     );
@@ -69,6 +75,9 @@ const styles = StyleSheet.create({
     title: {
         fontSize: fontSize.lg,
         fontWeight: '600',
+    },
+    playerWrapper: {
+        minHeight: 300,
     },
     playerContainer: {
         borderRadius: borderRadius.md,

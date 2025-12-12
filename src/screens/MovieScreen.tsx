@@ -107,11 +107,15 @@ export const MovieScreen = () => {
                     <View style={styles.ratingContainer}>
                         <View style={styles.ratingItem}>
                             <ImdbIcon height={16} width={32} />
-                            <Text>{movie.ratings.imdb} / 10</Text>
+                            <Text>{movie.ratings.imdb ? `${movie.ratings.imdb} / 10` : 'N/A'}</Text>
                         </View>
                         <View style={styles.ratingItem}>
                             <RottenTomatoesIcon height={18} width={20} />
-                            <Text>{movie.ratings.rotten_audience}%</Text>
+                            <Text>
+                                {movie.ratings.rotten_audience
+                                    ? `${movie.ratings.rotten_audience}%`
+                                    : 'N/A'}
+                            </Text>
                         </View>
                     </View>
                     <Text variant="secondary">{movie.plot}</Text>

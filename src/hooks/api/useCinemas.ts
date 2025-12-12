@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { apiClient, queryKeys, STALE_TIMES } from '@/src/api';
 import type { Cinema } from '@/src/types';
+import { useQuery } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 const fetchCinemas = async () => {

@@ -1,8 +1,9 @@
-export { useInitializeAuth, useIsAuthenticated } from './useAuth';
+export { useInitializeAuth } from './useAuth';
 export { useCinema, useCinemas } from './useCinemas';
-export { useGenreById, useGenres, useGenresMap } from './useGenres';
+export { useGenres } from './useGenres';
 export { useImages, useMovieBackdrop } from './useImages';
 export { useMovie, useMovies, useMovieShowtimes } from './useMovies';
 export { useMoviesByCinema } from './useMoviesByCinema';
-export { useDebouncedSearch, useSearch, useSearchByCollection } from './useSearch';
-export { useUpcoming, useUpcomingMovie, useUpcomingWithTrailers } from './useUpcoming';
+export { usePrefetchAppData } from './usePrefetch';
+export { useSearch } from './useSearch';
+export { useUpcoming } from './useUpcoming';

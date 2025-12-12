@@ -59,7 +59,3 @@ export const useInitializeAuth = (): AuthState => {
 
     return state;
 };
-
-export const useIsAuthenticated = (): boolean => {
-    return isTokenValid();
-};

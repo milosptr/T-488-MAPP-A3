@@ -12,7 +12,7 @@ export type Review = {
     userName?: string;
 };
 
-type ReviewsState = {
+export type ReviewsState = {
     reviews: Review[];
     isHydrated: boolean;
 };
@@ -33,18 +33,6 @@ const reviewsSlice = createSlice({
                 createdAt: new Date().toISOString(),
             };
             state.reviews.unshift(newReview);
-            AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
-        },
-        updateReview: (state, action: PayloadAction<Review>) => {
-            const index = state.reviews.findIndex(r => r.id === action.payload.id);
-            if (index > -1) {
-                state.reviews[index] = action.payload;
-                AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
-            }
-        },
-        deleteReview: (state, action: PayloadAction<string>) => {
-            state.reviews = state.reviews.filter(r => r.id !== action.payload);
-            AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(state.reviews));
         },
         setReviews: (state, action: PayloadAction<Review[]>) => {
             state.reviews = action.payload;
@@ -53,9 +41,13 @@ const reviewsSlice = createSlice({
     },
 });
 
-export const { addReview, updateReview, deleteReview, setReviews } = reviewsSlice.actions;
+export const { addReview, setReviews } = reviewsSlice.actions;
 
 export const reviewsReducer = reviewsSlice.reducer;
+
+export const saveReviews = (reviews: Review[]) => {
+    return AsyncStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
+};
 
 export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[]>) => void) => {
     try {
@@ -66,8 +58,7 @@ export const loadReviews = () => async (dispatch: (action: PayloadAction<Review[
         } else {
             dispatch(setReviews([]));
         }
-    } catch (error) {
-        console.error('Failed to load reviews from AsyncStorage:', error);
+    } catch {
         dispatch(setReviews([]));
     }
 };

@@ -4,15 +4,25 @@ import {
     CinemaDetailSkeleton,
     CinemaShowtimes,
 } from '@/src/components/cinema';
-import { MovieListEmpty, MovieListItem } from '@/src/components/movie';
+import { MovieListEmpty, MovieListItem, MoviesLoadingSkeleton } from '@/src/components/movie';
 import { Text } from '@/src/components/ui';
 import { fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useCinema, useMoviesByCinema, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { FlatList, ListRenderItemInfo, RefreshControl, StyleSheet, View } from 'react-native';
+import Animated, {
+    Extrapolation,
+    interpolate,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    useSharedValue,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SafeAreaScreen } from '../components/layout';
+
+const TITLE_SHOW_THRESHOLD = 80;
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList<Movie>);
 
 const CARD_HEIGHT = 200;
 
@@ -36,7 +46,22 @@ export const CinemaDetailScreen = () => {
         isRefetching,
     } = useMoviesByCinema(cinemaId);
 
-    const isLoading = isLoadingCinema || isLoadingMovies;
+    const scrollY = useSharedValue(0);
+
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: event => {
+            scrollY.value = event.contentOffset.y;
+        },
+    });
+
+    const headerTitleStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(
+            scrollY.value,
+            [TITLE_SHOW_THRESHOLD - 20, TITLE_SHOW_THRESHOLD + 20],
+            [0, 1],
+            Extrapolation.CLAMP
+        ),
+    }));
 
     const handleRefresh = () => {
         refetchCinema();
@@ -47,7 +72,7 @@ export const CinemaDetailScreen = () => {
         return <Redirect href="/+not-found" />;
     }
 
-    if (isLoading) {
+    if (isLoadingCinema) {
         return (
             <View style={[styles.container, { paddingTop: insets.top }]}>
                 <BackButton />
@@ -79,16 +104,32 @@ export const CinemaDetailScreen = () => {
 
     const Separator = () => <View style={[styles.separator, { backgroundColor: colors.border }]} />;
 
+    const ListEmpty = isLoadingMovies ? (
+        <MoviesLoadingSkeleton />
+    ) : (
+        <MovieListEmpty isLoading={false} cardHeight={CARD_HEIGHT} />
+    );
+
     return (
         <SafeAreaScreen style={styles.container}>
-            <BackButton />
-            <FlatList
-                data={movies}
+            <View style={styles.headerRow}>
+                <BackButton />
+                <Animated.Text
+                    style={[styles.headerTitle, { color: colors.text }, headerTitleStyle]}
+                    numberOfLines={1}
+                >
+                    {cinema.name}
+                </Animated.Text>
+            </View>
+            <AnimatedFlatList
+                data={isLoadingMovies ? [] : movies}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 ListHeaderComponent={ListHeader}
-                ListEmptyComponent={<MovieListEmpty isLoading={false} cardHeight={CARD_HEIGHT} />}
+                ListEmptyComponent={ListEmpty}
                 ItemSeparatorComponent={Separator}
+                onScroll={scrollHandler}
+                scrollEventThrottle={16}
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefetching}
@@ -109,6 +150,17 @@ export const CinemaDetailScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingRight: spacing.lg,
+        gap: spacing.lg,
+    },
+    headerTitle: {
+        flex: 1,
+        fontSize: fontSize.xxl,
+        fontWeight: '600',
     },
     listContent: {
         flexGrow: 1,

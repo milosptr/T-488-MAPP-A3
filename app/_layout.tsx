@@ -1,3 +1,4 @@
+import { SplashScreen as AnimatedSplash } from '@/src/components/splash';
 import { useInitializeAuth, useTheme } from '@/src/hooks';
 import { QueryProvider, StoreProvider } from '@/src/providers';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -6,7 +7,7 @@ import { ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 export { ErrorBoundary } from 'expo-router';
@@ -43,6 +44,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
     const theme = useTheme();
     const { isLoading, isAuthenticated } = useInitializeAuth();
+    const [showAnimatedSplash, setShowAnimatedSplash] = useState(true);
 
     useEffect(() => {
         if (!isLoading) {
@@ -54,11 +56,16 @@ function RootLayoutNav() {
         return null;
     }
 
+    if (showAnimatedSplash) {
+        return <AnimatedSplash onComplete={() => setShowAnimatedSplash(false)} />;
+    }
+
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <BottomSheetModalProvider>
                 <ThemeProvider value={theme}>
                     <Stack>
+                        <Stack.Screen name="favourites-shared" options={{ headerShown: false }} />
                         <Stack.Protected guard={isAuthenticated}>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                             <Stack.Screen name="movies/[id]" options={{ headerShown: false }} />

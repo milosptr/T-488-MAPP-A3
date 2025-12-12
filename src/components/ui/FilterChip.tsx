@@ -1,13 +1,14 @@
-import { spacing } from '@/src/constants/DesignTokens';
+import { animation, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import { haptics } from '@/src/utils';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 import {
+    Animated,
+    Pressable,
+    PressableProps,
     StyleProp,
     StyleSheet,
-    TouchableOpacity,
-    TouchableOpacityProps,
     ViewStyle,
 } from 'react-native';
 import { Text } from './Text';
@@ -21,7 +22,9 @@ type Props = {
     hideLeadingIcon?: boolean;
     hideTrailingIcon?: boolean;
     selected?: boolean;
-} & Omit<TouchableOpacityProps, 'onPress' | 'style'>;
+} & Omit<PressableProps, 'onPress' | 'style'>;
+
+const PRESS_SCALE = 0.97;
 
 export const FilterChip = ({
     title,
@@ -35,6 +38,23 @@ export const FilterChip = ({
     ...props
 }: Props) => {
     const theme = useTheme();
+    const [scaleAnim] = useState(() => new Animated.Value(1));
+
+    const handlePressIn = useCallback(() => {
+        Animated.timing(scaleAnim, {
+            toValue: PRESS_SCALE,
+            duration: animation.fast,
+            useNativeDriver: true,
+        }).start();
+    }, [scaleAnim]);
+
+    const handlePressOut = useCallback(() => {
+        Animated.timing(scaleAnim, {
+            toValue: 1,
+            duration: animation.fast,
+            useNativeDriver: true,
+        }).start();
+    }, [scaleAnim]);
 
     const handlePress = useCallback(() => {
         haptics.selection();
@@ -53,22 +73,25 @@ export const FilterChip = ({
     }, [hideTrailingIcon, trailingIcon, theme.colors.text]);
 
     return (
-        <TouchableOpacity
-            onPress={handlePress}
-            {...props}
-            style={[
-                styles.container,
-                {
-                    borderColor: selected ? theme.colors.primary : theme.colors.border,
-                    backgroundColor: selected ? theme.colors.scrim : 'transparent',
-                },
-                style,
-            ]}
-        >
-            {_leadingIcon}
-            <Text style={{ fontWeight: '500' }}>{title}</Text>
-            {_trailingIcon}
-        </TouchableOpacity>
+        <Animated.View style={[{ transform: [{ scale: scaleAnim }] }, style]}>
+            <Pressable
+                onPress={handlePress}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                {...props}
+                style={[
+                    styles.container,
+                    {
+                        borderColor: selected ? theme.colors.primary : theme.colors.border,
+                        backgroundColor: selected ? theme.colors.scrim : 'transparent',
+                    },
+                ]}
+            >
+                {_leadingIcon}
+                <Text style={styles.title}>{title}</Text>
+                {_trailingIcon}
+            </Pressable>
+        </Animated.View>
     );
 };
 
@@ -81,5 +104,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: spacing.lg,
         borderRadius: spacing.xl,
         borderWidth: 1,
+    },
+    title: {
+        fontWeight: '500',
     },
 });

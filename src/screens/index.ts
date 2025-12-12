@@ -6,4 +6,5 @@ export * from './MovieScreen';
 export * from './NotAuthenticatedScreen';
 export * from './NotFoundScreen';
 export * from './ReviewsScreen';
+export * from './SharedFavouritesScreen';
 export * from './UpcomingScreen';

@@ -1,4 +1,4 @@
-import { Movie } from '@/src/types';
+import type { Movie } from '@/src/types';
 import * as Linking from 'expo-linking';
 import { useCallback } from 'react';
 import { Share } from 'react-native';
@@ -6,6 +6,10 @@ import { Share } from 'react-native';
 export const useShare = () => {
     const getMovieDeepLink = useCallback((movieId: string) => {
         return Linking.createURL(`movies/${movieId}`);
+    }, []);
+
+    const getFavouritesDeepLink = useCallback((movieIds: string[]) => {
+        return Linking.createURL(`favourites-shared?ids=${movieIds.join(',')}`);
     }, []);
 
     const shareMovie = useCallback(
@@ -20,5 +24,13 @@ export const useShare = () => {
         [getMovieDeepLink]
     );
 
-    return { shareMovie, getMovieDeepLink };
+    const shareFavourites = useCallback(
+        async (movieIds: string[]) => {
+            const deepLink = getFavouritesDeepLink(movieIds);
+            await Share.share({ message: deepLink });
+        },
+        [getFavouritesDeepLink]
+    );
+
+    return { shareMovie, shareFavourites, getMovieDeepLink, getFavouritesDeepLink };
 };

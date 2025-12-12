@@ -1,7 +1,5 @@
 export {
     filtersReducer,
-    filtersSlice,
-    resetFilters,
     setActors,
     setCertificate,
     setCinemas,
@@ -17,20 +15,20 @@ export {
     favoritesReducer,
     loadFavorites,
     removeFavorite,
-    reorderFavorites,
+    saveFavorites,
     setFavoriteOrder,
     setFavorites,
     toggleFavorite,
 } from './favoritesSlice';
+export type { FavoritesState } from './favoritesSlice';
 
 export {
     addReview,
-    deleteReview,
     loadReviews,
     reviewsReducer,
+    saveReviews,
     selectAverageRatingByMovieId,
     selectReviewsByMovieId,
     setReviews,
-    updateReview,
 } from './reviewsSlice';
-export type { Review } from './reviewsSlice';
+export type { Review, ReviewsState } from './reviewsSlice';

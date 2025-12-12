@@ -2,8 +2,8 @@ import { BottomSheetModal } from '@/src/components/bottom-sheet';
 import { Button, StarRating, Text } from '@/src/components/ui';
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
-import { useAppDispatch } from '@/src/store';
-import { addReview } from '@/src/store/slices';
+import { useAppDispatch, useAppSelector } from '@/src/store';
+import { addReview, Review, saveReviews } from '@/src/store/slices';
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Alert, StyleSheet, TextInput, View } from 'react-native';
 
@@ -18,6 +18,7 @@ const TEXT_INPUT_MIN_HEIGHT = 120;
 export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movieTitle }, ref) => {
     const { colors } = useTheme();
     const dispatch = useAppDispatch();
+    const existingReviews = useAppSelector(state => state.reviews.reviews);
     const [rating, setRating] = useState(0);
     const [reviewText, setReviewText] = useState('');
     const [userName, setUserName] = useState('');
@@ -37,6 +38,15 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
             return;
         }
 
+        const newReview: Review = {
+            id: `review-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            movieId,
+            rating,
+            text: reviewText.trim(),
+            userName: userName.trim() || undefined,
+            createdAt: new Date().toISOString(),
+        };
+
         dispatch(
             addReview({
                 movieId,
@@ -45,6 +55,8 @@ export const ReviewModal = forwardRef<BottomSheetModal, Props>(({ movieId, movie
                 userName: userName.trim() || undefined,
             })
         );
+
+        saveReviews([newReview, ...existingReviews]);
 
         resetForm();
         Alert.alert('Success', 'Your review has been added!');

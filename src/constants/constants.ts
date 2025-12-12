@@ -15,3 +15,11 @@ export const SHOWTIME_PRESETS = [
 ];
 
 export const MOVIE_LIST_ITEM_WIDTH = 180;
+
+export const ASPECT_RATIO = {
+    LANDSCAPE: 16 / 9,
+    POSTER: 1 / 1.53,
+    TALL_POSTER: 10 / 16,
+} as const;
+
+export const ICON_BUTTON_SIZE = 48;

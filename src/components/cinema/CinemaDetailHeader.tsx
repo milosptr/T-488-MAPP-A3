@@ -1,5 +1,5 @@
 import { Text } from '@/src/components/ui';
-import { fontSize, spacing } from '@/src/constants/DesignTokens';
+import { fontSize, lineHeight, spacing } from '@/src/constants/DesignTokens';
 import { useTheme } from '@/src/hooks';
 import { Cinema } from '@/src/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,7 +10,6 @@ type Props = {
 };
 
 const ICON_SIZE = 20;
-const DESCRIPTION_LINE_HEIGHT = 22;
 
 export const CinemaDetailHeader = ({ cinema }: Props) => {
     const { colors } = useTheme();
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     description: {
-        lineHeight: DESCRIPTION_LINE_HEIGHT,
+        lineHeight: fontSize.base * lineHeight.normal,
     },
     divider: {
         height: 1,

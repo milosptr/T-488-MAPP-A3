@@ -49,7 +49,6 @@ export const filtersSlice = createSlice({
         setCertificate: (state, action: PayloadAction<string | null>) => {
             state.certificate = action.payload;
         },
-        resetFilters: () => initialState,
     },
 });
 
@@ -61,7 +60,6 @@ export const {
     setActors,
     setDirectors,
     setCertificate,
-    resetFilters,
 } = filtersSlice.actions;
 
 export const filtersReducer = filtersSlice.reducer;

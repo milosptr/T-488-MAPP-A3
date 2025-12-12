@@ -1,10 +1,9 @@
-import { fontSize } from '@/src/constants/DesignTokens';
-import { haptics } from '@/src/utils';
-import { GlassView, isLiquidGlassAvailable } from 'expo-glass-effect';
+import { borderRadius, fontSize } from '@/src/constants/DesignTokens';
+import { haptics, isGlassAvailable } from '@/src/utils';
+import { GlassView } from 'expo-glass-effect';
 import { ReactNode, useCallback } from 'react';
-import { Platform, Pressable, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { Pressable, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
 import { Text } from '../Text';
-import { Button } from './Button';
 
 type Props = {
     leadingIcon?: ReactNode;
@@ -38,14 +37,15 @@ export const LiquidButton = ({
         onPress?.();
     }, [onPress, disableHaptic]);
 
-    if (Platform.OS !== 'ios' || !isLiquidGlassAvailable()) {
+    if (!isGlassAvailable()) {
         return (
-            <Button
-                title={text}
-                leadingIcon={leadingIcon}
-                trailingIcon={trailingIcon}
-                onPress={onPress}
-            />
+            <Pressable onPress={handlePress}>
+                <View style={[styles.container, styles.androidFallback, style]}>
+                    {leadingIcon}
+                    {!!text && <Text style={[styles.text, textStyle]}>{text}</Text>}
+                    {trailingIcon}
+                </View>
+            </Pressable>
         );
     }
 
@@ -72,8 +72,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 24,
         paddingVertical: 12,
-        borderRadius: 20,
+        borderRadius: borderRadius.lg,
         gap: 6,
+    },
+    androidFallback: {
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
     },
     text: {
         fontWeight: '600',

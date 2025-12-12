@@ -37,6 +37,7 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - Skeleton loading states for smooth UX
 - Bottom sheet modals for filter selection
 - Pull-to-refresh
+- Haptic feedback on interactions
 
 ### Cinemas Screen
 
@@ -77,13 +78,25 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - Browse upcoming releases sorted by release date (ascending)
 - Movie thumbnail, name, and release date
 - Watch trailers directly in the app (for movies that have trailers)
+- Haptic feedback on trailer button interactions
 
 ### Favourites Screen
 
 - Save movies to your favorites list with AsyncStorage persistence
 - Add/remove movies from any screen via heart button
-- **Drag-to-reorder**: Long press to reorder favorites list
+- **Drag-to-reorder**: Long press to reorder favorites list with haptic feedback
+- **Share Favourites**: Share your entire favorites list via deep link
 - Prioritized list persists across app restarts
+- Share button hidden when favorites list is empty
+
+### Shared Favourites Screen
+
+- View favorites lists shared by other users via deep link
+- Deep link format: `drcinema://favourites-shared?ids=id1,id2,id3`
+- MongoDB ID validation with regex
+- Warning banner when some movies couldn't be found
+- Error state for malformed or broken links
+- Public access (no authentication required)
 
 ### Reviews & Ratings (Extra Feature - Option 1: Social)
 
@@ -97,6 +110,7 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - Native share dialog on iOS and Android
 - Deep links (`drcinema://movies/{id}`) open directly in app
 - Share from movie detail screen
+- Share entire favorites list via deep link
 
 ### General
 
@@ -105,52 +119,112 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 - Automatic authentication with the kvikmyndir.is API
 - Haptic feedback on button interactions
 - Optimized list rendering with Legend List
+- Glass effect UI components
+- Gradient backgrounds
 
 ## Screenshots
 
-| Home Screen          | Movie Card           |
-| -------------------- | -------------------- |
-| _Screenshot pending_ | _Screenshot pending_ |
+### Splash Screen
+<img src="docs/splash-screen.png" width="250" alt="Splash Screen" />
 
-| Cinemas              | Upcoming             |
-| -------------------- | -------------------- |
-| _Screenshot pending_ | _Screenshot pending_ |
+### Home Screen
+| Home Screen | Movie Preview |
+| ----------- | ------------- |
+| <img src="docs/home-screen.png" width="250" alt="Home Screen" /> | <img src="docs/home-screen-movie-preview.png" width="250" alt="Movie Preview" /> |
+
+### Filters
+| Showtime Filter | Showtime Filter Active |
+| --------------- | ---------------------- |
+| <img src="docs/home-screen-filter-showtimes.png" width="250" alt="Showtime Filter" /> | <img src="docs/home-screen-filter-showtimes-active.png" width="250" alt="Showtime Filter Active" /> |
+
+### Cinemas
+| Cinemas List | Cinema Details |
+| ------------ | -------------- |
+| <img src="docs/cinemas-screen.png" width="250" alt="Cinemas Screen" /> | <img src="docs/cinema-details-screen.png" width="250" alt="Cinema Details" /> |
+
+### Movie Details
+| Movie Screen (Top) | Movie Screen (Bottom) |
+| ------------------ | --------------------- |
+| <img src="docs/movie-screen-top.png" width="250" alt="Movie Screen Top" /> | <img src="docs/movie-screen-bottom.png" width="250" alt="Movie Screen Bottom" /> |
+
+### Reviews
+| Reviews List | Write Review |
+| ------------ | ------------ |
+| <img src="docs/movie-reviews-screen.png" width="250" alt="Movie Reviews" /> | <img src="docs/movie-write-review.png" width="250" alt="Write Review" /> |
+
+### Upcoming Movies
+<img src="docs/upcoming-movies-screen.png" width="250" alt="Upcoming Movies" />
+
+### Favourites
+| Favourites | Shared Favourites |
+| ---------- | ----------------- |
+| <img src="docs/favourites-screen.png" width="250" alt="Favourites Screen" /> | <img src="docs/shared-favourites-screen.png" width="250" alt="Shared Favourites" /> |
 
 ## Technologies Used
 
 ### Core Framework
 
-- **Expo SDK 54** - Development platform
-- **React Native 0.81.5** - Mobile framework
-- **React 19.1.0** - UI library
-- **TypeScript 5.9.2** - Type safety (strict mode)
+| Technology   | Version  | Purpose                   |
+| ------------ | -------- | ------------------------- |
+| Expo         | ~54.0.28 | Development platform      |
+| React Native | 0.81.5   | Mobile framework          |
+| React        | 19.1.0   | UI library                |
+| TypeScript   | ~5.9.2   | Type safety (strict mode) |
 
 ### Navigation & Routing
 
-- **Expo Router v6** - File-based routing with typed routes
-- **React Navigation 7** - Navigation primitives
+| Technology       | Version | Purpose               |
+| ---------------- | ------- | --------------------- |
+| Expo Router      | ~6.0.18 | File-based routing    |
+| React Navigation | ^7.1.8  | Navigation primitives |
 
 ### State Management & Data Fetching
 
-- **TanStack React Query v5** - Server state management, caching, and synchronization
-- **Redux Toolkit** - Client state management (filters, favorites, reviews)
-- **React Redux** - React bindings for Redux
-- **AsyncStorage** - Local persistence for favorites and reviews
+| Technology           | Version  | Purpose                     |
+| -------------------- | -------- | --------------------------- |
+| TanStack React Query | ^5.90.12 | Server state, caching, sync |
+| Redux Toolkit        | ^2.11.1  | Client state management     |
+| React Redux          | ^9.2.0   | React bindings for Redux    |
+| AsyncStorage         | ^2.2.0   | Local persistence           |
 
 ### UI Components
 
-- **Expo Linear Gradient** - Gradient overlays
-- **Legend App List** - High-performance list rendering
-- **Expo Vector Icons** - Icon library
-- **React Native Reanimated** - Animations
-- **@gorhom/bottom-sheet** - Modal bottom sheets for filters
-- **Moti** - Skeleton loading animations
-- **react-native-draggable-flatlist** - Drag-to-reorder lists
+| Technology                      | Version | Purpose                     |
+| ------------------------------- | ------- | --------------------------- |
+| Expo Linear Gradient            | ^15.0.8 | Gradient overlays           |
+| Expo Glass Effect               | ~0.1.8  | Glass UI components         |
+| Legend App List                 | ^2.0.16 | High-performance lists      |
+| Expo Vector Icons               | ^15.0.3 | Icon library                |
+| React Native Reanimated         | ~4.1.1  | Animations                  |
+| @gorhom/bottom-sheet            | ^5.2.8  | Modal bottom sheets         |
+| Moti                            | ^0.30.0 | Skeleton loading animations |
+| react-native-draggable-flatlist | ^4.0.3  | Drag-to-reorder lists       |
+
+### Native Features
+
+| Technology       | Version  | Purpose                 |
+| ---------------- | -------- | ----------------------- |
+| Expo Haptics     | ^15.0.8  | Haptic feedback         |
+| Expo Sharing     | ~14.0.8  | Native share dialog     |
+| Expo Linking     | ~8.0.10  | Deep linking            |
+| Expo Image       | ~3.0.11  | Optimized image loading |
+| Expo Web Browser | ~15.0.10 | In-app browser          |
+
+### Media & Video
+
+| Technology                  | Version | Purpose                  |
+| --------------------------- | ------- | ------------------------ |
+| React Native WebView        | 13.15.0 | Web content embedding    |
+| React Native YouTube iFrame | ^2.4.1  | YouTube trailer playback |
+| React Native SVG            | 15.12.1 | SVG rendering            |
 
 ### Developer Tools
 
-- **ESLint 9** - Code linting
-- **Prettier 3** - Code formatting
+| Technology        | Version | Purpose            |
+| ----------------- | ------- | ------------------ |
+| ESLint            | ^9.39.1 | Code linting       |
+| Prettier          | ^3.6.2  | Code formatting    |
+| TypeScript ESLint | ^8.47.0 | TypeScript linting |
 
 ## Platform Support
 
@@ -185,6 +259,7 @@ app/                          # Expo Router file-based routes
 │   ├── [id].tsx            # Movie detail screen
 │   └── [id]/
 │       └── reviews.tsx     # Reviews screen
+├── favourites-shared.tsx   # Shared favorites screen
 ├── not-authenticated.tsx   # Auth error screen
 └── +not-found.tsx          # 404 page
 
@@ -209,11 +284,13 @@ src/
 │   │   ├── useUpcoming.ts # Upcoming movies
 │   │   ├── useImages.ts   # TMDB images
 │   │   ├── useGenres.ts   # Genre lookup
-│   │   └── useSearch.ts   # Search functionality
+│   │   ├── useSearch.ts   # Search functionality
+│   │   └── usePrefetch.ts # Data prefetching
 │   ├── useTheme.tsx       # Theme hook
 │   ├── useFilteredMovies.ts # Movie filtering logic
 │   ├── useFavorites.ts    # Favorites hook
-│   └── useShare.ts        # Share with deep linking
+│   ├── useShare.ts        # Share with deep linking
+│   └── useSharedFavourites.ts # Shared favorites parsing
 ├── screens/                 # Screen components
 │   ├── HomeScreen.tsx
 │   ├── CinemasScreen.tsx
@@ -222,26 +299,68 @@ src/
 │   ├── ReviewsScreen.tsx
 │   ├── UpcomingScreen.tsx
 │   ├── FavouritesScreen.tsx
-│   └── ...
+│   ├── SharedFavouritesScreen.tsx
+│   ├── NotAuthenticatedScreen.tsx
+│   └── NotFoundScreen.tsx
 ├── components/              # Reusable UI components
-│   ├── ui/                 # Base UI (Button, Text, Skeleton, StarRating, FilterChip)
+│   ├── ui/                 # Base UI components
+│   │   ├── Button/        # Button, LiquidButton
+│   │   ├── Text.tsx       # Themeable text
+│   │   ├── Skeleton.tsx   # Loading skeleton
+│   │   ├── StarRating.tsx # Star rating component
+│   │   ├── FilterChip.tsx # Filter chip
+│   │   └── GlassChip.tsx  # Glass effect chip
 │   ├── layout/             # Layout components
+│   │   └── SafeAreaScreen.tsx
 │   ├── movie/              # Movie-related components
+│   │   ├── MovieCard.tsx
+│   │   ├── MovieListItem.tsx
+│   │   ├── MoviePosterSection.tsx
+│   │   ├── MovieDetailsList.tsx
+│   │   ├── FavoriteButton.tsx
+│   │   ├── ReviewItem.tsx
+│   │   ├── ReviewModal.tsx
+│   │   ├── ReviewsSummaryCard.tsx
+│   │   ├── UpcomingMovieCard.tsx
+│   │   ├── EmptyFavourites.tsx
+│   │   ├── EmptySharedFavourites.tsx
+│   │   └── ...
 │   ├── cinema/             # Cinema-related components
-│   │   ├── BackButton.tsx
-│   │   ├── CinemaDetailHeader.tsx
-│   │   ├── CinemaDetailSkeleton.tsx
 │   │   ├── CinemaListItem.tsx
-│   │   ├── CinemaListEmpty.tsx
 │   │   ├── CinemaSection.tsx
-│   │   └── CinemaShowtimes.tsx
+│   │   ├── CinemaDetailHeader.tsx
+│   │   ├── CinemaShowtimes.tsx
+│   │   ├── BackButton.tsx
+│   │   └── ...
 │   ├── filters/            # Filter modal components
+│   │   ├── ActorsFilter.tsx
+│   │   ├── DirectorsFilter.tsx
+│   │   ├── CinemasFilter.tsx
+│   │   ├── RatingFilter.tsx
+│   │   ├── CertificateFilter.tsx
+│   │   └── ShowtimeFilter.tsx
 │   ├── bottom-sheet/       # Bottom sheet wrapper
-│   └── icons/              # Custom icons
+│   ├── trailer/            # Trailer modal (YouTube)
+│   ├── splash/             # Splash screen
+│   ├── icons/              # Custom icons (IMDB, RT)
+│   ├── Background.tsx      # Gradient background
+│   ├── HomeFilters.tsx     # Home screen filters
+│   └── SearchBar.tsx       # Animated search bar
 ├── constants/               # Theme, colors, design tokens
+│   ├── Colors.ts
+│   ├── DesignTokens.ts
+│   └── fonts.ts
 ├── config/                  # Environment configuration
 ├── types/                   # TypeScript type definitions
+│   └── api.ts              # API types (Movie, Cinema, etc.)
+├── utils/                   # Utility functions
+│   ├── haptics.ts          # Haptic feedback
+│   ├── movieFilters.ts     # Filter logic
+│   ├── trailerUtils.ts     # Trailer utilities
+│   └── platform.ts         # Platform detection
 └── providers/               # React context providers
+    ├── QueryProvider.tsx
+    └── StoreProvider.tsx
 ```
 
 ## Setup Instructions
@@ -340,6 +459,12 @@ npm run format:check  # Check formatting
 - **Purpose**: High-quality movie backdrops and posters
 - **Authentication**: Bearer token
 
+### Deep Links
+
+- **Scheme**: `drcinema://`
+- **Movie**: `drcinema://movies/{id}` - Opens movie detail screen
+- **Shared Favourites**: `drcinema://favourites-shared?ids=id1,id2,id3` - Opens shared favorites
+
 ## Known Issues
 
 - Some movies may not have TMDB images available
@@ -347,10 +472,8 @@ npm run format:check  # Check formatting
 
 ## Future Improvements
 
-- [ ] Add share favourites list functionality
-- [ ] Implement offline caching
 - [ ] Add localization (Icelandic/English)
-- [ ] Persist filter state with AsyncStorage
+- [ ] Add push notifications for new releases
 
 ## Author
 

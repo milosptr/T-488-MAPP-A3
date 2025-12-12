@@ -2,9 +2,8 @@ import { LiquidButton } from '@/src/components/ui';
 import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useTheme } from '@/src/hooks';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
@@ -39,13 +38,7 @@ export const MoviePosterSection = ({
 
     return (
         <View style={styles.container}>
-            <Image
-                source={{ uri: posterUri }}
-                style={styles.poster}
-                contentFit="cover"
-                cachePolicy="memory-disk"
-                recyclingKey={movieId}
-            />
+            <Image source={{ uri: posterUri }} style={styles.poster} resizeMode="cover" />
             <LinearGradient
                 colors={['transparent', colors.background]}
                 style={styles.gradient}

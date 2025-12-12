@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const FAVORITES_STORAGE_KEY = '@favorites';
 
-type FavoritesState = {
+export type FavoritesState = {
     movieIds: string[];
     isHydrated: boolean;
 };
@@ -21,13 +21,11 @@ const favoritesSlice = createSlice({
             const movieId = action.payload;
             if (!state.movieIds.includes(movieId)) {
                 state.movieIds.push(movieId);
-                AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
             }
         },
         removeFavorite: (state, action: PayloadAction<string>) => {
             const movieId = action.payload;
             state.movieIds = state.movieIds.filter(id => id !== movieId);
-            AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
         toggleFavorite: (state, action: PayloadAction<string>) => {
             const movieId = action.payload;
@@ -37,35 +35,25 @@ const favoritesSlice = createSlice({
             } else {
                 state.movieIds.push(movieId);
             }
-            AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
         setFavorites: (state, action: PayloadAction<string[]>) => {
             state.movieIds = action.payload;
             state.isHydrated = true;
         },
-        reorderFavorites: (state, action: PayloadAction<{ from: number; to: number }>) => {
-            const { from, to } = action.payload;
-            const [removed] = state.movieIds.splice(from, 1);
-            state.movieIds.splice(to, 0, removed);
-            AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
-        },
         setFavoriteOrder: (state, action: PayloadAction<string[]>) => {
             state.movieIds = action.payload;
-            AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(state.movieIds));
         },
     },
 });
 
-export const {
-    addFavorite,
-    removeFavorite,
-    toggleFavorite,
-    setFavorites,
-    reorderFavorites,
-    setFavoriteOrder,
-} = favoritesSlice.actions;
+export const { addFavorite, removeFavorite, toggleFavorite, setFavorites, setFavoriteOrder } =
+    favoritesSlice.actions;
 
 export const favoritesReducer = favoritesSlice.reducer;
+
+export const saveFavorites = (movieIds: string[]) => {
+    return AsyncStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(movieIds));
+};
 
 export const loadFavorites = () => async (dispatch: (action: PayloadAction<string[]>) => void) => {
     try {
@@ -76,8 +64,7 @@ export const loadFavorites = () => async (dispatch: (action: PayloadAction<strin
         } else {
             dispatch(setFavorites([]));
         }
-    } catch (error) {
-        console.error('Failed to load favorites from AsyncStorage:', error);
+    } catch {
         dispatch(setFavorites([]));
     }
 };

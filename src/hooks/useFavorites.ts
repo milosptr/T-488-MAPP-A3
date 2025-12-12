@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { addFavorite, removeFavorite, toggleFavorite } from '../store/slices';
+import { addFavorite, removeFavorite, saveFavorites, toggleFavorite } from '../store/slices';
 
 export const useFavorites = () => {
     const dispatch = useAppDispatch();
@@ -17,22 +17,30 @@ export const useFavorites = () => {
     const addToFavorites = useCallback(
         (movieId: string) => {
             dispatch(addFavorite(movieId));
+            const newIds = [...favoriteIds, movieId];
+            saveFavorites(newIds);
         },
-        [dispatch]
+        [dispatch, favoriteIds]
     );
 
     const removeFromFavorites = useCallback(
         (movieId: string) => {
             dispatch(removeFavorite(movieId));
+            const newIds = favoriteIds.filter(id => id !== movieId);
+            saveFavorites(newIds);
         },
-        [dispatch]
+        [dispatch, favoriteIds]
     );
 
     const toggleFavoriteStatus = useCallback(
         (movieId: string) => {
             dispatch(toggleFavorite(movieId));
+            const newIds = favoriteIds.includes(movieId)
+                ? favoriteIds.filter(id => id !== movieId)
+                : [...favoriteIds, movieId];
+            saveFavorites(newIds);
         },
-        [dispatch]
+        [dispatch, favoriteIds]
     );
 
     return {

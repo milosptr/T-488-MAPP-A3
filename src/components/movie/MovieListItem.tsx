@@ -2,9 +2,8 @@ import { MOVIE_LIST_ITEM_WIDTH } from '@/src/constants/constants';
 import { borderRadius } from '@/src/constants/DesignTokens';
 import { useFavorites, useShare } from '@/src/hooks';
 import { Movie } from '@/src/types';
-import { Image } from 'expo-image';
 import { Link, useRouter } from 'expo-router';
-import { Platform, StyleSheet, ViewStyle } from 'react-native';
+import { Image, Platform, StyleSheet, ViewStyle } from 'react-native';
 import { MovieCard } from './MovieCard';
 
 const styles = StyleSheet.create({
@@ -51,9 +50,7 @@ export const MovieListItem = ({
             <Link.Preview>
                 <Image
                     source={{ uri: movie.poster }}
-                    contentFit="cover"
-                    cachePolicy="memory-disk"
-                    recyclingKey={movie._id}
+                    resizeMode="cover"
                     style={styles.previewImage}
                 />
             </Link.Preview>

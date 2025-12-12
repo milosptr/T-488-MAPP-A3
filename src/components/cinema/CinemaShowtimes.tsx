@@ -1,9 +1,8 @@
-import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
-import { useTheme } from '@/src/hooks';
+import { spacing } from '@/src/constants/DesignTokens';
 import { Showtime, ShowtimeSchedule } from '@/src/types';
 import { haptics } from '@/src/utils';
-import { Linking, Pressable, StyleSheet, View } from 'react-native';
-import { Text } from '../ui';
+import { Linking, StyleSheet, View } from 'react-native';
+import { GlassChip, Text } from '../ui';
 import { CinemaShowtimesSkeleton } from './CinemaShowtimesSkeleton';
 
 type Props = {
@@ -11,9 +10,12 @@ type Props = {
     isLoading: boolean;
 };
 
-export const CinemaShowtimes = ({ showtimes, isLoading }: Props) => {
-    const { colors } = useTheme();
+const extractTime = (time: string) => {
+    const timeOnly = time.replace(/^(\d{1,2}:\d{2}).*$/, '$1').trim();
+    return timeOnly ?? time;
+};
 
+export const CinemaShowtimes = ({ showtimes, isLoading }: Props) => {
     const handleShowtimePress = (url: string) => {
         haptics.light();
         Linking.openURL(url);
@@ -31,16 +33,14 @@ export const CinemaShowtimes = ({ showtimes, isLoading }: Props) => {
         <View style={styles.container}>
             {showtimes.map((showtime: Showtime) =>
                 showtime.schedule.map((s: ShowtimeSchedule) => (
-                    <Pressable
+                    <GlassChip
                         key={s.time}
+                        label={extractTime(s.time)}
+                        subtitle={s.info ? s.info : 'English'}
                         onPress={() => s.purchase_url && handleShowtimePress(s.purchase_url)}
-                        style={[
-                            styles.showtimeItem,
-                            { borderColor: colors.border, backgroundColor: colors.surface },
-                        ]}
-                    >
-                        <Text style={styles.showtimeText}>{s.time}</Text>
-                    </Pressable>
+                        disabled={!s.purchase_url}
+                        style={styles.showtimeItem}
+                    />
                 ))
             )}
         </View>
@@ -49,18 +49,12 @@ export const CinemaShowtimes = ({ showtimes, isLoading }: Props) => {
 
 const styles = StyleSheet.create({
     container: {
-        gap: spacing.md,
+        rowGap: spacing.md,
         flexDirection: 'row',
         flexWrap: 'wrap',
+        columnGap: '4%',
     },
     showtimeItem: {
-        paddingVertical: spacing.sm,
-        paddingHorizontal: spacing.md,
-        borderRadius: borderRadius.sm,
-        borderWidth: 1,
-    },
-    showtimeText: {
-        fontSize: fontSize.lg,
-        fontWeight: 'bold',
+        width: '30%',
     },
 });
