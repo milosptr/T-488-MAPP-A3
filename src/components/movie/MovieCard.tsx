@@ -4,7 +4,7 @@ import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
 import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Image, StyleSheet, View, ViewStyle } from 'react-native';
 import { Text } from '../ui';
 import { FavoriteButton } from './FavoriteButton';
@@ -39,19 +39,15 @@ export const MovieCard = ({
 
     const genre = movie?.genres?.map(g => g.NameEN ?? g.Name).at(0);
 
-    const detailTextStyle = useMemo(() => {
-        return {
-            ...styles.detailText,
-            fontSize: fontSizes[horizontal ? 'horizontal' : 'vertical'].detailText,
-        };
-    }, [horizontal]);
+    const detailTextStyle = {
+        ...styles.detailText,
+        fontSize: fontSizes[horizontal ? 'horizontal' : 'vertical'].detailText,
+    };
 
-    const titleStyle = useMemo(() => {
-        return {
-            ...styles.title,
-            fontSize: fontSizes[horizontal ? 'horizontal' : 'vertical'].title,
-        };
-    }, [horizontal]);
+    const titleStyle = {
+        ...styles.title,
+        fontSize: fontSizes[horizontal ? 'horizontal' : 'vertical'].title,
+    };
 
     return (
         <GlassView isInteractive style={styles.container}>
