@@ -24,6 +24,7 @@ export const UpcomingScreen = () => {
     const cardHeight = (width * 9) / 16 - 32;
 
     const handleTrailerPress = useCallback((trailerKey: string) => {
+        console.log('trailerKey', trailerKey);
         setSelectedTrailerKey(trailerKey);
         trailerRef.current?.present();
     }, []);

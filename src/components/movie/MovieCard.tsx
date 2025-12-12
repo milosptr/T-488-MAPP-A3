@@ -66,7 +66,7 @@ export const MovieCard = ({
         if (showFavoriteButton) {
             right += FAVORITE_BUTTON_SIZE;
         }
-        if (onTrailerPress) {
+        if (onTrailerPress && trailerKey) {
             right += TRAILER_BUTTON_SIZE;
         }
         return right;
@@ -91,7 +91,7 @@ export const MovieCard = ({
                 />
                 <View style={styles.bottomRightContainer}>
                     {showFavoriteButton && <FavoriteButton movieId={movie._id} />}
-                    {!!onTrailerPress && (
+                    {!!onTrailerPress && trailerKey && (
                         <LiquidButton
                             glassEffectStyle="clear"
                             style={styles.trailerButton}
