@@ -51,10 +51,23 @@ export const UpcomingMovieCard = ({ movie, onTrailerPress }: Props) => {
                 start={{ x: 0, y: 0.3 }}
                 end={{ x: 0, y: 1 }}
             />
-            {!!trailerKey && (
-                <View style={styles.trailerButton}>
+
+            <View style={styles.contentContainer}>
+                <View style={styles.infoContainer}>
+                    <View>
+                        <Text style={styles.title} numberOfLines={2}>
+                            {movie.title}
+                        </Text>
+                    </View>
+                    <View style={styles.infoDetails}>
+                        <View style={styles.infoItem}>
+                            <Text>{formatReleaseDate(movie['release-dateIS'])}</Text>
+                        </View>
+                    </View>
+                </View>
+                {!!trailerKey && (
                     <LiquidButton
-                        glassEffectStyle="regular"
+                        glassEffectStyle="clear"
                         leadingIcon={
                             <Ionicons
                                 name="play-circle-outline"
@@ -62,23 +75,11 @@ export const UpcomingMovieCard = ({ movie, onTrailerPress }: Props) => {
                                 color={colors.text}
                             />
                         }
-                        text="Watch Trailer"
+                        text="Trailer"
                         style={styles.trailerButtonInner}
                         onPress={handleTrailerPress}
                     />
-                </View>
-            )}
-            <View style={styles.infoContainer}>
-                <View>
-                    <Text style={styles.title} numberOfLines={2}>
-                        {movie.title}
-                    </Text>
-                </View>
-                <View style={styles.infoDetails}>
-                    <View style={styles.infoItem}>
-                        <Text>{formatReleaseDate(movie['release-dateIS'])}</Text>
-                    </View>
-                </View>
+                )}
             </View>
         </View>
     );
@@ -101,12 +102,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     infoContainer: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: spacing.md,
         gap: spacing.sm,
+        flexShrink: 1,
     },
     infoDetails: {
         flexDirection: 'row',
@@ -127,14 +124,18 @@ const styles = StyleSheet.create({
         gap: spacing.sm,
         opacity: 0.8,
     },
-    trailerButton: {
-        position: 'absolute',
-        top: spacing.sm,
-        right: spacing.sm,
-        zIndex: 1,
-    },
     trailerButtonInner: {
         paddingHorizontal: spacing.lg,
-        paddingVertical: spacing.sm,
+    },
+    contentContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: spacing.md,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        gap: spacing.md,
     },
 });
