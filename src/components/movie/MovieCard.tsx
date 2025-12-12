@@ -1,12 +1,14 @@
-import { ASPECT_RATIO } from '@/src/constants/constants';
+import { ASPECT_RATIO, ICON_BUTTON_SIZE } from '@/src/constants/constants';
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
 import { useMovieBackdrop, useTheme } from '@/src/hooks';
 import { Movie } from '@/src/types';
+import { getTrailerKey } from '@/src/utils';
+import { Ionicons } from '@expo/vector-icons';
 import { GlassView } from 'expo-glass-effect';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
 import { Image, StyleSheet, View, ViewStyle } from 'react-native';
-import { Text } from '../ui';
+import { LiquidButton, Text } from '../ui';
 import { FavoriteButton } from './FavoriteButton';
 
 type Props = {
@@ -14,9 +16,12 @@ type Props = {
     showFavoriteButton?: boolean;
     width?: ViewStyle['width'];
     horizontal?: boolean;
+    onTrailerPress?: (trailerKey: string) => void;
 };
 
 const GRADIENT_HEIGHT = 200;
+const TRAILER_BUTTON_SIZE = 60;
+const FAVORITE_BUTTON_SIZE = 60;
 
 const fontSizes = {
     horizontal: {
@@ -31,6 +36,7 @@ const fontSizes = {
 export const MovieCard = ({
     movie,
     showFavoriteButton = false,
+    onTrailerPress,
     width,
     horizontal = false,
 }: Props) => {
@@ -53,6 +59,19 @@ export const MovieCard = ({
         };
     }, [horizontal]);
 
+    const trailerKey = getTrailerKey(movie);
+
+    const rightSpacing = useMemo(() => {
+        let right = 0;
+        if (showFavoriteButton) {
+            right += FAVORITE_BUTTON_SIZE;
+        }
+        if (onTrailerPress) {
+            right += TRAILER_BUTTON_SIZE;
+        }
+        return right;
+    }, [showFavoriteButton, onTrailerPress]);
+
     return (
         <GlassView isInteractive style={styles.container}>
             <View
@@ -70,18 +89,30 @@ export const MovieCard = ({
                     resizeMode="cover"
                     style={styles.poster}
                 />
-                {showFavoriteButton && (
-                    <View style={styles.bottomRightContainer}>
-                        <FavoriteButton movieId={movie._id} />
-                    </View>
-                )}
+                <View style={styles.bottomRightContainer}>
+                    {showFavoriteButton && <FavoriteButton movieId={movie._id} />}
+                    {!!onTrailerPress && (
+                        <LiquidButton
+                            glassEffectStyle="clear"
+                            style={styles.trailerButton}
+                            leadingIcon={
+                                <Ionicons
+                                    name="play-circle-outline"
+                                    size={24}
+                                    color={colors.text}
+                                />
+                            }
+                            onPress={() => onTrailerPress?.(trailerKey ?? '')}
+                        />
+                    )}
+                </View>
                 <LinearGradient
                     colors={['transparent', colors.trueBlack]}
                     style={styles.gradient}
                     start={{ x: 0, y: 0.5 }}
                     end={{ x: 0, y: 1 }}
                 />
-                <View style={styles.infoContainer}>
+                <View style={[styles.infoContainer, { right: rightSpacing }]}>
                     <View>
                         <Text style={titleStyle} numberOfLines={2}>
                             {movie?.title}
@@ -125,6 +156,7 @@ const styles = StyleSheet.create({
         right: 0,
         padding: spacing.md,
         gap: spacing.xs,
+        flexShrink: 1,
     },
     infoDetails: {
         flexDirection: 'row',
@@ -150,8 +182,16 @@ const styles = StyleSheet.create({
         bottom: spacing.sm,
         right: spacing.sm,
         zIndex: 1,
+        flexDirection: 'row',
+        gap: spacing.sm,
     },
     detailText: {
         fontSize: fontSize.xs,
+    },
+    trailerButton: {
+        paddingHorizontal: 0,
+        width: ICON_BUTTON_SIZE,
+        height: ICON_BUTTON_SIZE,
+        borderRadius: borderRadius.full,
     },
 });

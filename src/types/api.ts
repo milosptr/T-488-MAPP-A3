@@ -79,7 +79,7 @@ export type Movie = {
     ids: Ids;
     title: string;
     alternativeTitles?: string[];
-    year: number;
+    year: number | string;
     durationMinutes: number;
     genres: Genre[];
     poster: string;
@@ -87,7 +87,7 @@ export type Movie = {
     actors_abridged: PersonAbridged[];
     directors_abridged: PersonAbridged[];
     ratings: Rating;
-    certificate: Certificate;
+    certificate?: Certificate;
     trailers?: Trailer[];
     showtimes: Showtime[];
     omdb?: OmdbData[];
@@ -95,6 +95,10 @@ export type Movie = {
 
 export type UpcomingMovie = Omit<Movie, 'showtimes' | 'certificate'> & {
     'release-dateIS': string;
+};
+
+export type FavoriteMovie = (Movie | UpcomingMovie) & {
+    type: 'movie' | 'upcoming';
 };
 
 // ============ Cinema Types ============

@@ -3,19 +3,20 @@ import { EmptyFavourites, MovieCard } from '@/src/components/movie';
 import { LiquidButton, Skeleton, Text } from '@/src/components/ui';
 import { ASPECT_RATIO, ICON_BUTTON_SIZE } from '@/src/constants/constants';
 import { borderRadius, fontSize, spacing } from '@/src/constants/DesignTokens';
-import { useFavorites, useMovies, useShare, useTheme } from '@/src/hooks';
+import { useFavorites, useMovies, useShare, useTheme, useUpcoming } from '@/src/hooks';
 import { saveFavorites, setFavoriteOrder, useAppDispatch } from '@/src/store';
-import { Movie } from '@/src/types';
+import { FavoriteMovie, Movie, UpcomingMovie } from '@/src/types';
 import { haptics } from '@/src/utils';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 import DraggableFlatList, {
     RenderItemParams,
     ScaleDecorator,
 } from 'react-native-draggable-flatlist';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { formatReleaseDate } from '../utils';
 
 export const FavouritesScreen = () => {
     const { colors } = useTheme();
@@ -24,16 +25,41 @@ export const FavouritesScreen = () => {
     const { shareFavourites } = useShare();
     const { bottom: bottomInset } = useSafeAreaInsets();
     const { data: allMovies = [], isLoading } = useMovies();
+    const { data: upcomingMovies = [], isLoading: isLoadingUpcoming } = useUpcoming();
 
-    const favoriteMovies = useMemo(() => {
+    const favoriteMovies: FavoriteMovie[] = useMemo(() => {
         if (!allMovies.length || !favoriteIds.length) return [];
 
-        return favoriteIds
+        const favoriteMovies = favoriteIds
             .map(id => allMovies.find(movie => movie._id === id))
-            .filter((movie): movie is Movie => movie !== undefined);
-    }, [allMovies, favoriteIds]);
+            .filter((movie): movie is Movie => movie !== undefined)
+            .map(movie => ({
+                ...movie,
+                type: 'movie',
+            })) as FavoriteMovie[];
 
-    const handleMoviePress = (movie: Movie) => {
+        const favoriteUpcomingMovies = favoriteIds
+            .map(id => upcomingMovies.find(movie => String(movie._id) === id))
+            .filter((movie): movie is UpcomingMovie => movie !== undefined)
+            .map(movie => ({
+                ...movie,
+                year: formatReleaseDate(movie['release-dateIS']),
+                showtimes: [],
+                type: 'upcoming',
+            })) as FavoriteMovie[];
+
+        return [...favoriteMovies, ...favoriteUpcomingMovies];
+    }, [allMovies, favoriteIds, upcomingMovies]);
+
+    const handleMoviePress = (movie: FavoriteMovie) => {
+        if (movie.type === 'upcoming') {
+            haptics.light();
+            Alert.alert(
+                'Coming soon',
+                `No preview available for upcoming movies. This movie will be available on ${movie.year}`
+            );
+            return;
+        }
         haptics.light();
         router.push(`/movies/${movie._id}`);
     };
@@ -48,7 +74,7 @@ export const FavouritesScreen = () => {
     };
 
     const handleDragEnd = useCallback(
-        ({ data }: { data: Movie[] }) => {
+        ({ data }: { data: FavoriteMovie[] }) => {
             haptics.light();
             const newOrder = data.map(movie => movie._id);
             dispatch(setFavoriteOrder(newOrder));
@@ -57,7 +83,7 @@ export const FavouritesScreen = () => {
         [dispatch]
     );
 
-    const renderMovie = ({ item, drag, isActive }: RenderItemParams<Movie>) => (
+    const renderMovie = ({ item, drag, isActive }: RenderItemParams<FavoriteMovie>) => (
         <ScaleDecorator>
             <Pressable
                 onPress={() => handleMoviePress(item)}
@@ -65,14 +91,14 @@ export const FavouritesScreen = () => {
                 disabled={isActive}
                 style={[styles.movieItem, isActive && styles.movieItemActive]}
             >
-                <MovieCard movie={item} showFavoriteButton horizontal />
+                <MovieCard movie={item as Movie} showFavoriteButton horizontal />
             </Pressable>
         </ScaleDecorator>
     );
 
     const ItemSeparator = () => <View style={styles.separator} />;
 
-    if (isLoading) {
+    if (isLoading || isLoadingUpcoming) {
         return (
             <SafeAreaScreen style={[styles.container, { backgroundColor: colors.background }]}>
                 <Text style={styles.headerTitle}>Favourites</Text>

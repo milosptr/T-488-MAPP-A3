@@ -28,7 +28,7 @@ export const FavoriteButton = ({ movieId }: Props) => {
     return (
         <LiquidButton
             style={styles.iconButton}
-            glassEffectStyle="regular"
+            glassEffectStyle="clear"
             leadingIcon={
                 <Ionicons
                     name={favorite ? 'heart' : 'heart-outline'}

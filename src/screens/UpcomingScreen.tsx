@@ -5,14 +5,16 @@ import { Text } from '@/src/components/ui';
 import { LegendList, LegendListRef, LegendListRenderItemProps } from '@legendapp/list';
 import { useCallback, useRef, useState } from 'react';
 import { RefreshControl, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { MovieListEmpty } from '../components/movie';
-import { UpcomingMovieCard } from '../components/movie/UpcomingMovieCard';
+import { MovieCard, MovieListEmpty } from '../components/movie';
 import { fontSize, spacing } from '../constants/DesignTokens';
 import { useUpcoming } from '../hooks';
-import { UpcomingMovie } from '../types';
+import { Movie, UpcomingMovie } from '../types';
 
 const ItemSeparator = () => <View style={styles.separator} />;
-
+const formatReleaseDate = (releaseDate: string) => {
+    const date = new Date(releaseDate);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+};
 export const UpcomingScreen = () => {
     const ref = useRef<LegendListRef>(null);
     const trailerRef = useRef<BottomSheetModal>(null);
@@ -27,7 +29,20 @@ export const UpcomingScreen = () => {
     }, []);
 
     const renderItem = ({ item }: LegendListRenderItemProps<UpcomingMovie>) => {
-        return <UpcomingMovieCard movie={item} onTrailerPress={handleTrailerPress} />;
+        const movie: Movie = {
+            ...item,
+            year: formatReleaseDate(item['release-dateIS']),
+            showtimes: [],
+        };
+
+        return (
+            <MovieCard
+                movie={movie}
+                horizontal
+                showFavoriteButton
+                onTrailerPress={handleTrailerPress}
+            />
+        );
     };
 
     return (

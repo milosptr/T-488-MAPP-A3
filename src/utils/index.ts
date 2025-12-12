@@ -1,3 +1,4 @@
+export * from './date';
 export * from './haptics';
 export * from './movieFilters';
 export * from './platform';
