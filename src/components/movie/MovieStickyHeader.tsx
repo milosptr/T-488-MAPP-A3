@@ -4,11 +4,11 @@ import { borderRadius, spacing } from '@/src/constants/DesignTokens';
 import { useFavorites, useTheme } from '@/src/hooks';
 import { isGlassAvailable } from '@/src/utils';
 import { Ionicons } from '@expo/vector-icons';
-import { GlassContainer, GlassView } from 'expo-glass-effect';
+import { BlurView } from 'expo-blur';
+import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 type Props = {
     trailerKey: string | null;
     movieId: string;
@@ -39,7 +39,7 @@ export const MovieStickyHeader = ({
         <>
             <LiquidButton
                 style={styles.iconButton}
-                glassEffectStyle="clear"
+                glassEffectStyle="regular"
                 leadingIcon={
                     <Ionicons name="chevron-back-outline" size={ICON_SIZE} color={colors.text} />
                 }
@@ -51,7 +51,7 @@ export const MovieStickyHeader = ({
                 {!!trailerKey && (
                     <LiquidButton
                         style={styles.iconButton}
-                        glassEffectStyle="clear"
+                        glassEffectStyle="regular"
                         leadingIcon={
                             <Ionicons
                                 name="play-circle-outline"
@@ -64,7 +64,7 @@ export const MovieStickyHeader = ({
                 )}
                 <LiquidButton
                     style={styles.iconButton}
-                    glassEffectStyle="clear"
+                    glassEffectStyle="regular"
                     leadingIcon={
                         <Ionicons name="share-outline" size={ICON_SIZE} color={colors.text} />
                     }
@@ -72,7 +72,7 @@ export const MovieStickyHeader = ({
                 />
                 <LiquidButton
                     style={styles.iconButton}
-                    glassEffectStyle="clear"
+                    glassEffectStyle="regular"
                     leadingIcon={
                         <Ionicons
                             name={isFav ? 'heart' : 'heart-outline'}
@@ -89,14 +89,9 @@ export const MovieStickyHeader = ({
     if (isGlassAvailable()) {
         return (
             <Animated.View style={[styles.container, style]}>
-                <GlassContainer spacing={1}>
-                    <GlassView
-                        style={[styles.glassBackground, { paddingTop: insets.top }]}
-                        glassEffectStyle="regular"
-                    >
-                        {content}
-                    </GlassView>
-                </GlassContainer>
+                <BlurView style={[styles.glassBackground, { paddingTop: insets.top + spacing.md }]}>
+                    {content}
+                </BlurView>
             </Animated.View>
         );
     }

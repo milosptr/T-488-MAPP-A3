@@ -210,13 +210,11 @@ Dr. Cinema is a mobile application that allows users to browse movies currently 
 
 ### Native Features
 
-| Technology       | Version  | Purpose                 |
-| ---------------- | -------- | ----------------------- |
-| Expo Haptics     | ^15.0.8  | Haptic feedback         |
-| Expo Sharing     | ~14.0.8  | Native share dialog     |
-| Expo Linking     | ~8.0.10  | Deep linking            |
-| Expo Image       | ~3.0.11  | Optimized image loading |
-| Expo Web Browser | ~15.0.10 | In-app browser          |
+| Technology   | Version | Purpose             |
+| ------------ | ------- | ------------------- |
+| Expo Haptics | ^15.0.8 | Haptic feedback     |
+| Expo Sharing | ~14.0.8 | Native share dialog |
+| Expo Linking | ~8.0.10 | Deep linking        |
 
 ### Media & Video
 
@@ -343,7 +341,6 @@ src/
 │   ├── filters/            # Filter modal components
 │   │   ├── ActorsFilter.tsx
 │   │   ├── DirectorsFilter.tsx
-│   │   ├── CinemasFilter.tsx
 │   │   ├── RatingFilter.tsx
 │   │   ├── CertificateFilter.tsx
 │   │   └── ShowtimeFilter.tsx
