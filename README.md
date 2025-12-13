@@ -385,7 +385,7 @@ src/
 
     ```bash
     git clone <repository-url>
-    cd MAPP-3
+    cd T-488-MAPP-A3
     ```
 
 2. Install dependencies:
